@@ -197,4 +197,5 @@ touch ERS168206.done
 
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
-
+#https://github.com/marbl/Primates?tab=readme-ov-file
+#https://genomeark.s3.amazonaws.com/index.html?prefix=species/Gorilla_gorilla/mGorGor1/assembly_curated/
