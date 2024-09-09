@@ -26,7 +26,7 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/data && cd /global/scratc
 
 #!/bin/bash
 #SBATCH --job-name=sra
-#SBATCH --time=0-124:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
 #SBATCH --qos=savio_lowprio
@@ -39,4 +39,27 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/data && cd /global/scratc
 
 prefetch --type fastq SRX243452
 touch SRX243452.done
+prefetch --type fastq SRX243453
+touch SRX243453.done
 
+prefetch --type fastq SRX242685
+touch SRX242685.done
+prefetch --type fastq SRX242686
+touch SRX242686.done
+prefetch --type fastq SRX242687
+touch SRX242687.done
+prefetch --type fastq SRX242688
+touch SRX242688.done
+
+prefetch --type fastq SRX243528
+touch SRX243528.done
+prefetch --type fastq SRX243529
+touch SRX243529.done
+prefetch --type fastq SRX243530
+touch SRX243530.done
+prefetch --type fastq SRX243531
+touch SRX243531.done
+prefetch --type fastq SRX243532
+touch SRX243532.done
+prefetch --type fastq SRX243533
+touch SRX243533.done
