@@ -97,7 +97,7 @@ touch SRX243532.done
 fasterq-dump --split-files SRX243533
 touch SRX243533.done
 
-## 01_download_gorilla_data_04.sh 
+## 01_download_gorilla_data_04.sh ###NOT WORKING##
 
 #!/bin/bash
 #SBATCH --job-name=sra
@@ -116,9 +116,7 @@ mkdir -p ind01_Maisha && cd ind01_Maisha
 fasterq-dump --split-files ERS525616
 touch ERS525616.done
 
-
-
-## 01_download_gorilla_data_04.sh 
+## 01_download_gorilla_data_05.sh 
 
 #!/bin/bash
 #SBATCH --job-name=sra
@@ -126,49 +124,77 @@ touch ERS525616.done
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
 #SBATCH --qos=savio_lowprio
-#SBATCH --output=dl4.out # output file
-#SBATCH --error=dl4.err # error file
+#SBATCH --output=dl5.out # output file
+#SBATCH --error=dl5.err # error file
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=2 # 2 CPUs per job
 #SBATCH --mem=4GB # Memory limit of 4GB
 
-mkdir -p ind01_Maisha && cd ind01_Maisha
-fasterq-dump --split-files SAMEA2697037
-touch SAMEA2697037.done
-cd ../
 mkdir -p ind02_Tuck && cd ind02_Tuck
-fasterq-dump --split-files SAMEA1692353
-touch SAMEA1692353.done
+fasterq-dump --split-files ERS168204
+touch ERS168204.done
 cd ../
 mkdir -p ind03_Turimaso && cd ind03_Turimaso
-fasterq-dump --split-files SAMEA2697039
-touch SAMEA2697039.done
+fasterq-dump --split-files ERS525618
+touch ERS525618.done
 cd ../
 mkdir -p ind04_Umurimo && cd ind04_Umurimo
-fasterq-dump --split-files SAMEA2697038
-touch SAMEA2697038.done
+fasterq-dump --split-files ERS525617
+touch ERS525617.done
 cd ../
 mkdir -p ind05_Imfura && cd ind05_Imfura
-fasterq-dump --split-files SAMEA1692350
-touch SAMEA1692350.done
+fasterq-dump --split-files ERS168207
+touch ERS168207.done
 cd ../
 mkdir -p ind06_Kaboko && cd ind06_Kaboko
-fasterq-dump --split-files SAMEA1692352
-touch SAMEA1692352.done
+fasterq-dump --split-files ERS168410
+touch ERS168410.done
 cd ../
 mkdir -p ind07_Zirikana && cd ind07_Zirikana
-fasterq-dump --split-files SAMEA1692351
-touch SAMEA1692351.done
+fasterq-dump --split-files ERS168174
+touch ERS168174.done
+
+## 01_download_gorilla_data_06.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl6.out # output file
+#SBATCH --error=dl6.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
+
+mkdir -p ind08_Dunia && cd ind08_Dunia
+fasterq-dump --split-files ERS525621
+touch ERS525621.done
+cd ../
+mkdir -p ind09_Itebero && cd ind09_Itebero
+fasterq-dump --split-files ERS168205
+touch ERS168205.done
+cd ../
+mkdir -p ind10_Pinga && cd ind10_Pinga
+fasterq-dump --split-files ERS525620
+touch ERS525620.done
+cd ../
+mkdir -p ind11_Serufuli && cd ind11_Serufuli
+fasterq-dump --split-files ERS525622
+touch ERS525622.done
+cd ../
+mkdir -p ind12_Tumani && cd ind12_Tumani
+fasterq-dump --split-files ERS525619
+touch ERS525619.done
+cd ../
+mkdir -p ind13_Ntabwoba && cd ind13_Ntabwoba
+fasterq-dump --split-files ERS168206
+touch ERS168206.done
 
 
-
-fasterq-dump --split-files SAMEA2697042
-fasterq-dump --split-files SAMEA1692355
-fasterq-dump --split-files SAMEA2697041
-fasterq-dump --split-files SAMEA2697043
-fasterq-dump --split-files SAMEA2697040
-fasterq-dump --split-files SAMEA1692354
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
 
