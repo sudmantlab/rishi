@@ -42,6 +42,21 @@ touch SRX243452.done
 prefetch --type fastq SRX243453
 touch SRX243453.done
 
+## 01_download_gorilla_data_02.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra2
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl2.out # output file
+#SBATCH --error=dl2.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
+
 prefetch --type fastq SRX242685
 touch SRX242685.done
 prefetch --type fastq SRX242686
@@ -50,6 +65,21 @@ prefetch --type fastq SRX242687
 touch SRX242687.done
 prefetch --type fastq SRX242688
 touch SRX242688.done
+
+## 01_download_gorilla_data_03.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl3.out # output file
+#SBATCH --error=dl3.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
 
 prefetch --type fastq SRX243528
 touch SRX243528.done
@@ -63,3 +93,6 @@ prefetch --type fastq SRX243532
 touch SRX243532.done
 prefetch --type fastq SRX243533
 touch SRX243533.done
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
+
