@@ -1,1 +1,13 @@
 #
+
+#move data to scratch dir (infiniband) using globus
+#to: /global/scratch/users/rdekayne
+
+cd /global/scratch/users/rdekayne/
+mkdir -p /global/scratch/users/rdekayne/envs/
+
+module load anaconda3
+conda create -p /global/scratch/users/rdekayne/envs/sra
+source activate base
+conda activate /global/scratch/users/rdekayne/envs/sra
+conda install bioconda::sra-tools
