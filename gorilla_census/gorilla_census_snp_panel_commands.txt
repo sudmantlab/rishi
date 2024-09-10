@@ -194,6 +194,10 @@ mkdir -p ind13_Ntabwoba && cd ind13_Ntabwoba
 fasterq-dump --split-files ERS168206
 touch ERS168206.done
 
+dl4.err:warn: nothing found for ERX623727
+dl5.err:warn: nothing found for ERS525617
+dl6.err:warn: nothing found for ERS525622
+dl6.err:warn: nothing found for ERS525619
 
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
