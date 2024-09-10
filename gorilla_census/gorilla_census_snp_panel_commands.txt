@@ -97,6 +97,114 @@ touch SRX243532.done
 fasterq-dump --split-files SRX243533
 touch SRX243533.done
 
+# 01_download_gorilla_data_04.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl4.out # output file
+#SBATCH --error=dl4.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
+
+mkdir -p ind02_Tuck && cd ind02_Tuck
+fasterq-dump --split-files ERS168204
+touch ERS168204.done
+
+# 01_download_gorilla_data_05.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl5.out # output file
+#SBATCH --error=dl5.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
+
+mkdir -p ind03_Turimaso && cd ind03_Turimaso
+fasterq-dump --split-files ERS525618
+touch ERS525618.done
+
+# 01_download_gorilla_data_06.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl6.out # output file
+#SBATCH --error=dl6.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=4GB # Memory limit of 4GB
+
+mkdir -p ind05_Imfura && cd ind05_Imfura
+fasterq-dump --split-files ERS168207
+touch ERS168207.done
+
+# 01_download_gorilla_data_07.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl7.out # output file
+#SBATCH --error=dl7.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind06_Kaboko && cd ind06_Kaboko
+fasterq-dump --split-files ERS168410
+touch ERS168410.done
+
+# 01_download_gorilla_data_08.sh 
+
+#!/bin/bash
+#SBATCH --job-name=sra
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=dl8.out # output file
+#SBATCH --error=dl8.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind07_Zirikana && cd ind07_Zirikana
+fasterq-dump --split-files ERS168174
+touch ERS168174.done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 01_download_gorilla_data_04.sh ###NOT WORKING##
 
 #!/bin/bash
