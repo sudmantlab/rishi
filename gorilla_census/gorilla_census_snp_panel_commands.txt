@@ -551,6 +551,136 @@ wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR668/ERR668426/ERR668426.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR668/ERR668426/ERR668426_1.fastq.gz
 touch ind12.done
 
+#!/bin/bash
+#SBATCH --job-name=BONUS1
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=BONUS1.out # output file
+#SBATCH --error=BONUS1.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+cd ind02_Tuck
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223807/ERR223807_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223747/ERR223747_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223753/ERR223753_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223729/ERR223729_2.fastq.gz
+
+cd ../ind05_Imfura
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223752/ERR223752_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223800/ERR223800_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223764/ERR223764_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223770/ERR223770_1.fastq.gz
+
+
+#!/bin/bash
+#SBATCH --job-name=BONUS2
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=BONUS2.out # output file
+#SBATCH --error=BONUS2.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+cd ind06_Kaboko
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223762/ERR223762_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223744/ERR223744_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR225/ERR225700/ERR225700_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223732/ERR223732_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223714/ERR223714_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223780/ERR223780_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223774/ERR223774_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223798/ERR223798_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223810/ERR223810_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223804/ERR223804_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223774/ERR223774_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223714/ERR223714_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223756/ERR223756_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223726/ERR223726_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223738/ERR223738_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223720/ERR223720_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223732/ERR223732_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223768/ERR223768_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223756/ERR223756_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223750/ERR223750_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223786/ERR223786_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223810/ERR223810_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223792/ERR223792_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223804/ERR223804_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223798/ERR223798_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223744/ERR223744_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223762/ERR223762_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223780/ERR223780_2.fastq.gz
+
+#!/bin/bash
+#SBATCH --job-name=BONUS3
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=BONUS3.out # output file
+#SBATCH --error=BONUS3.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+cd ind07_Zirikana
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223775/ERR223775_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223769/ERR223769_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223805/ERR223805_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223751/ERR223751_1.fastq.gz
+
+cd ../ind13_Ntabwoba
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223743/ERR223743_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223773/ERR223773_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223779/ERR223779_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223803/ERR223803_1.fastq.gz
+
+
+#!/bin/bash
+#SBATCH --job-name=BONUS4
+#SBATCH --time=0-12:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=BONUS4.out # output file
+#SBATCH --error=BONUS4.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+cd ind09_Itebero
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223796/ERR223796_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223736/ERR223736_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223760/ERR223760_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223790/ERR223790_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223778/ERR223778_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223766/ERR223766_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223808/ERR223808_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223748/ERR223748_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223784/ERR223784_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223802/ERR223802_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223712/ERR223712_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223760/ERR223760_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223742/ERR223742_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223724/ERR223724_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223790/ERR223790_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223730/ERR223730_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223766/ERR223766_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223754/ERR223754_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223748/ERR223748_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223796/ERR223796_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR223/ERR223772/ERR223772_2.fastq.gz
 
 ##deleted unpaired files:
 rm ind01_Maisha/ERR668423.fastq.gz
@@ -558,7 +688,6 @@ rm ind04_Umurimo/ERR668424.fastq.gz
 rm ind12_Tumani/ERR668426.fastq.gz
 rm ind15_Kaisi/SRR747657.fastq.gz
 rm ind15_Kaisi/SRR747658.fastq.gz
-
 
 #####Genomes
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
