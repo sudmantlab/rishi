@@ -551,6 +551,15 @@ wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR668/ERR668426/ERR668426.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR668/ERR668426/ERR668426_1.fastq.gz
 touch ind12.done
 
+
+##deleted unpaired files:
+rm ind01_Maisha/ERR668423.fastq.gz
+rm ind04_Umurimo/ERR668424.fastq.gz
+rm ind12_Tumani/ERR668426.fastq.gz
+rm ind15_Kaisi/SRR747657.fastq.gz
+rm ind15_Kaisi/SRR747658.fastq.gz
+
+
 #####Genomes
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
 #https://github.com/marbl/Primates?tab=readme-ov-file
