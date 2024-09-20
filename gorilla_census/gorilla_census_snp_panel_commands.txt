@@ -737,6 +737,8 @@ fastp -i /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_1.fa
 
 rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
+##run
+sbatch --array=1-131%10 01.1_mapping_qc_p1.sh
 
 
 
