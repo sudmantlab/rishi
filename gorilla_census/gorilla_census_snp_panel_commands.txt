@@ -705,7 +705,7 @@ mkdir /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs
 
 conda create -p /global/scratch/users/rdekayne/envs/fastp
 conda activate /global/scratch/users/rdekayne/envs/fastp
-mamba install bioconda::fastp
+conda install bioconda::fastp
 
 ## 01.1_mapping_qc_p1.sh 
 
@@ -732,13 +732,25 @@ VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 echo $VAR1
 echo $VAR2
 
-fastp -i /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_1.fastq.gz -I /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_2.fastq.gz --thread 16 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz -O /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz -h ${VAR1}_${VAR2}.html && touch ${VAR1}_${VAR2}.done
+fastp -i /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_1.fastq.gz -I /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_2.fastq.gz --thread 16 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz -O /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz -j ${VAR1}_${VAR2}.json -h ${VAR1}_${VAR2}.html && touch ${VAR1}_${VAR2}.done
 
 rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
 ##run
 sbatch --array=1-131 01.1_mapping_qc_p1.sh
 
+##multiqc
+conda create -p /global/scratch/users/rdekayne/envs/multiqc
+conda activate /global/scratch/users/rdekayne/envs/multiqc
+conda install bioconda::multiqc 
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
+mv *.html /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
+mv *.json /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
+
+multiqc .
 
 
 
