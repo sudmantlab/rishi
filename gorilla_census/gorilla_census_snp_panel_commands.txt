@@ -750,6 +750,10 @@ mv *.html /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
 mv *.json /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
 
+git clone https://github.com/ewels/MultiQC.git
+module load python/3.11.6-gcc-11.4.0
+python setup.py install
+
 multiqc .
 
 
