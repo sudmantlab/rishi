@@ -804,6 +804,10 @@ VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 
 #PART1
 # call bwa
-/hb/software/apps/bwa-mem2/gnu-2.2.1/bin/bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam && touch ${VAR1}_${VAR2}.mapping.done
+bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam && touch ${VAR1}_${VAR2}.mapping.done
+
+##run
+sbatch --array=10 01.3_mapping_map_p1.sh 
+
 
 
