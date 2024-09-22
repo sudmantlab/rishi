@@ -713,32 +713,31 @@ mamba install bioconda::fastp
 #SBATCH --job-name=fastp_test
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
-#SBATCH --partition=savio4_htc
+#SBATCH --partition=savio3
 #SBATCH --qos=savio_lowprio
 #SBATCH --output=fastq1.%j.out # output file
-#SBATCH --error=fastq1.%j.out # error file
+#SBATCH --error=fastq1.%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=2 # 2 CPUs per job
-#SBATCH --mem=10GB # Memory limit of 4GB
+#SBATCH --cpus-per-task=16 # 2 CPUs per job
 
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
 
 ind=${SLURM_ARRAY_TASK_ID}
 cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
-VAR1=$(cut -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
-VAR2=$(cut -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
+VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
+VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 
 echo $VAR1
 echo $VAR2
 
-fastp -i /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_1.fastq.gz -I /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_2.fastq.gz -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz -O /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz -h ${VAR1}_${VAR2}.html && touch ${VAR1}_${VAR2}.done
+fastp -i /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_1.fastq.gz -I /global/scratch/users/rdekayne/gorilla_census/data/${VAR1}/${VAR2}_2.fastq.gz --thread 16 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz -O /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz -h ${VAR1}_${VAR2}.html && touch ${VAR1}_${VAR2}.done
 
 rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
 ##run
-sbatch --array=1-131%10 01.1_mapping_qc_p1.sh
+sbatch --array=1-131 01.1_mapping_qc_p1.sh
 
 
 
