@@ -739,7 +739,8 @@ rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 ##run
 sbatch --array=1-131 01.1_mapping_qc_p1.sh
 
-##multiqc
+#########################################################################################
+##multiqc NOT WORKING
 conda create -p /global/scratch/users/rdekayne/envs/multiqc
 conda activate /global/scratch/users/rdekayne/envs/multiqc
 conda install bioconda::multiqc 
@@ -749,40 +750,60 @@ mv *.html /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
 mv *.json /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
+#########################################################################################
+
+#install bwa-mem2 + samtools + sambamba
+conda create -p /global/scratch/users/rdekayne/envs/mapping
+conda activate /global/scratch/users/rdekayne/envs/mapping
+conda install bioconda::samtools
+conda install bioconda::sambamba
+conda install bioconda::bwa-mem2
+conda install bioconda::bcftools
 
 #index assembly
-module load samtools
-samtools faidx Pmex_S_ref.fa 
-module load bwa
-bwa index Pmex_S_ref.fa
+# 01.2_mapping_index_p1.sh 
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=index.out # output file
+#SBATCH --error=index.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
 
-#and use samples in /hb/home/rdekayne/PmexWGS160/02_QC/sample_list2.txt
+cd /global/scratch/users/rdekayne/gorilla_census/data/genomes
+bwa-mem2 index mGorGor1.pri.cur.20231122.fasta
 
-#make scratch directory for sam/bam writing
-/hb/scratch/rdekayne/mapping/
+##run
 
-# 04.1_PmexWGS160_mapping.sh
+
+mkdir /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams
+# 01.3_mapping_map_p1.sh 
 
 #!/bin/bash
-#SBATCH --job-name=mapping
-#SBATCH --time=0-24:00:00
-#SBATCH --partition=256x44
-#SBATCH --output=mapping.%j.out # output file
-#SBATCH --error=mapping.%j.err # error file
-#SBATCH -N 1
-#SBATCH --cpus-per-task=24
-#SBATCH --mem=16GB 
+#SBATCH --job-name=bwa_map
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=bwa_map.%j.out # output file
+#SBATCH --error=bwa_map.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-module load bwa-mem2/2.2.1 sambamba
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
 
 ind=${SLURM_ARRAY_TASK_ID}
-indiv_name=$(cat /hb/home/rdekayne/PmexWGS160/02_QC/sample_list2.txt | sed -n ${ind}p)
+cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+
+VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
+VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 
 #PART1
 # call bwa
-/hb/software/apps/bwa-mem2/gnu-2.2.1/bin/bwa-mem2 mem -t 24 /hb/home/rdekayne/PmexWGS160/04_mapping/Pmex_S_ref.fa /hb/groups/kelley_lab/Rishi/PmexWGS160/data/fastp_processed/${indiv_name}_R1.out.fastq.gz /hb/groups/kelley_lab/Rishi/PmexWGS160/data/fastp_processed/${indiv_name}_R2.out.fastq.gz > /hb/scratch/rdekayne/mapping/output.${indiv_name}_part1.raw.sam && touch ${indiv_name}.mapping1.done
-
-#run sambamba
-sambamba view -S /hb/scratch/rdekayne/mapping/output.${indiv_name}_part1.raw.sam -f bam -o /hb/scratch/rdekayne/mapping/output.${indiv_name}_part1.raw.bam -t 24 -l 9 && rm /hb/scratch/rdekayne/mapping/output.${indiv_name}_part1.raw.sam && touch ${indiv_name}.mapping2.done
+/hb/software/apps/bwa-mem2/gnu-2.2.1/bin/bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam && touch ${VAR1}_${VAR2}.mapping.done
 
 
