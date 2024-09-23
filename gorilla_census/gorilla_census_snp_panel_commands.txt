@@ -740,16 +740,18 @@ rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 sbatch --array=1-131 01.1_mapping_qc_p1.sh
 
 #########################################################################################
-##multiqc NOT WORKING
-conda create -p /global/scratch/users/rdekayne/envs/multiqc
-conda activate /global/scratch/users/rdekayne/envs/multiqc
-conda install bioconda::multiqc 
+##multiqc 
+eval "$(/global/scratch/users/scott_ferguson/modules/miniconda3/bin/conda shell.zsh hook)"
+mamba activate multiqc
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
 mv *.html /global/scratch/users/rdekayne/gorilla_census/01_mapping/html_output
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output && cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
 mv *.json /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
+multiqc .
 #########################################################################################
 
 #install bwa-mem2 + samtools + sambamba
