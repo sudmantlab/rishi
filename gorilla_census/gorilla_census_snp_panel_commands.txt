@@ -751,7 +751,7 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output &&
 mv *.json /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
 
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/json_output
-multiqc .
+multiqc --fn_as_s_name . 
 #########################################################################################
 
 #install bwa-mem2 + samtools + sambamba
