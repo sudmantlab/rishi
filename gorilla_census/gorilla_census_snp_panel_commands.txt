@@ -788,8 +788,7 @@ mkdir /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams
 #SBATCH --job-name=bwa_map
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
-#SBATCH --partition=savio3
-#SBATCH --qos=savio_lowprio
+#SBATCH --partition=savio3_bigmem
 #SBATCH --output=bwa_map.%j.out # output file
 #SBATCH --error=bwa_map.%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
@@ -804,12 +803,53 @@ cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | s
 VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 
-#PART1
 # call bwa
 bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam && touch ${VAR1}_${VAR2}.mapping.done
 
-##run
-sbatch --array=10 01.3_mapping_map_p1.sh 
+# 01.4_mapping_process_p1.sh 
+#!/bin/bash
+#SBATCH --job-name=bwa_proc
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3_bigmem
+#SBATCH --output=bwa_proc.%j.out # output file
+#SBATCH --error=bwa_proc.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
+
+ind=${SLURM_ARRAY_TASK_ID}
+cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+
+VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
+VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
+
+#PART1
+picard FixMateInformation I=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam VALIDATION_STRINGENCY=LENIENT OUTPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams//tmp_bam/${VAR1}_${VAR2}.raw.bam
+
+sambamba sort/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams//tmp_bam/${VAR1}_${VAR2}.raw.bam -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.sorted.raw.bam -t 24 -m 50GB
+
+picard MarkDuplicates INPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.sorted.raw.bam OUTPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${VAR1}_${VAR2}.sorted.dup.bam METRICS_FILE=/global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${VAR1}_${VAR2}.sorted.dup.txt VALIDATION_STRINGENCY=LENIENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1024
+
+sambamba index /global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${VAR1}_${VAR2}.sorted.dup.bam 
+
+#now remove all intermediate files
+rm /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}*
+
+touch ${indiv_name}.processing.done
+
+##submit
+sbatch --array=1-131 01.4_mapping_process_p1.sh 
+
+
+
+
+
+
+
+samtools merge finalBamFile.bam *.bam
 
 
 
