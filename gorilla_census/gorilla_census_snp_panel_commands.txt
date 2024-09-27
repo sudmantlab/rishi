@@ -761,6 +761,7 @@ conda install bioconda::samtools
 conda install bioconda::sambamba
 conda install bioconda::bwa-mem2
 conda install bioconda::bcftools
+conda install bioconda::picard
 
 #index assembly
 # 01.2_mapping_index_p1.sh 
@@ -806,6 +807,11 @@ VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 # call bwa
 bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_1.out.fastq.gz /global/scratch/users/rdekayne/gorilla_census/01_mapping/fastp_fastqs/${VAR1}_${VAR2}_2.out.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam && touch ${VAR1}_${VAR2}.mapping.done
 
+##run
+sbatch --array=1-131 01.3_mapping_map_p1.sh 
+
+module load java/22.0.1
+
 # 01.4_mapping_process_p1.sh 
 #!/bin/bash
 #SBATCH --job-name=bwa_proc
@@ -827,9 +833,9 @@ VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 
 #PART1
-picard FixMateInformation I=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam VALIDATION_STRINGENCY=LENIENT OUTPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams//tmp_bam/${VAR1}_${VAR2}.raw.bam
+picard FixMateInformation I=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/${VAR1}_${VAR2}.raw.bam VALIDATION_STRINGENCY=LENIENT OUTPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.raw.bam
 
-sambamba sort/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams//tmp_bam/${VAR1}_${VAR2}.raw.bam -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.sorted.raw.bam -t 24 -m 50GB
+sambamba sort/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.raw.bam -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.sorted.raw.bam -t 24 -m 50GB
 
 picard MarkDuplicates INPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}.sorted.raw.bam OUTPUT=/global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${VAR1}_${VAR2}.sorted.dup.bam METRICS_FILE=/global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${VAR1}_${VAR2}.sorted.dup.txt VALIDATION_STRINGENCY=LENIENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1024
 
@@ -837,15 +843,12 @@ sambamba index /global/scratch/users/rdekayne/gorilla_census/01_mapping/processe
 
 #now remove all intermediate files
 rm /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams/tmp_bam/${VAR1}_${VAR2}*
+rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
-touch ${indiv_name}.processing.done
+touch ${VAR1}_${VAR2}.processing.done
 
 ##submit
-sbatch --array=1-131 01.4_mapping_process_p1.sh 
-
-
-
-
+sbatch --array=1 01.4_mapping_process_p1.sh 
 
 
 
