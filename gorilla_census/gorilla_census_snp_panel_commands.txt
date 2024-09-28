@@ -762,6 +762,8 @@ conda install bioconda::sambamba
 conda install bioconda::bwa-mem2
 conda install bioconda::bcftools
 conda install bioconda::picard
+conda install bioconda::mosdepth
+
 
 #index assembly
 # 01.2_mapping_index_p1.sh 
@@ -848,11 +850,84 @@ rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 touch ${VAR1}_${VAR2}.processing.done
 
 ##submit
-sbatch --array=1 01.4_mapping_process_p1.sh 
+sbatch --array=1-131%8 01.4_mapping_process_p1.sh 
 
 
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
 
-samtools merge finalBamFile.bam *.bam
+# 01.5_mapping_merge_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=bwa_merg
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3_bigmem
+#SBATCH --output=bwa_merg.%j.out # output file
+#SBATCH --error=bwa_merg.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/merge.list | sed -n ${ind}p)
+
+samtools merge -o /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/${indiv_name}_1file.bam /global/scratch/users/rdekayne/gorilla_census/01_mapping/processed_bams/${indiv_name}*.bam
+
+sambamba index /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/${indiv_name}_1file.bam
+
+touch ${indiv_name}.mege.done
+
+##submit
+sbatch --array=1-9 01.5_mapping_merge_p1.sh
+
+cp ind01_Maisha_ERR668423.sorted.dup.bam ../indiv_bams/ind01_Maisha_1file.bam
+cp ind01_Maisha_ERR668423.sorted.dup.bam.bai ../indiv_bams/ind01_Maisha_1file.bam.bai
+cp ind01_Maisha_ERR668423.sorted.dup.txt ../indiv_bams/ind01_Maisha_1file.txt
+cp ind03_Turimaso_ERR668425.sorted.dup.bam ../indiv_bams/ind03_Turimaso_1file.bam
+cp ind03_Turimaso_ERR668425.sorted.dup.bam.bai ../indiv_bams/ind03_Turimaso_1file.bam.bai
+cp ind03_Turimaso_ERR668425.sorted.dup.txt ../indiv_bams/ind03_Turimaso_1file.txt
+cp ind04_Umurimo_ERR668424.sorted.dup.bam ../indiv_bams/ind04_Umurimo_1file.bam
+cp ind04_Umurimo_ERR668424.sorted.dup.bam.bai ../indiv_bams/ind04_Umurimo_1file.bam.bai
+cp ind04_Umurimo_ERR668424.sorted.dup.txt ../indiv_bams/ind04_Umurimo_1file.txt
+cp ind08_Dunia_ERR668428.sorted.dup.bam ../indiv_bams/ind08_Dunia_1file.bam
+cp ind08_Dunia_ERR668428.sorted.dup.bam.bai ../indiv_bams/ind08_Dunia_1file.bam.bai
+cp ind08_Dunia_ERR668428.sorted.dup.txt ../indiv_bams/ind08_Dunia_1file.txt
+cp ind10_Pinga_ERR668427.sorted.dup.bam ../indiv_bams/ind10_Pinga_1file.bam
+cp ind10_Pinga_ERR668427.sorted.dup.bam.bai ../indiv_bams/ind10_Pinga_1file.bam.bai
+cp ind10_Pinga_ERR668427.sorted.dup.txt ../indiv_bams/ind10_Pinga_1file.txt
+cp ind11_Serufuli_ERR668429.sorted.dup.bam ../indiv_bams/ind11_Serufuli_1file.bam
+cp ind11_Serufuli_ERR668429.sorted.dup.bam.bai ../indiv_bams/ind11_Serufuli_1file.bam.bai
+cp ind11_Serufuli_ERR668429.sorted.dup.txt ../indiv_bams/ind11_Serufuli_1file.txt
+cp ind12_Tumani_ERR668426.sorted.dup.bam ../indiv_bams/ind12_Tumani_1file.bam
+cp ind12_Tumani_ERR668426.sorted.dup.bam.bai ../indiv_bams/ind12_Tumani_1file.bam.bai
+cp ind12_Tumani_ERR668426.sorted.dup.txt ../indiv_bams/ind12_Tumani_1file.txt
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams && ls *.bam > bam_1file.list
+
+# 01.6_mapping_mosdepth_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=mos
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=mos.%j.out # output file
+#SBATCH --error=mos.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat bam_1file.list | sed -n ${ind}p)
+
+mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/$${indiv_name} && touch ${indiv_name}.mosdepth.done 
+
+##run 
+sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
 
 
 
