@@ -925,6 +925,7 @@ ind=${SLURM_ARRAY_TASK_ID}
 indiv_name=$(cat bam_1file.list | sed -n ${ind}p)
 
 mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/$${indiv_name} && touch ${indiv_name}.mosdepth.done 
+samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
 
 ##run 
 sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
