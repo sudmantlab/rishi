@@ -924,11 +924,52 @@ cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
 ind=${SLURM_ARRAY_TASK_ID}
 indiv_name=$(cat bam_1file.list | sed -n ${ind}p)
 
-mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/$${indiv_name} && touch ${indiv_name}.mosdepth.done 
+mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
 samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
 
 ##run 
 sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
 
+#####################################
+#####################################
+#            02_genotyping 
+#####################################
+#####################################
+conda activate /global/scratch/users/rdekayne/envs/mapping
 
+#make genotyping directory
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/ && cd /global/scratch/users/rdekayne/gorilla_census/02_genotyping/
+#and make a directory for the done-files
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files
+#and make directory for raw vcf files
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs
 
+#want to get scaffolds in ascending order:
+cut -f1 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta.gz.fai > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list
+
+#make bam list too
+ls /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/*.bam > bam.list
+
+#get rid of 11 and 16 for low coverage
+cat bam.list | grep -v 'ind16' | grep -v "ind11" > 14_bam_list.txt
+
+## 02.1_genotyping.sh
+
+#!/bin/bash
+#SBATCH --job-name=geno
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=geno.%j.out # output file
+#SBATCH --error=geno.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
+
+bcftools mpileup -O u -d 250 --skip-indels -f /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta --annotate FORMAT/DP --bam-list /global/scratch/users/rdekayne/gorilla_census/02_genotyping/14_bam_list.txt -r "${scaf_name}" | bcftools call -m -f GQ -O v | bgzip > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs/"${scaf_name}".raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}".raw.vcf.gz.done
+
+#run
+sbatch --array=1 02.1_genotyping.sh
