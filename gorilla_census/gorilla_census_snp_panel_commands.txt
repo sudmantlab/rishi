@@ -1123,3 +1123,36 @@ touch genotype_stats.done
 ##run
 sbatch 02.6_vcf_concat_filt.sh
 
+#####################################
+#####################################
+#            03_PCA
+#####################################
+#####################################
+
+mkdir -p /hb/home/rdekayne/PmexWGS160/06_PCA && cd /hb/home/rdekayne/PmexWGS160/06_PCA
+
+#06.1_PCA_unfilt.sh
+
+#!/bin/bash
+#SBATCH --job-name=pca
+#SBATCH --time=0-12:00:00
+#SBATCH --partition=128x24
+#SBATCH --output=pca.%j.out # output file
+#SBATCH --error=pca.%j.err # error file
+#SBATCH -N 1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=10GB 
+
+module load plink
+
+cd /hb/home/rdekayne/PmexWGS160/06_PCA
+
+plink --vcf /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30_mac1_AN320.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 160_unfilt_out
+
+touch /hb/home/rdekayne/PmexWGS160/06_PCA/160_pca.done
+
+##run
+sbatch 06.1_PCA_unfilt.sh
+
+#5494680 variants and 160 people pass filters and QC.
+
