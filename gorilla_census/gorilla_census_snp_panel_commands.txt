@@ -935,7 +935,9 @@ sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh
 #            02_genotyping 
 #####################################
 #####################################
-conda activate /global/scratch/users/rdekayne/envs/mapping
+conda create -p /global/scratch/users/rdekayne/envs/geno
+conda activate /global/scratch/users/rdekayne/envs/geno
+conda install bioconda::bcftools
 
 #make genotyping directory
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/ && cd /global/scratch/users/rdekayne/gorilla_census/02_genotyping/
@@ -972,4 +974,152 @@ scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf
 bcftools mpileup -O u -d 250 --skip-indels -f /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta --annotate FORMAT/DP --bam-list /global/scratch/users/rdekayne/gorilla_census/02_genotyping/14_bam_list.txt -r "${scaf_name}" | bcftools call -m -f GQ -O v | bgzip > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs/"${scaf_name}".raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}".raw.vcf.gz.done
 
 #run
-sbatch --array=1 02.1_genotyping.sh
+sbatch --array=1-23 02.1_genotyping.sh
+
+##sex chromosome genotyping
+#ploidy.txt
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind01_Maisha_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind02_Tuck_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind03_Turimaso_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind04_Umurimo_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind05_Imfura_1file.bam  M
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind06_Kaboko_1file.bam  M
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind07_Zirikana_1file.bam  M
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind08_Dunia_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind09_Itebero_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind10_Pinga_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind12_Tumani_1file.bam  F
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind13_Ntabwoba_1file.bam  M
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind14_Mkubwa_1file.bam  M
+/global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/ind15_Kaisi_1file.bam  M
+
+cat ploidy.txt | sed 's/ F/ 2/g' | sed 's/ M/ 1/g' > X_ploidy.txt
+cat ploidy.txt | sed 's/ F/0/g' | sed 's/ M/ 1/g' > Y_ploidy.txt
+
+## 02.2_genotyping.sh
+
+#!/bin/bash
+#SBATCH --job-name=geno_s
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=geno_s.%j.out # output file
+#SBATCH --error=geno_s.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+bcftools mpileup -O u -d 250 --skip-indels -f /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta --annotate FORMAT/DP --bam-list /global/scratch/users/rdekayne/gorilla_census/02_genotyping/14_bam_list.txt -r chrX_mat_hsaX | bcftools call -m --samples-file X_ploidy.txt -f GQ -O v | bgzip > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs/chrX_mat_hsaX.raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrX_mat_hsaX.raw.vcf.gz.done
+
+bcftools mpileup -O u -d 250 --skip-indels -f /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta --annotate FORMAT/DP --bam-list /global/scratch/users/rdekayne/gorilla_census/02_genotyping/14_bam_list.txt -r chrY_pat_hsaY | bcftools call -m --samples-file Y_ploidy.txt -f GQ -O v | bgzip > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs/chrY_pat_hsaY.raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrY_pat_hsaY.raw.vcf.gz.done
+
+#run
+sbatch 02.2_genotyping.sh
+
+
+bcftools query -l raw_vcfs/chr10_mat_hsa12.raw.vcf.gz  > old_names.txt
+sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/01_mapping\/indiv_bams\///g' old_names.txt > new_names.txt
+sed -i 's/_1file.bam//g' new_names.txt
+
+paste old_names.txt new_names.txt > reheader.txt
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs
+
+## 02.3_genotyping_rehead.sh
+
+#!/bin/bash
+#SBATCH --job-name=rehead
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=rehead.%j.out # output file
+#SBATCH --error=rehead.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
+
+bcftools reheader --samples /global/scratch/users/rdekayne/gorilla_census/02_genotyping/reheader.txt -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_vcfs/"${scaf_name}".raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}".rehead.done
+
+#run
+sbatch --array=1-14 02.3_genotyping_rehead.sh
+
+## 02.4_vcf_index.sh
+
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=index.%j.out # output file
+#SBATCH --error=index.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
+
+/global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz
+
+##run
+sbatch --array=1-14 02.4_vcf_index.sh
+
+
+## 02.5_vcf_filt.sh
+
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=index.%j.out # output file
+#SBATCH --error=index.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /hb/home/rdekayne/PmexWGS160/04_mapping/scaf.list | sed -n ${numb}p)
+
+mkdir -p /hb/scratch/rdekayne/genotype_temp_"${scaf_name}"
+
+bcftools filter -Ou /hb/home/rdekayne/PmexWGS160/05_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -e 'AN < 2' | bcftools sort -Oz --temp-dir /hb/scratch/rdekayne/genotype_temp_"${scaf_name}" -o /hb/home/rdekayne/PmexWGS160/05_genotyping/filt_vcfs/"${scaf_name}"_filt_mindepth7_minqual30.vcf.gz && touch /hb/home/rdekayne/PmexWGS160/05_genotyping/filt_vcfs/"${scaf_name}"_filt.done
+
+##run
+sbatch --array=1-14 02.5_vcf_filt.sh
+ 
+
+## 02.5_vcf_concat_filt.sh
+
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=index.%j.out # output file
+#SBATCH --error=index.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+mkdir -p /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs
+mkdir -p /hb/scratch/rdekayne/genotype_temp_concat
+mkdir -p /hb/scratch/rdekayne/genotype_temp_concat_filt
+
+ls /hb/home/rdekayne/PmexWGS160/05_genotyping/filt_vcfs/*_filt_mindepth7_minqual30.vcf.gz > vcf_to_merge.txt
+
+bcftools concat -Ou -f vcf_to_merge.txt | bcftools sort -Oz --temp-dir /hb/scratch/rdekayne/genotype_temp_concat -o /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30.vcf.gz
+
+#no missing filter for SNPs
+bcftools filter -Oz /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 320' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /hb/scratch/rdekayne/genotype_temp_concat_filt -o /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30_mac1_AN320.vcf.gz
+
+bcftools view -H /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30_mac1_AN320.vcf.gz | wc -l
+
+touch genotype_stats.done
+
+##run
+sbatch 05.5_PmexWGS160_concat_and_filt.sh
+
