@@ -1217,10 +1217,38 @@ python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/VC
 
 touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}".done
 
+##run
 sbatch --array=1-23 04.1_geno_convert.sh
 
+cat ../02_genotyping/X_ploidy.txt | sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/01_mapping\/indiv_bams\///g' | sed 's/_1file.bam//g' > x_geno_ploidy.txt
+cat ../02_genotyping/Y_ploidy.txt | sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/01_mapping\/indiv_bams\///g' | sed 's/_1file.bam//g' > y_geno_ploidy.txt
+#error with y so put ploidy to 1
 
 ## now sex chromosomes
+# 04.2_geno_convert_sex.sh
+
+#!/bin/bash
+#SBATCH --job-name=geno
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=geno.%j.out # output file
+#SBATCH --error=geno.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
+
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/VCF_processing/parseVCF.py -i /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.vcf.gz --skipIndels --minQual 30 --gtf flag=DP min=7 max=50 --ploidyFile x_geno_ploidy.txt -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.geno.gz
+
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/VCF_processing/parseVCF.py -i /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.vcf.gz --skipIndels --minQual 30 --gtf flag=DP min=7 max=50 --ploidyFile y_all1_geno_ploidy.txt -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.geno.gz
+
+touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/sex.done
+
+##run
+sbatch 04.2_geno_convert_sex.sh
+
 
 
 #now for analysis
