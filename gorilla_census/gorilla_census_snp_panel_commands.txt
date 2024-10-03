@@ -1095,12 +1095,12 @@ sbatch --array=1-25 02.5_vcf_filt.sh
 ## 02.6_vcf_concat_filt.sh
 
 #!/bin/bash
-#SBATCH --job-name=index
+#SBATCH --job-name=conc
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio3
-#SBATCH --output=index.%j.out # output file
-#SBATCH --error=index.%j.err # error file
+#SBATCH --output=conc.%j.out # output file
+#SBATCH --error=conc.%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=4 # 2 CPUs per job
@@ -1109,50 +1109,71 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filt
 
-ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs//*_filt_mindepth7_minqual30.vcf.gz > vcf_to_merge.txt
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/*_filt_mindepth7_minqual30.vcf.gz > vcf_to_merge_all.txt
+cat vcf_to_merge_all.txt | grep -v "chrX" | grep -v "chrY" > autosomes_to_merge.txt
 
-bcftools concat -Ou -f vcf_to_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_mindepth7_minqual30.vcf.gz
+bcftools concat -Ou -f autosomes_to_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30.vcf.gz
 
 #no missing filter for SNPs
-bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 28' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filt -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_mindepth7_minqual30_mac1_AN28.vcf.gz
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 28' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filt -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_mac1_AN28.vcf.gz
 
-bcftools view -H /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_mindepth7_minqual30_mac1_AN28.vcf.gz | wc -l
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtX
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 22' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtX -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.vcf.gz
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtY
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrY_pat_hsaY_filt_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 6' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtY -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.vcf.gz
+
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_mac1_AN28.vcf.gz > auto_sex_vcf_merge.txt
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.vcf.gz >> auto_sex_vcf_merge.txt
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.vcf.gz >> auto_sex_vcf_merge.txt
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concatall
+bcftools concat -Ou -f auto_sex_vcf_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concatall -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz
+
+
+bcftools view -H /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz | wc -l
 
 touch genotype_stats.done
 
 ##run
 sbatch 02.6_vcf_concat_filt.sh
 
+## 10457594 variants remaining
+
 #####################################
 #####################################
 #            03_PCA
 #####################################
 #####################################
+conda create -p /global/scratch/users/rdekayne/envs/pca
+qconda install bioconda::plink
 
-mkdir -p /hb/home/rdekayne/PmexWGS160/06_PCA && cd /hb/home/rdekayne/PmexWGS160/06_PCA
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/03_PCA && cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
 
-#06.1_PCA_unfilt.sh
+# 03.1_PCA_unfilt.sh
 
 #!/bin/bash
 #SBATCH --job-name=pca
-#SBATCH --time=0-12:00:00
-#SBATCH --partition=128x24
+#SBATCH --time=0-4:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
 #SBATCH --output=pca.%j.out # output file
 #SBATCH --error=pca.%j.err # error file
-#SBATCH -N 1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=10GB 
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=1 # 2 CPUs per job
 
 module load plink
 
-cd /hb/home/rdekayne/PmexWGS160/06_PCA
+cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
 
-plink --vcf /hb/home/rdekayne/PmexWGS160/05_genotyping/concat_vcfs/PmexWGS160_mindepth7_minqual30_mac1_AN320.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 160_unfilt_out
+plink --vcf /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 14gorillas_unfilt_out
 
-touch /hb/home/rdekayne/PmexWGS160/06_PCA/160_pca.done
+touch /global/scratch/users/rdekayne/gorilla_census/03_PCA/14_pca.done
 
 ##run
-sbatch 06.1_PCA_unfilt.sh
+sbatch 03.1_PCA_unfilt.sh
 
-#5494680 variants and 160 people pass filters and QC.
+# 10457594 variants and 14 people pass filters and QC.
 
+scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/03_PCA/*.eigen* .
