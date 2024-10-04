@@ -1270,9 +1270,6 @@ ind15_Kaisi  elow
 #now calculate pi in a loop
 #genomics.py needs to be here:
 
-### colour by cluster:
-cd /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/
-
 # 04.3_geno_pi.sh
 
 #!/bin/bash
@@ -1318,7 +1315,7 @@ scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/auto_list.
 
 python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.geno.gz -o chrX_mat_hsaX.div.regions.output.csv.gz -f phased -T 1 --ploidyFile x_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.geno.gz -o chrY_pat_hsaY.div.regions.output.csv.gz -f phased -T 1 --ploidyFile y_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.geno.gz -o chrY_pat_hsaY.div.regions.output.csv.gz -f phased -T 1 --ploidyFile y_all1_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
 touch /global/scratch/users/rdekayne/gorilla_census/04_geno/sex.done
 
