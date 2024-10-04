@@ -1270,8 +1270,6 @@ ind15_Kaisi  elow
 #now calculate pi in a loop
 #genomics.py needs to be here:
 
-cp ../genomics_general/genomics.py .
-
 ### colour by cluster:
 cd /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/
 
@@ -1293,57 +1291,44 @@ module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
 numb=${SLURM_ARRAY_TASK_ID}
 scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/auto_list.txt | sed -n ${numb}p)
 
-python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 100000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
-touch /global/scratch/users/rdekayne/gorilla_census/04_geno/"${scaf_name}".pi.regions.done"
+touch /global/scratch/users/rdekayne/gorilla_census/04_geno/"${scaf_name}".pi.regions.done
+
+##run
+sbatch --array=1-23 04.3_geno_pi.sh
+
+# 04.4_geno_pi.sh
+
+#!/bin/bash
+#SBATCH --job-name=geno
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=geno.%j.out # output file
+#SBATCH --error=geno.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/auto_list.txt | sed -n ${numb}p)
+
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.geno.gz -o chrX_mat_hsaX.div.regions.output.csv.gz -f phased -T 1 --ploidyFile x_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.vcf.gz -o chrY_pat_hsaY.div.regions.output.csv.gz -f phased -T 1 --ploidyFile y_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+
+touch /global/scratch/users/rdekayne/gorilla_census/04_geno/sex.done
+
+##run
+sbatch 04.4_geno_pi.sh
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output
+cp *.div.regions.output.csv.gz /global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output
+
+scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output/*.csv.gz .
 
 
 
-python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 100000 -m 5000 -g ./contig1.1.hap.realigned.raw.vcf.gz_filt_mindepth7_minqual30_AN224.geno.gz -o contig1.1.hap.div.regions.output.csv.gz -f phased -T 4 --ploidyFile /data/martin/genomics/analyses/Danaus_popgen/DC174/genotyping/sample.ploidy.txt -p crossed -p med -p orientis -p chrysippus -p klugii -p hybrid --popsFile /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/popsfile_region.txt
-
-cp *.div.regions.output.csv.gz /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/output
-
-scp qmaster:/data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/output/*.csv.gz .
-
-###now with locales i.e. using popsfile2_regions.txt 
-mkdir -p /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun && cd /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun
-
-Core population groups:
-klugii = WAT : SM15W61,SM15W66,SM15W69,SM15W72,SM15W74,SM18W01
-orientis = TSW : SM21TS03,SM21TS05,SM21TS16,SM21TS33,SM21TS34,SM21TS35,SM21TS36
-chrysippus = NGA : SM16N01,SM16N04,SM16N05,SM16N06,SM16N20,SM16N37
-karamu: SM21SP06,SM21SP09
-recomb: SM19SY01 (SCY), RV12N317 (TUN)
-
-touch calculate_pi_regions_new.txt
-cat ../scaf.mod.list | while read contig
-do
-echo "cd /data/martin/genomics/analyses/Danaus_popgen/DC174/geno && python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 100000 -m 5000 -g "${contig}".realigned.raw.vcf.gz_filt_mindepth7_minqual30_AN313.geno.gz -o /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/"${contig}".div.regions.output.csv.gz -f phased -T 1 -p WAT -p TSW -p NGA -p karamu -p recomb --writeFailedWindows --popsFile /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/popsfile2_regions.txt && touch /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/"${contig}".pi.regions.done" >> calculate_pi_regions_new.txt
-done
-
-parallel -j 1 'qsub -cwd -N diversity -V -pe smp64 1 -l h=bigfoot -b yes {}' :::: calculate_pi_regions_new.txt
-
-/data/martin/genomics/analyses/Danaus_popgen/DC174/geno
-python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 100000 -m 5000 -g ./contig1.1.hap.realigned.raw.vcf.gz_filt_mindepth7_minqual30_AN224.geno.gz -o /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/contig1.1.hap.div.regions.output.csv.gz -f phased -T 4 --ploidyFile /data/martin/genomics/analyses/Danaus_popgen/DC174/genotyping/sample.ploidy.txt -p WAT -p TSW -p NGA -p karamu -p recomb --writeFailedWindows --popsFile /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/popsfile2_regions.txt
-
-mkdir /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/output
-cp *.div.regions.output.csv.gz /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/output
-mv *.div* output/
-
-mkdir -p 50kb && cd 50kb
-
-touch calculate_pi_regions_new50.txt
-cat ../../scaf.mod.list | while read contig
-do
-echo "cd /data/martin/genomics/analyses/Danaus_popgen/DC174/geno && python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 50000 -m 5000 -g "${contig}".realigned.raw.vcf.gz_filt_mindepth7_minqual30_AN313.geno.gz -o /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/50kb/"${contig}".div.regions.output.csv.gz -f phased -T 1 -p WAT -p TSW -p NGA -p karamu -p recomb --writeFailedWindows --popsFile /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/popsfile2_regions.txt && touch /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/"${contig}".pi.regions.done" >> calculate_pi_regions_new50.txt
-done
-
-parallel -j 1 'qsub -cwd -N diversity -V -pe smp64 1 -l h=bigfoot -b yes {}' :::: calculate_pi_regions_new50.txt
-
-cd /data/martin/genomics/analyses/Danaus_popgen/DC174/geno
-python /data/martin/genomics/analyses/Danaus_popgen/DC174/genomics_general/popgenWindows.py -w 50000 -m 5000 -g ./contig1.1.hap.realigned.raw.vcf.gz_filt_mindepth7_minqual30_AN224.geno.gz -o /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/50kb/contig1.1.hap.div.regions.output.csv.gz -f phased -T 4 --ploidyFile /data/martin/genomics/analyses/Danaus_popgen/DC174/genotyping/sample.ploidy.txt -p WAT -p TSW -p NGA -p karamu -p recomb --writeFailedWindows --popsFile /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/popsfile2_regions.txt
-
-mkdir /data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/50kb/output
-mv *.div* output/
-
-scp qmaster:/data/martin/genomics/analyses/Danaus_popgen/DC174/analysis/pi/newrun/output/*.csv.gz .
