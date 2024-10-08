@@ -1328,4 +1328,57 @@ cp *.div.regions.output.csv.gz /global/scratch/users/rdekayne/gorilla_census/04_
 scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output/*.csv.gz .
 
 
+#####################################
+#####################################
+#            05_mpcrselect
+#####################################
+#####################################
 
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect && cd /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect
+
+#https://github.com/ellieearmstrong/mPCRselect/tree/main
+#install dependencies
+
+#install nextflow
+module load openjdk/17.0.8.1_1-gcc-11.4.0
+curl -s https://get.nextflow.io | bash
+
+#install pipeline
+nextflow pull ellieearmstrong/mPCRselect -r main
+
+#Clone the NGS-PrimerPlex repository
+git clone https://github.com/aakechin/NGS-PrimerPlex
+
+#Install the Python dependencies: 
+cd NGS-PrimerPlex/
+bash install_for_linux.sh 
+chmod +x NGS_primerplex.py
+#Modify the shebang line of the NGS_primerplex.py script: Change the first line from #!/usr/bin/python3 to #!/usr/bin/env python3
+#Move the NGS_primerplex.py script to a directory in your PATH variable
+cp NGS_primerplex.py /global/scratch/users/rdekayne/gorilla_census/
+
+git clone https://github.com/ellieearmstrong/mPCRselect
+cp mPCRselect/nextflow.config test.config
+
+conda create -p /global/scratch/users/rdekayne/envs/mpcrselectenv
+conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
+conda install bioconda::bwa=0.7.17 
+conda install conda-forge::libzlib=1.2.13 
+conda install conda-forge::ruby=3.2.2 
+conda install bioconda::vcftools=0.1.16 
+conda install bioconda::plink2=2.00a5.10 
+conda install bioconda::bcftools=1.18 
+conda install conda-forge::gsl=2.7 
+conda install conda-forge::gzip 
+conda install conda-forge::gawk 
+conda install conda-forge::r-tidyverse=1.3.1 
+conda install conda-forge::r-caret 
+conda install conda-forge::r-ggplot2=3.4.0
+conda install bioconda::bedtools=2.31.0 
+
+git clone https://github.com/campanam/baitstools
+cd baitstools
+gem build baitstools.gemspec
+gem install baitstools-1.8.1.gem
+
+##check dependency versions match github
