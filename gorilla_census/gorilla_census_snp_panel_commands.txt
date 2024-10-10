@@ -1375,8 +1375,7 @@ conda install conda-forge::r-tidyverse=1.3.1
 conda install conda-forge::r-caret 
 conda install conda-forge::r-ggplot2=3.4.0
 conda install bioconda::bedtools=2.31.0 
-conda install -c conda-forge r-base=4.3.2
-
+conda install -c conda-forge r-base=4.2.3
 
 git clone https://github.com/campanam/baitstools
 cd baitstools
@@ -1384,3 +1383,39 @@ gem build baitstools.gemspec
 gem install baitstools-1.8.1.gem
 
 ##check dependency versions match github
+cat sample.csv 
+Sample,Population
+ind01_Maisha,mont
+ind02_Tuck,mont
+ind03_Turimaso,mont
+ind04_Umurimo,mont
+ind05_Imfura,mont
+ind06_Kaboko,mont
+ind07_Zirikana,mont
+ind08_Dunia,elow
+ind09_Itebero,elow
+ind10_Pinga,elow
+ind12_Tumani,elow
+ind13_Ntabwoba,elow
+ind14_Mkubwa,elow
+ind15_Kaisi,elow
+
+#edit test.config
+
+
+#submit_test_mpcrselect.sh
+
+#!/bin/bash
+#SBATCH --job-name=mpcr
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=mpcr.%j.out # output file
+#SBATCH --error=mpcr.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+module load openjdk/17.0.8.1_1-gcc-11.4.0
+
+nextflow run ellieearmstrong/mPCRselect -r main -c test.config
