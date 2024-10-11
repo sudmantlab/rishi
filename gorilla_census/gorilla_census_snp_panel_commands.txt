@@ -1431,61 +1431,82 @@ chr23_mat_hsa22 chr23mathsa22
 
 bcftools annotate --rename-chrs chr_name_conversion.txt /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_mac1_AN28.vcf.gz | bgzip > ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename.vcf.gz
 
-bcftools filter -Ou ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename.vcf.gz -e 'FORMAT/DP < 7 | (FORMAT/GQ) < 30' | bcftools sort -Oz -o /14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename_refiltGQ30.vcf.gz
+bcftools filter -Ou ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename.vcf.gz -e 'FORMAT/DP < 7 | (FORMAT/GQ) < 30' | bcftools sort -Oz -o ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename_refiltGQ30.vcf.gz
 
-bcftools view -i 'MIN(GQ>30)' my.vcf.gz
-
+#bcftools view -H 14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename_refiltGQ30.vcf.gz | wc -l
+#4183565
 
 cp /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta ./gorilla.ref.fasta
 cp /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta.fai ./gorilla.ref.fasta.fai
 
-sed -i 's/chr1_pat_hsa1/chr1pathsa1/g' ./gorilla.ref.fasta
-sed -i 's/chr2_pat_hsa3/chr2pathsa3/g' ./gorilla.ref.fasta
-sed -i 's/chr3_pat_hsa4/chr3pathsa4/g' ./gorilla.ref.fasta
-sed -i 's/chr4_pat_hsa17x5/chr4pathsa17x5/g' ./gorilla.ref.fasta
-sed -i 's/chr5_mat_hsa6/chr5mathsa6/g' ./gorilla.ref.fasta
-sed -i 's/chr6_mat_hsa7/chr6mathsa7/g' ./gorilla.ref.fasta
-sed -i 's/chr7_pat_hsa8/chr7pathsa8/g' ./gorilla.ref.fasta
-sed -i 's/chr8_pat_hsa10/chr8pathsa10/g' ./gorilla.ref.fasta
-sed -i 's/chr9_pat_hsa11/chr9pathsa11/g' ./gorilla.ref.fasta
-sed -i 's/chr10_mat_hsa12/chr10mathsa12/g' ./gorilla.ref.fasta
-sed -i 's/chr11_mat_hsa2b/chr11mathsa2b/g' ./gorilla.ref.fasta
-sed -i 's/chr12_pat_hsa2a/chr12pathsa2a/g' ./gorilla.ref.fasta
-sed -i 's/chr13_pat_hsa9/chr13pathsa9/g' ./gorilla.ref.fasta
-sed -i 's/chr14_pat_hsa13/chr14pathsa13/g' ./gorilla.ref.fasta
-sed -i 's/chr15_pat_hsa14/chr15pathsa14/g' ./gorilla.ref.fasta
-sed -i 's/chr16_pat_hsa15/chr16pathsa15/g' ./gorilla.ref.fasta
-sed -i 's/chr17_mat_hsa18/chr17mathsa18/g' ./gorilla.ref.fasta
-sed -i 's/chr18_pat_hsa16/chr18pathsa16/g' ./gorilla.ref.fasta
-sed -i 's/chr19_pat_hsa5x17/chr19pathsa5x17/g' ./gorilla.ref.fasta
-sed -i 's/chr20_mat_hsa19/chr20mathsa19/g' ./gorilla.ref.fasta
-sed -i 's/chr21_pat_hsa20/chr21pathsa20/g' ./gorilla.ref.fasta
-sed -i 's/chr22_mat_hsa21/chr22mathsa21/g' ./gorilla.ref.fasta
-sed -i 's/chr23_mat_hsa22/chr23mathsa22/g' ./gorilla.ref.fasta
+##reheader_fasta.sh
 
-sed -i 's/chr1_pat_hsa1/chr1pathsa1/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr2_pat_hsa3/chr2pathsa3/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr3_pat_hsa4/chr3pathsa4/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr4_pat_hsa17x5/chr4pathsa17x5/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr5_mat_hsa6/chr5mathsa6/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr6_mat_hsa7/chr6mathsa7/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr7_pat_hsa8/chr7pathsa8/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr8_pat_hsa10/chr8pathsa10/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr9_pat_hsa11/chr9pathsa11/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr10_mat_hsa12/chr10mathsa12/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr11_mat_hsa2b/chr11mathsa2b/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr12_pat_hsa2a/chr12pathsa2a/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr13_pat_hsa9/chr13pathsa9/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr14_pat_hsa13/chr14pathsa13/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr15_pat_hsa14/chr15pathsa14/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr16_pat_hsa15/chr16pathsa15/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr17_mat_hsa18/chr17mathsa18/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr18_pat_hsa16/chr18pathsa16/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr19_pat_hsa5x17/chr19pathsa5x17/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr20_mat_hsa19/chr20mathsa19/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr21_pat_hsa20/chr21pathsa20/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr22_mat_hsa21/chr22mathsa21/g' ./gorilla.ref.fasta.fai
-sed -i 's/chr23_mat_hsa22/chr23mathsa22/g' ./gorilla.ref.fasta.fai
+#!/bin/bash
+#SBATCH --job-name=rehead
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=rehead.%j.out # output file
+#SBATCH --error=rehead.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+sed -i 's/chr1_pat_hsa1/chr1pathsa1/g' ./gorilla.ref.fasta;
+sed -i 's/chr2_pat_hsa3/chr2pathsa3/g' ./gorilla.ref.fasta;
+sed -i 's/chr3_pat_hsa4/chr3pathsa4/g' ./gorilla.ref.fasta;
+sed -i 's/chr4_pat_hsa17x5/chr4pathsa17x5/g' ./gorilla.ref.fasta;
+sed -i 's/chr5_mat_hsa6/chr5mathsa6/g' ./gorilla.ref.fasta;
+sed -i 's/chr6_mat_hsa7/chr6mathsa7/g' ./gorilla.ref.fasta;
+sed -i 's/chr7_pat_hsa8/chr7pathsa8/g' ./gorilla.ref.fasta;
+sed -i 's/chr8_pat_hsa10/chr8pathsa10/g' ./gorilla.ref.fasta;
+sed -i 's/chr9_pat_hsa11/chr9pathsa11/g' ./gorilla.ref.fasta;
+sed -i 's/chr10_mat_hsa12/chr10mathsa12/g' ./gorilla.ref.fasta;
+sed -i 's/chr11_mat_hsa2b/chr11mathsa2b/g' ./gorilla.ref.fasta;
+sed -i 's/chr12_pat_hsa2a/chr12pathsa2a/g' ./gorilla.ref.fasta;
+sed -i 's/chr13_pat_hsa9/chr13pathsa9/g' ./gorilla.ref.fasta;
+sed -i 's/chr14_pat_hsa13/chr14pathsa13/g' ./gorilla.ref.fasta;
+sed -i 's/chr15_pat_hsa14/chr15pathsa14/g' ./gorilla.ref.fasta;
+sed -i 's/chr16_pat_hsa15/chr16pathsa15/g' ./gorilla.ref.fasta;
+sed -i 's/chr17_mat_hsa18/chr17mathsa18/g' ./gorilla.ref.fasta;
+sed -i 's/chr18_pat_hsa16/chr18pathsa16/g' ./gorilla.ref.fasta;
+sed -i 's/chr19_pat_hsa5x17/chr19pathsa5x17/g' ./gorilla.ref.fasta;
+sed -i 's/chr20_mat_hsa19/chr20mathsa19/g' ./gorilla.ref.fasta;
+sed -i 's/chr21_pat_hsa20/chr21pathsa20/g' ./gorilla.ref.fasta;
+sed -i 's/chr22_mat_hsa21/chr22mathsa21/g' ./gorilla.ref.fasta;
+sed -i 's/chr23_mat_hsa22/chr23mathsa22/g' ./gorilla.ref.fasta;
+done
+
+sed -i 's/chr1_pat_hsa1/chr1pathsa1/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr2_pat_hsa3/chr2pathsa3/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr3_pat_hsa4/chr3pathsa4/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr4_pat_hsa17x5/chr4pathsa17x5/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr5_mat_hsa6/chr5mathsa6/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr6_mat_hsa7/chr6mathsa7/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr7_pat_hsa8/chr7pathsa8/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr8_pat_hsa10/chr8pathsa10/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr9_pat_hsa11/chr9pathsa11/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr10_mat_hsa12/chr10mathsa12/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr11_mat_hsa2b/chr11mathsa2b/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr12_pat_hsa2a/chr12pathsa2a/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr13_pat_hsa9/chr13pathsa9/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr14_pat_hsa13/chr14pathsa13/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr15_pat_hsa14/chr15pathsa14/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr16_pat_hsa15/chr16pathsa15/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr17_mat_hsa18/chr17mathsa18/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr18_pat_hsa16/chr18pathsa16/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr19_pat_hsa5x17/chr19pathsa5x17/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr20_mat_hsa19/chr20mathsa19/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr21_pat_hsa20/chr21pathsa20/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr22_mat_hsa21/chr22mathsa21/g' ./gorilla.ref.fasta.fai;
+sed -i 's/chr23_mat_hsa22/chr23mathsa22/g' ./gorilla.ref.fasta.fai;
+done
+
+##run
+sbatch reheader_fasta.sh
+
+cp test.config run_one.config
+mkdir run_one_output
 
 #submit_test_mpcrselect.sh
 
@@ -1502,4 +1523,4 @@ sed -i 's/chr23_mat_hsa22/chr23mathsa22/g' ./gorilla.ref.fasta.fai
 
 module load openjdk/17.0.8.1_1-gcc-11.4.0
 
-nextflow run ellieearmstrong/mPCRselect -r main -c test.config
+nextflow run ellieearmstrong/mPCRselect -r main -c run_one.config
