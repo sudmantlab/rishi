@@ -1381,8 +1381,7 @@ conda install conda-forge::biopython
 conda install bioconda::pysam
 conda install conda-forge::xlrd
 conda install conda-forge::xlsxwriter
-#conda install anaconda::networkx=1.11
-
+pip install networkx=1.11
 
 git clone https://github.com/campanam/baitstools
 cd baitstools
