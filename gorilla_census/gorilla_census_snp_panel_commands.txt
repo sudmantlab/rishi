@@ -1376,6 +1376,13 @@ conda install conda-forge::r-caret
 conda install conda-forge::r-ggplot2=3.4.0
 conda install bioconda::bedtools=2.31.0 
 conda install -c conda-forge r-base=4.2.3
+conda install bioconda::primer3-py
+conda install conda-forge::biopython
+conda install bioconda::pysam
+conda install conda-forge::xlrd
+conda install conda-forge::xlsxwriter
+#conda install anaconda::networkx=1.11
+
 
 git clone https://github.com/campanam/baitstools
 cd baitstools
