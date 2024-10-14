@@ -1381,7 +1381,7 @@ conda install conda-forge::biopython
 conda install bioconda::pysam
 conda install conda-forge::xlrd
 conda install conda-forge::xlsxwriter
-pip install networkx=1.11
+pip install networkx==1.11
 #had to downgrade python:   python                pkgs/main::python-3.9.20-he870216_1 --> conda-forge::python-3.7.12-hf930737_100_cpython 
 conda install python=3.7
 
