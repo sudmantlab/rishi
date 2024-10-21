@@ -1354,41 +1354,19 @@ ind15_Kaisi  elow
 module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
 
 numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/auto_list.txt | sed -n ${numb}p)
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/filt_vcfs_to_convert.txt | sed -n ${numb}p)
 
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
 touch /global/scratch/users/rdekayne/gorilla_census/04_geno/"${scaf_name}".pi.regions.done
 
 ##run
 sbatch --array=1-23 04.3_geno_pi.sh
 
-# 04.4_geno_pi.sh
+##leaving these out but could calculate the same metrics across these regions
+#python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.geno.gz -o chrX_mat_hsaX.div.regions.output.csv.gz -f phased -T 1 --ploidyFile x_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
-#!/bin/bash
-#SBATCH --job-name=geno
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
-#SBATCH --account=co_genomicdata
-#SBATCH --partition=savio3
-#SBATCH --output=geno.%j.out # output file
-#SBATCH --error=geno.%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=4 # 2 CPUs per job
-
-module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
-
-numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/auto_list.txt | sed -n ${numb}p)
-
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrX_mat_hsaX_filt_mindepth7_minqual30_mac1_AN22.geno.gz -o chrX_mat_hsaX.div.regions.output.csv.gz -f phased -T 1 --ploidyFile x_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
-
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.geno.gz -o chrY_pat_hsaY.div.regions.output.csv.gz -f phased -T 1 --ploidyFile y_all1_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
-
-touch /global/scratch/users/rdekayne/gorilla_census/04_geno/sex.done
-
-##run
-sbatch 04.4_geno_pi.sh
+#python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/chrY_pat_hsaY_filt_mindepth7_minqual30_mac1_AN6.geno.gz -o chrY_pat_hsaY.div.regions.output.csv.gz -f phased -T 1 --ploidyFile y_all1_geno_ploidy.txt -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output
 cp *.div.regions.output.csv.gz /global/scratch/users/rdekayne/gorilla_census/04_geno/pi_output
