@@ -1279,9 +1279,13 @@ sed -i 's/_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz//g' filt_vcfs_to_convert.tx
 module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
 
 numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/filt_vcfs_to_convert.txt | sed -n ${numb}p)
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/autosomes_scaffold_list.txt | sed -n ${numb}p)
 
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/VCF_processing/parseVCF.py -i /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz --skipIndels --minQual 30 --gtf flag=DP min=7 max=100 -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.geno.gz
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}"
+
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz --set-GTs . -e 'AN < 2' | bcftools filter -e 'INFO/MAC<1 | AN<28' | bcftools view -m1 -M2 -v snps | bcftools filter -e '(FORMAT/DP)<7 | (FORMAT/GQ)<30' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m1M2_AN28.vcf.gz 
+
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/VCF_processing/parseVCF.py -i /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m1M2_AN28.vcf.gz --skipIndels --minQual 30 --gtf flag=DP min=7 max=100 -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m1M2_AN28.geno.gz
 
 touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}".done
 
