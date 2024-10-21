@@ -1090,7 +1090,7 @@ scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/auto
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}"
 
-bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'INFO/MAC < 1 | AN < 28' | bcftools view -m2 -M2 -v snps | bcftools filter -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}"_filt.done
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz --set-GTs . -e 'AN < 2' | bcftools filter -e 'INFO/MAC<1 | AN<28' | bcftools view -m2 -M2 -v snps | bcftools filter -e '(FORMAT/DP)<7 | (FORMAT/GQ)<30' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}"_filt.done
 
 ##run
 sbatch --array=1-23 02.5_vcf_filt.sh
@@ -1110,11 +1110,11 @@ sbatch --array=1-23 02.5_vcf_filt.sh
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtX
 
-bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/chrX_mat_hsaX.reheader.raw.vcf.gz -e 'INFO/MAC < 1 | AN < 22' | bcftools view -m2 -M2 -v snps | bcftools filter -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtX -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30_m2M2_AN22.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrX_mat_hsaX_filt.done
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/chrX_mat_hsaX.reheader.raw.vcf.gz --set-GTs . -e 'AN < 2' | bcftools filter -e 'INFO/MAC<1 | AN<22' | bcftools view -m2 -M2 -v snps | bcftools filter -e '(FORMAT/DP)<7 | (FORMAT/GQ)<30' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtX -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrX_mat_hsaX_filt_mindepth7_minqual30_m2M2_AN22.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrX_mat_hsaX_filt.done
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtY
 
-bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/chrY_pat_hsaY.reheader.raw.vcf.gz -e 'INFO/MAC < 1 | AN < 6' | bcftools view -m2 -M2 -v snps | bcftools filter -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtY -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrY_pat_hsaY_mindepth7_minqual30_m2M2_AN6.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrY_pat_hsaY_filt.done
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/chrY_pat_hsaY.reheader.raw.vcf.gz --set-GTs . -e 'AN < 2' | bcftools filter -e 'INFO/MAC<1 | AN<6' | bcftools view -m2 -M2 -v snps | bcftools filter -e '(FORMAT/DP)<7 | (FORMAT/GQ)<30' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concat_filtY -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrY_pat_hsaY_mindepth7_minqual30_m2M2_AN6.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/chrY_pat_hsaY_filt.done
 
 ##run
 sbatch 02.6_vcf_filt_sex.sh
@@ -1147,14 +1147,16 @@ ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/chrY_pa
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concatall
 bcftools concat -Ou -f auto_sex_vcf_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_concatall -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz
 
-qbcftools view -H /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz | wc -l
+bcftools view -H /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28.vcf.gz | wc -l
+bcftools view -H /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz | wc -l
 
 touch genotype_stats.done
 
 ##run
 sbatch 02.7_vcf_concat_filt.sh
 
-## 10457594 variants remaining
+## 3764518
+## 3823659
 
 #change chromosome names:
 chr_name_conversion.txt
@@ -1196,12 +1198,15 @@ chr23_mat_hsa22 chr23mathsa22
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=4 # 2 CPUs per job
 
-bcftools annotate --rename-chrs chr_name_conversion.txt /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28.vcf.gz | bgzip > /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.vcf.gz
+bcftools annotate --rename-chrs chr_name_conversion.txt /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28.vcf.gz | bcftools sort -Oz -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.vcf.gz
 
 bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.vcf.gz -e 'FORMAT/DP < 7 | (FORMAT/GQ) < 30' | bcftools sort -Oz -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename_refiltGQ30.vcf.gz
 
 ## run
 sbatch 02.8_vcf_mpcrselect_prep.sh
+
+bcftools view -H 14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename_refiltGQ30.vcf.gz | wc -l
+## 3764518
 
 #####################################
 #####################################
