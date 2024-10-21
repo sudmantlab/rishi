@@ -1214,7 +1214,8 @@ bcftools view -H 14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename_ref
 #####################################
 #####################################
 conda create -p /global/scratch/users/rdekayne/envs/pca
-qconda install bioconda::plink
+conda activate /global/scratch/users/rdekayne/envs/pca
+conda install bioconda::plink
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/03_PCA && cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
 
@@ -1242,7 +1243,7 @@ touch /global/scratch/users/rdekayne/gorilla_census/03_PCA/14_pca.done
 ##run
 sbatch 03.1_PCA_unfilt.sh
 
-# 10457594 variants and 14 people pass filters and QC.
+#  3823659 variants and 14 people pass filters and QC.
 
 scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/03_PCA/*.eigen* .
 
@@ -1478,40 +1479,6 @@ ind15_Kaisi,elow
 
 #edit test.config
 
-#change chromosome names:
-chr_name_conversion.txt
-
-chr1_pat_hsa1   chr1pathsa1
-chr2_pat_hsa3   chr2pathsa3
-chr3_pat_hsa4   chr3pathsa4
-chr4_pat_hsa17x5    chr4pathsa17x5
-chr5_mat_hsa6   chr5mathsa6
-chr6_mat_hsa7   chr6mathsa7
-chr7_pat_hsa8   chr7pathsa8
-chr8_pat_hsa10  chr8pathsa10
-chr9_pat_hsa11  chr9pathsa11
-chr10_mat_hsa12 chr10mathsa12
-chr11_mat_hsa2b chr11mathsa2b
-chr12_pat_hsa2a chr12pathsa2a
-chr13_pat_hsa9  chr13pathsa9
-chr14_pat_hsa13 chr14pathsa13
-chr15_pat_hsa14 chr15pathsa14
-chr16_pat_hsa15 chr16pathsa15
-chr17_mat_hsa18 chr17mathsa18
-chr18_pat_hsa16 chr18pathsa16
-chr19_pat_hsa5x17   chr19pathsa5x17
-chr20_mat_hsa19 chr20mathsa19
-chr21_pat_hsa20 chr21pathsa20
-chr22_mat_hsa21 chr22mathsa21
-chr23_mat_hsa22 chr23mathsa22
-
-bcftools annotate --rename-chrs chr_name_conversion.txt /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_mindepth7_minqual30_mac1_AN28.vcf.gz | bgzip > ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename.vcf.gz
-
-bcftools filter -Ou ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename.vcf.gz -e 'FORMAT/DP < 7 | (FORMAT/GQ) < 30' | bcftools sort -Oz -o ./14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename_refiltGQ30.vcf.gz
-
-#bcftools view -H 14gorilla_autosomes_mindepth7_minqual30_mac1_AN28_chrrename_refiltGQ30.vcf.gz | wc -l
-#4183565
-
 cp /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta ./gorilla.ref.fasta
 cp /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta.fai ./gorilla.ref.fasta.fai
 
@@ -1581,22 +1548,31 @@ done
 ##run
 sbatch reheader_fasta.sh
 
+###now prep mpcrselect submission config and submission script
 cp test.config run_one.config
 mkdir run_one_output
 
-#submit_test_mpcrselect.sh
+cp run_one.config run_two.config
+mkdir run_two_output
+
+# submit_run_two_mpcrselect.sh 
 
 #!/bin/bash
 #SBATCH --job-name=mpcr
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
-#SBATCH --partition=savio3
-#SBATCH --output=mpcr.%j.out # output file
-#SBATCH --error=mpcr.%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=4 # 2 CPUs per job
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=100G
+#SBATCH --time=12:00:00
+#SBATCH --output=mpcr.%j.out
+#SBATCH --error=mpcr.%j.err
 
 module load openjdk/17.0.8.1_1-gcc-11.4.0
 
-nextflow run ellieearmstrong/mPCRselect -r main -c run_one.config
+nextflow run ellieearmstrong/mPCRselect -r main -c run_two.config
+
+##run
+sbatch submit_run_two_mpcrselect.sh 
