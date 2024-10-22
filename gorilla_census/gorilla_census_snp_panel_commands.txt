@@ -1360,7 +1360,7 @@ module load python/3.11.6-gcc-11.4.0 bio/bcftools/1.16-gcc-11.4.0
 numb=${SLURM_ARRAY_TASK_ID}
 scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/04_geno/filt_vcfs_to_convert.txt | sed -n ${numb}p)
 
-python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 5000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_m2M2_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
+python /global/scratch/users/rdekayne/gorilla_census/04_geno/genomics_general/popgenWindows.py -w 50000 -m 2000 -g /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_name}"_filt_mindepth7_minqual30_AN28.geno.gz -o "${scaf_name}".div.regions.output.csv.gz -f phased -T 1 -p mount -p elow --popsFile /global/scratch/users/rdekayne/gorilla_census/04_geno/gorilla_popsfile.txt
 
 touch /global/scratch/users/rdekayne/gorilla_census/04_geno/"${scaf_name}".pi.regions.done
 
