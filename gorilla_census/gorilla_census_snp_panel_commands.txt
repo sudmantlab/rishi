@@ -1568,11 +1568,6 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/06_snp_panel_popgen && cd
 
 conda activate /global/scratch/users/rdekayne/envs/pca
 
-cp /global/scratch/users/rdekayne/gorilla_census/03_PCA/03.1_PCA_unfilt.sh ./06_PCA.sh
-sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/02_genotyping\/concat_vcfs\/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz/\/global\/scratch\/users\/rdekayne\/gorilla_census\/05_mpcrselect\/run_two_output\/17_Fst_Pi_SNPs\/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz/g' 06_PCA.sh
-sed -i 's/14gorillas_unfilt_out/14gorillas_2000snp_panel_unfilt_out/g' 06_PCA.sh
-sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/03_PCA\/14_pca.done/.\/14_2000snp.done/g' 06_PCA.sh
-
 ## 06_PCA.sh
 #!/bin/bash
 #SBATCH --job-name=pca
@@ -1585,7 +1580,7 @@ sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/03_PCA\/14_pca.don
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=1 # 2 CPUs per job
 
-cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
+cd /global/scratch/users/rdekayne/gorilla_census/06_snp_panel_popgen
 
 plink --vcf /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect/run_two_output/17_Fst_Pi_SNPs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 14gorillas_2000snp_panel_unfilt_out
 
@@ -1593,3 +1588,37 @@ touch ./14_2000snp.done
 
 ##run
 sbatch 06_PCA.sh
+
+scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/06_snp_panel_popgen/*.eigen* .
+
+
+conda create -p /global/scratch/users/rdekayne/envs/vcftools
+conda activate /global/scratch/users/rdekayne/envs/vcftools
+conda install bioconda/label/cf201901::vcftools
+
+#mont_indivs.txt
+ind01_Maisha
+ind02_Tuck
+ind03_Turimaso
+ind04_Umurimo
+ind05_Imfura
+ind06_Kaboko
+ind07_Zirikana
+
+#elow_indivs.txt
+ind08_Dunia
+ind09_Itebero
+ind10_Pinga
+ind12_Tumani
+ind13_Ntabwoba
+ind14_Mkubwa
+ind15_Kaisi
+
+vcftools --gzvcf /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect/run_two_output/17_Fst_Pi_SNPs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz --weir-fst-pop mont_indivs.txt --weir-fst-pop elow_indivs.txt --out fst_snp2000
+
+#After filtering, kept 14 out of 14 Individuals
+Outputting Weir and Cockerham Fst estimates.
+Weir and Cockerham mean Fst estimate: 0.49082
+Weir and Cockerham weighted Fst estimate: 0.60697
+After filtering, kept 2000 out of a possible 2000 Sites
+Run Time = 0.00 seconds
