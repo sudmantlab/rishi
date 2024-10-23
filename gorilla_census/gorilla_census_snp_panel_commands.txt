@@ -1558,4 +1558,38 @@ nextflow run ellieearmstrong/mPCRselect -r main -c run_two.config
 ##run
 sbatch submit_run_two_mpcrselect.sh 
 
-make pca and calculate Pi from /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect/run_two_output/17_Fst_Pi_SNPs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz
+#####################################
+#####################################
+#            06_snp_panel_popgen
+#####################################
+#####################################
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/06_snp_panel_popgen && cd /global/scratch/users/rdekayne/gorilla_census/06_snp_panel_popgen
+
+conda activate /global/scratch/users/rdekayne/envs/pca
+
+cp /global/scratch/users/rdekayne/gorilla_census/03_PCA/03.1_PCA_unfilt.sh ./06_PCA.sh
+sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/02_genotyping\/concat_vcfs\/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz/\/global\/scratch\/users\/rdekayne\/gorilla_census\/05_mpcrselect\/run_two_output\/17_Fst_Pi_SNPs\/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz/g' 06_PCA.sh
+sed -i 's/14gorillas_unfilt_out/14gorillas_2000snp_panel_unfilt_out/g' 06_PCA.sh
+sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/03_PCA\/14_pca.done/.\/14_2000snp.done/g' 06_PCA.sh
+
+## 06_PCA.sh
+#!/bin/bash
+#SBATCH --job-name=pca
+#SBATCH --time=0-4:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=pca.%j.out # output file
+#SBATCH --error=pca.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=1 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
+
+plink --vcf /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect/run_two_output/17_Fst_Pi_SNPs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 14gorillas_2000snp_panel_unfilt_out
+
+touch ./14_2000snp.done
+
+##run
+sbatch 06_PCA.sh
