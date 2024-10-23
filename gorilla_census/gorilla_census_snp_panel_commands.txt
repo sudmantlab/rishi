@@ -1557,3 +1557,5 @@ nextflow run ellieearmstrong/mPCRselect -r main -c run_two.config
 
 ##run
 sbatch submit_run_two_mpcrselect.sh 
+
+make pca and calculate Pi from /global/scratch/users/rdekayne/gorilla_census/05_mpcrselect/run_two_output/17_Fst_Pi_SNPs/14gorilla_autosomes_mindepth7_minqual30_m2M2_AN28_chrrename.fst_pi.vcf.gz
