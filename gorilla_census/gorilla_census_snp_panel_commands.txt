@@ -1095,6 +1095,32 @@ bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/
 ##run
 sbatch --array=1-23 02.5_vcf_filt.sh
 
+
+## 02.5_vcf_filt2.sh
+
+#!/bin/bash
+#SBATCH --job-name=filt
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=50G
+#SBATCH --time=24:00:00
+#SBATCH --output=filt.%j.out
+#SBATCH --error=filt.%j.err
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/autosomes_scaffold_list.txt | sed -n ${numb}p)
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}"
+
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -O u | bcftools filter -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_chr_vcfs2/"${scaf_name}".reheader_filt_mindepth7_minqual30.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}"_filt2.done
+
+##run
+sbatch --array=1-23 02.5_vcf_filt2.sh
+
 ## 02.6_vcf_filt_sex.sh
 
 #!/bin/bash
@@ -1622,3 +1648,16 @@ Weir and Cockerham mean Fst estimate: 0.49082
 Weir and Cockerham weighted Fst estimate: 0.60697
 After filtering, kept 2000 out of a possible 2000 Sites
 Run Time = 0.00 seconds
+
+#####################################
+#####################################
+#            07_NGS_primer
+#####################################
+#####################################
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/07_NGS_primer && cd /global/scratch/users/rdekayne/gorilla_census/07_NGS_primer
+#use mpcrselect conda env 
+conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
+
+#then manually run ngsprimerplex on 500 snps
+
