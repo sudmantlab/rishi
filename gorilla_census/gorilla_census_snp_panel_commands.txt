@@ -848,7 +848,8 @@ conda install bioconda::fastp
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
 
 ind=${SLURM_ARRAY_TASK_ID}
-cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+#cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list2.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
 VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
@@ -862,6 +863,8 @@ rm ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
 ##run
 sbatch --array=1-131 01.1_mapping_qc_p1.sh
+
+sbatch --array=1-5 01.1_mapping_qc_p1.sh
 
 #########################################################################################
 ##multiqc 
@@ -913,19 +916,22 @@ mkdir /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams
 
 #!/bin/bash
 #SBATCH --job-name=bwa_map
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
-#SBATCH --partition=savio3_bigmem
-#SBATCH --output=bwa_map.%j.out # output file
-#SBATCH --error=bwa_map.%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=24 # 2 CPUs per job
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=100G
+#SBATCH --time=24:00:00
+#SBATCH --output=bwa_map.%j.out
+#SBATCH --error=bwa_map.%j.err
 
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
 
 ind=${SLURM_ARRAY_TASK_ID}
-cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+#cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
+cat /global/scratch/users/rdekayne/gorilla_census/01_mapping/sample_list2.txt | sed -n ${ind}p > ${SLURM_ARRAY_TASK_ID}.sample_list.txt
 
 VAR1=$(cut -d ' ' -f1 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
 VAR2=$(cut -d ' ' -f2 ${SLURM_ARRAY_TASK_ID}.sample_list.txt)
@@ -935,6 +941,7 @@ bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mG
 
 ##run
 sbatch --array=1-131 01.3_mapping_map_p1.sh 
+sbatch --array=1-5 01.3_mapping_map_p1.sh 
 
 module load java/22.0.1
 
