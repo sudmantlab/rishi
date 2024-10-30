@@ -694,6 +694,130 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/data/genomes && cd /globa
 #https://github.com/marbl/Primates?tab=readme-ov-file
 #https://genomeark.s3.amazonaws.com/index.html?prefix=species/Gorilla_gorilla/mGorGor1/assembly_curated/
 
+####################extra mountain gorillas
+
+
+## 01_download_gorilla_data_17.sh
+
+#!/bin/bash
+#SBATCH --job-name=wget2_17
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=wget2_17.out # output file
+#SBATCH --error=wget2_17.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind17_Bwiruka && cd ind17_Bwiruka
+#17
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/005/ERR2300765/ERR2300765_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/005/ERR2300765/ERR2300765_1.fastq.gz
+touch ind17.done
+
+##run
+sbatch 01_download_gorilla_data_17.sh
+
+## 01_download_gorilla_data_18.sh
+
+#!/bin/bash
+#SBATCH --job-name=wget2_18
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=wget2_18.out # output file
+#SBATCH --error=wget2_18.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind18_Kahungye && cd ind18_Kahungye
+#18
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/002/ERR2300762/ERR2300762_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/002/ERR2300762/ERR2300762_2.fastq.gz
+touch ind18.done
+
+##run
+sbatch 01_download_gorilla_data_18.sh
+
+## 01_download_gorilla_data_19.sh
+
+#!/bin/bash
+#SBATCH --job-name=wget2_19
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=wget2_19.out # output file
+#SBATCH --error=wget2_19.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind19_Katungi && cd ind19_Katungi
+#19
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/003/ERR2300763/ERR2300763_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/003/ERR2300763/ERR2300763_2.fastq.gz
+touch ind19.done
+
+##run
+sbatch 01_download_gorilla_data_19.sh
+
+## 01_download_gorilla_data_20.sh
+
+#!/bin/bash
+#SBATCH --job-name=wget2_20
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=wget2_20.out # output file
+#SBATCH --error=wget2_20.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind20_Nyamunwa && cd ind20_Nyamunwa
+#20
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/004/ERR2300764/ERR2300764_1.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/004/ERR2300764/ERR2300764_2.fastq.gz
+touch ind20.done
+
+##run
+sbatch 01_download_gorilla_data_20.sh
+
+## 01_download_gorilla_data_21.sh
+
+#!/bin/bash
+#SBATCH --job-name=wget2_21
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=savio_lowprio
+#SBATCH --output=wget2_21.out # output file
+#SBATCH --error=wget2_21.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=2 # 2 CPUs per job
+#SBATCH --mem=20GB # Memory limit of 4GB
+
+mkdir -p ind21_Semehe && cd ind21_Semehe
+#21
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/006/ERR2300766/ERR2300766_2.fastq.gz
+wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR230/006/ERR2300766/ERR2300766_1.fastq.gz
+touch ind21.done
+
+##run
+sbatch 01_download_gorilla_data_21.sh
+
+
 #####################################
 #####################################
 #            O1_mapping
