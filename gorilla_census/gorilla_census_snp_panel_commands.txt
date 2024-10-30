@@ -941,7 +941,7 @@ bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mG
 
 ##run
 sbatch --array=1-131 01.3_mapping_map_p1.sh 
-sbatch --array=1-5 01.3_mapping_map_p1.sh 
+sbatch --array=1-5%2 01.3_mapping_map_p1.sh 
 
 module load java/22.0.1
 
