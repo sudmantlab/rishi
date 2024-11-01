@@ -926,6 +926,7 @@ mkdir /global/scratch/users/rdekayne/gorilla_census/01_mapping/raw_bams
 #SBATCH --time=24:00:00
 #SBATCH --output=bwa_map.%j.out
 #SBATCH --error=bwa_map.%j.err
+#SBATCH -w n0067.savio4
 
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping
 
