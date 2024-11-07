@@ -1040,7 +1040,26 @@ cp ind12_Tumani_ERR668426.sorted.dup.bam ../indiv_bams/ind12_Tumani_1file.bam
 cp ind12_Tumani_ERR668426.sorted.dup.bam.bai ../indiv_bams/ind12_Tumani_1file.bam.bai
 cp ind12_Tumani_ERR668426.sorted.dup.txt ../indiv_bams/ind12_Tumani_1file.txt
 
+cp ind17_Bwiruka_ERR2300765.sorted.dup.bam ../indiv_bams/ind17_Bwiruka_1file.bam
+cp ind17_Bwiruka_ERR2300765.sorted.dup.bam.bai ../indiv_bams/ind17_Bwiruka_1file.bam.bai
+cp ind17_Bwiruka_ERR2300765.sorted.dup.txt ../indiv_bams/ind17_Bwiruka_1file.txt
+cp ind19_Katungi_ERR2300763.sorted.dup.bam ../indiv_bams/ind19_Katungi_1file.bam
+cp ind19_Katungi_ERR2300763.sorted.dup.bam.bai ../indiv_bams/ind19_Katungi_1file.bam.bai
+cp ind19_Katungi_ERR2300763.sorted.dup.txt ../indiv_bams/ind19_Katungi_1file.txt
+cp ind20_Nyamunwa_ERR2300764.sorted.dup.bam ../indiv_bams/ind20_Nyamunwa_1file.bam
+cp ind20_Nyamunwa_ERR2300764.sorted.dup.bam.bai ../indiv_bams/ind20_Nyamunwa_1file.bam.bai
+cp ind20_Nyamunwa_ERR2300764.sorted.dup.txt ../indiv_bams/ind20_Nyamunwa_1file.txt
+cp ind21_Semehe_ERR2300766.sorted.dup.bam ../indiv_bams/ind21_Semehe_1file.bam
+cp ind21_Semehe_ERR2300766.sorted.dup.bam.bai ../indiv_bams/ind21_Semehe_1file.bam.bai
+cp ind21_Semehe_ERR2300766.sorted.dup.txt ../indiv_bams/ind21_Semehe_1file.txt
+
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams && ls *.bam > bam_1file.list
+
+#bam_2file.list
+ind17_Bwiruka_1file.bam
+ind19_Katungi_1file.bam
+ind20_Nyamunwa_1file.bam
+ind21_Semehe_1file.bam
 
 # 01.6_mapping_mosdepth_p1.sh 
 
@@ -1065,6 +1084,30 @@ samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
 
 ##run 
 sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
+
+# 01.6_mapping_mosdepth_p2.sh 
+
+#!/bin/bash
+#SBATCH --job-name=mos
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=mos.%j.out # output file
+#SBATCH --error=mos.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat bam_2file.list | sed -n ${ind}p)
+
+mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
+
+##run 
+sbatch --array=1-4 01.6_mapping_mosdepth_p2.sh 
 
 #####################################
 #####################################
