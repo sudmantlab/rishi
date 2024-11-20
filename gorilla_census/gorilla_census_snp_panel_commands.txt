@@ -1309,7 +1309,7 @@ sbatch 02.6_vcf_auto_concat_filt.sh
 
 bcftools view -H autosomes_output_filt_mindepth7_minqual30_AN22.vcf.gz | wc -l
 # 4799902
-c
+
 ## 02.7_vcf_sex_filt.sh
 
 #!/bin/bash
@@ -1639,13 +1639,10 @@ ind04_Umurimo,mont
 ind05_Imfura,mont
 ind06_Kaboko,mont
 ind07_Zirikana,mont
-ind08_Dunia,elow
-ind09_Itebero,elow
-ind10_Pinga,elow
-ind12_Tumani,elow
-ind13_Ntabwoba,elow
-ind14_Mkubwa,elow
-ind15_Kaisi,elow
+ind17_Bwiruka,mont
+ind19_Katungi,mont
+ind20_Nyamunwa,mont
+ind21_Semehe,mont
 
 #edit test.config
 
@@ -1719,13 +1716,10 @@ done
 sbatch reheader_fasta.sh
 
 ###now prep mpcrselect submission config and submission script
-cp test.config run_one.config
+
 mkdir run_one_output
 
-cp run_one.config run_two.config
-mkdir run_two_output
-
-# submit_run_two_mpcrselect.sh 
+# submit_run_one_mpcrselect.sh 
 
 #!/bin/bash
 #SBATCH --job-name=mpcr
@@ -1742,10 +1736,10 @@ mkdir run_two_output
 
 module load openjdk/17.0.8.1_1-gcc-11.4.0
 
-nextflow run ellieearmstrong/mPCRselect -r main -c run_two.config
+nextflow run ellieearmstrong/mPCRselect -r main -c run_one.config
 
 ##run
-sbatch submit_run_two_mpcrselect.sh 
+sbatch submit_run_one_mpcrselect.sh 
 
 #####################################
 #####################################
