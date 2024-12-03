@@ -1421,13 +1421,11 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/03_PCA && cd /global/scra
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=1 # 2 CPUs per job
 
-module load plink
-
 cd /global/scratch/users/rdekayne/gorilla_census/03_PCA
 
-plink --vcf /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/14gorilla_autosomes_X_Y_mindepth7_minqual30_mac1_AN28_AN22_AN6.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 14gorillas_unfilt_out
+plink --vcf /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out 11gorillas_unfilt_out
 
-touch /global/scratch/users/rdekayne/gorilla_census/03_PCA/14_pca.done
+touch /global/scratch/users/rdekayne/gorilla_census/03_PCA/11_pca.done
 
 ##run
 sbatch 03.1_PCA_unfilt.sh
