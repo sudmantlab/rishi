@@ -1875,8 +1875,10 @@ plink --vcf ${file} --double-id --allow-extra-chr --set-missing-var-ids @:# --ma
 touch ./${file}.done
 done
 
+#look at overlap
+cat set_*_loci.txt > all_sets.txt
 
-
+sort -o all_sets.txt -u all_sets.txt
 
 
 #####################################
