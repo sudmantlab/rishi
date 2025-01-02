@@ -1806,15 +1806,32 @@ Run Time = 0.00 seconds
 
 #####################################
 #####################################
-#            07_NGS_primer
+#            07_primer_set_selection
 #####################################
 #####################################
+conda activate /global/scratch/users/rdekayne/envs/geno
 
-mkdir -p /global/scratch/users/rdekayne/gorilla_census/07_NGS_primer && cd /global/scratch/users/rdekayne/gorilla_census/07_NGS_primer
-#use mpcrselect conda env 
-conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection && cd /global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection
 
-#then manually run ngsprimerplex on 500 snps
+scp ../Katie_successful_run_output/test_set1.txt rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection
+#take each of the 10 sets that katie provided and produce PCAs from them - check heterozygosity etc.
+
+cp ../05_mpcrselect/run_one_output/16_PiFinalSNPs/autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.* .
+
+gunzip autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.*
+
+##remove weird header line manually with vim
+
+bgzip autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf
+bcftools index autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz
+
+bcftools view -r chr1pathsa1:17836014-17836079 ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz
+#works no errror - try regions file
+
+bcftools view -R test_set1.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set1_filtered.vcf
+grep "chr" set1_filtered.vcf | grep -v "##" | wc -l 
+#129 == correct number of sites
+
 
 
 
