@@ -1825,18 +1825,55 @@ gunzip autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.*
 bgzip autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf
 bcftools index autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz
 
-bcftools view -r chr1pathsa1:17836014-17836079 ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz
-#works no errror - try regions file
-
-bcftools view -R test_set1.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set1_filtered.vcf
+bcftools view -R set_1_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set1_filtered.vcf
 grep "chr" set1_filtered.vcf | grep -v "##" | wc -l 
-#129 == correct number of sites
+#129 
+
+bcftools view -R set_2_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set2_filtered.vcf
+grep "chr" set2_filtered.vcf | grep -v "##" | wc -l 
+#132 
+
+bcftools view -R set_3_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set3_filtered.vcf
+grep "chr" set3_filtered.vcf | grep -v "##" | wc -l 
+#129
+
+bcftools view -R set_4_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set4_filtered.vcf
+grep "chr" set4_filtered.vcf | grep -v "##" | wc -l 
+#129
+
+bcftools view -R set_5_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set5_filtered.vcf
+grep "chr" set5_filtered.vcf | grep -v "##" | wc -l 
+#132
+
+bcftools view -R set_6_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set6_filtered.vcf
+grep "chr" set6_filtered.vcf | grep -v "##" | wc -l 
+#129
+
+bcftools view -R set_7_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set7_filtered.vcf
+grep "chr" set7_filtered.vcf | grep -v "##" | wc -l 
+#130
+
+bcftools view -R set_8_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set8_filtered.vcf
+grep "chr" set8_filtered.vcf | grep -v "##" | wc -l 
+#132
+
+bcftools view -R set_9_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set9_filtered.vcf
+grep "chr" set9_filtered.vcf | grep -v "##" | wc -l 
+#129
+
+bcftools view -R set_10_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > set10_filtered.vcf
+grep "chr" set10_filtered.vcf | grep -v "##" | wc -l 
+#132
+
+#now plot PCAs
+conda activate /global/scratch/users/rdekayne/envs/pca
 
 
-
-
-
-
+for file in *_filtered.vcf
+do
+plink --vcf ${file} --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ${file}_unfilt_out
+touch ./${file}.done
+done
 
 
 
