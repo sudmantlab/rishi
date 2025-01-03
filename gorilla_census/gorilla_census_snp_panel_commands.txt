@@ -1880,6 +1880,11 @@ cat set_*_loci.txt > all_sets.txt
 
 sort -o all_sets.txt -u all_sets.txt
 
+for file in *_filtered.vcf
+do
+bcftools query -f '%CHROM %POS\n' ${file} > ${file}_snp_pos.txt
+done
+
 
 #####################################
 #####################################
