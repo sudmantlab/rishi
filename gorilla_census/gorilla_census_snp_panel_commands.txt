@@ -1900,6 +1900,10 @@ do
 bcftools query -f '%CHROM %POS\n' ${file} > ${file}_snp_pos.txt
 done
 
+for file in part*_filtered.vcf
+do
+bcftools query -f '%CHROM %POS\n' ${file} > ${file}_snp_pos.txt
+done
 
 #get full list for mipgen
 bcftools query -f '%CHROM %POS\n' autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > hi_pi_snp_pos.txt
