@@ -1865,11 +1865,26 @@ bcftools view -R set_10_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN2
 grep "chr" set10_filtered.vcf | grep -v "##" | wc -l 
 #132
 
+##part2
+bcftools view -R part2set_1_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > part2_set1_filtered.vcf
+grep "chr" part2_set1_filtered.vcf | grep -v "##" | wc -l 
+#144
+
+bcftools view -R part2set_2_loci.txt ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > part2_set2_filtered.vcf
+grep "chr" part2_set2_filtered.vcf | grep -v "##" | wc -l 
+#156
+
 #now plot PCAs
 conda activate /global/scratch/users/rdekayne/envs/pca
 
 
 for file in *_filtered.vcf
+do
+plink --vcf ${file} --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ${file}_unfilt_out
+touch ./${file}.done
+done
+
+for file in part*_filtered.vcf
 do
 plink --vcf ${file} --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ${file}_unfilt_out
 touch ./${file}.done
@@ -1889,7 +1904,42 @@ done
 #get full list for mipgen
 bcftools query -f '%CHROM %POS\n' autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.finPi.vcf.gz > hi_pi_snp_pos.txt
 
+mkdir mipgen_test_run
+conda create -p /global/scratch/users/rdekayne/envs/mipgen
+conda activate /global/scratch/users/rdekayne/envs/mipgen
+conda install bioconda::bwa
+conda install bioconda::htslib
+conda install bioconda::samtools
 
+#bwa/0.7.15
+#zlib/1.2.8
+#perl/5.24.0
+#samtools/1.6
+#intel/17.0.1
+#htslib/1.4.1
+
+bwa index /global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection/gorilla.ref.fasta
+
+#run_mipgen.sh
+#!/bin/bash
+#SBATCH --job-name=mipgen
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=mipgen.%j.out # output file
+#SBATCH --error=mipgen.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+../MIPGEN/mipgen -regions_to_scan hi_pi_snp_pos.bed -project_name /global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection/mipgen_test_run -min_capture_size 162 -max_capture_size 162 -bwa_genome_index /global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection/gorilla.ref.fasta
+
+##run
+sbatch run_mipgen.sh
+
+/global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection/mipgen_test_run.picked_mips.txt
+  
+/global/scratch/users/rdekayne/gorilla_census/07_primer_set_selection/mipgen_test_run.snp_mips.txt
 #####################################
 #####################################
 #            OLD
