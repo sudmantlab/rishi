@@ -1,6 +1,12 @@
 #
 mkdir -p /global/scratch/users/rdekayne/rockfish 
 
+#####################################
+#####################################
+#            01_BUSCOS
+#####################################
+#####################################
+
 mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS && cd /global/scratch/users/rdekayne/rockfish/01_BUSCOS
 
 #start by calculating buscos across the assemblies starting with the 19 that nicolas sent:
@@ -27,13 +33,23 @@ conda install -c conda-forge -c bioconda busco=5.8.2
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesmelanostictusSEB-4.bp.p_ctg.fa
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesminiatusSEB-256.bp.p_ctg.fa
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesmystinusSEB-254.bp.p_ctg.fa
-
-sed -i 's/\/global\/scratch\/users\/nicolas931010\/rockfish_pangenome\/assembly\/fasta\///g' 19fasta_paths.txt
-
-##3fasta_paths.txt
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastespolyspinisSEB-5.bp.p_ctg.fa
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/Sebastesruberrimus12-Yellowye1a.bp.p_ctg.fa
 /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesserranoidesSEB-259.bp.p_ctg.fa
+
+sed -i 's/\/global\/scratch\/users\/nicolas931010\/rockfish_pangenome\/assembly\/fasta\///g' 19fasta_paths.txt
+
+mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/WTDBG/Sebastes_entomelas/referencegenome.FASTA ./rohit_assemblies/Sebastes_entomelas.rohit.fa
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_aleutianus/referencegenome.FASTA ./rohit_assemblies/Sebastes_aleutianus.rohit.fa
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_miniatus/referencegenome.FASTA ./rohit_assemblies/Sebastes_miniatus.rohit.fa
+
+##3fasta_paths.txt
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/WTDBG/Sebastes_entomelas/referencegenome.FASTA ./rohit_assemblies/Sebastes_entomelas.rohit.fa
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_aleutianus/referencegenome.FASTA ./rohit_assemblies/Sebastes_aleutianus.rohit.fa
+cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_miniatus/referencegenome.FASTA ./rohit_assemblies/Sebastes_miniatus.rohit.fa
+
+sed -i 's/\/global\/scratch\/users\/nicolas931010\/rockfish_pangenome\/assembly\/fasta\///g' 3fasta_paths.txt
 
 ##19wrun_test_busco.sh
 
@@ -60,12 +76,74 @@ touch ./done_files/${file_name}.done
 sbatch --array=1 19wrun_test_busco.sh
 sbatch --array=2-21 19wrun_test_busco.sh
 
+grep "C:" *.out
 
+##output:
+busco23000514.out:    |C:99.3%[S:98.5%,D:0.9%],F:0.5%,M:0.2%,n:3640,E:2.0%                                       |
+busco23000515.out:    |C:99.3%[S:98.5%,D:0.8%],F:0.6%,M:0.1%,n:3640,E:2.2%                                       |
+busco23000516.out:    |C:99.5%[S:98.7%,D:0.8%],F:0.4%,M:0.1%,n:3640,E:2.1%                                       |
+busco23000517.out:    |C:99.3%[S:98.4%,D:0.9%],F:0.5%,M:0.1%,n:3640,E:2.2%                                       |
+busco23000518.out:    |C:99.3%[S:98.5%,D:0.8%],F:0.6%,M:0.1%,n:3640,E:1.9%                                       |
+busco23000519.out:    |C:99.5%[S:98.8%,D:0.7%],F:0.4%,M:0.1%,n:3640,E:2.0%                                       |
+busco23000520.out:    |C:99.4%[S:98.6%,D:0.8%],F:0.5%,M:0.1%,n:3640,E:2.1%                                       |
+busco23000521.out:    |C:99.4%[S:98.2%,D:1.2%],F:0.5%,M:0.1%,n:3640,E:1.9%                                       |
+busco23000522.out:    |C:99.4%[S:98.5%,D:0.9%],F:0.5%,M:0.1%,n:3640,E:1.9%                                       |
+busco23000523.out:    |C:99.4%[S:98.8%,D:0.5%],F:0.5%,M:0.1%,n:3640,E:2.0%                                       |
+busco23000524.out:    |C:99.1%[S:98.4%,D:0.7%],F:0.7%,M:0.2%,n:3640,E:1.8%                                       |
+busco23000525.out:    |C:99.3%[S:98.5%,D:0.8%],F:0.6%,M:0.1%,n:3640,E:2.0%                                       |
+busco23000526.out:    |C:99.3%[S:98.5%,D:0.9%],F:0.5%,M:0.1%,n:3640,E:2.2%                                       |
+busco23000527.out:    |C:99.3%[S:98.7%,D:0.5%],F:0.6%,M:0.1%,n:3640,E:2.0%                                       |
+busco23000528.out:    |C:25.9%[S:25.6%,D:0.4%],F:4.8%,M:69.3%,n:3640,E:3.5%                                      |
+busco23000529.out:    |C:99.5%[S:98.8%,D:0.6%],F:0.5%,M:0.1%,n:3640,E:2.1%                                       |
+busco23000530.out:    |C:99.3%[S:98.5%,D:0.8%],F:0.5%,M:0.2%,n:3640,E:2.1%                                       |
+busco23000531.out:    |C:99.4%[S:98.7%,D:0.7%],F:0.5%,M:0.1%,n:3640,E:2.2%                                       |
+busco23000532.out:    |C:99.3%[S:98.3%,D:1.1%],F:0.5%,M:0.1%,n:3640,E:1.9%                                       |
+busco23000533.out:    |C:99.3%[S:98.2%,D:1.1%],F:0.5%,M:0.1%,n:3640,E:2.0%                                       |
+busco23000534.out:    |C:99.5%[S:98.9%,D:0.6%],F:0.4%,M:0.1%,n:3640,E:1.9%                                       |
+
+#remove black and yellow from list
+rm -r SebasteschrysomelasSEB-260.bp.p_ctg.fa_busco/
+
+##3wrun_test_busco.sh
+
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco%j.out # output file
+#SBATCH --error=busco%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+file_name=$(cat /global/scratch/users/rdekayne/rockfish/01_BUSCOS/3fasta_paths.txt | sed -n ${numb}p)
+
+#now busco command
+busco -c 24 -i /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/${file_name} -o ${file_name}_busco -l actinopterygii_odb10 -m genome
+
+touch ./done_files/${file_name}.done
+
+##run
+sbatch --array=1 3wrun_test_busco.sh
+sbatch --array=2-3 3wrun_test_busco.sh
+
+#####################################
+#####################################
+#            02_BUSCOS
+#####################################
+#####################################
+l
 ## https://github.com/jamiemcg/BUSCO_phylogenomics?tab=readme-ov-file
 conda create -n BUSCO_phylogenomics -c bioconda busco_phylogenomics
 conda activate BUSCO_phylogenomics
 
-
+#####################################
+#####################################
+#            03_CACTUS
+#####################################
+#####################################
 
 #install conda cactus env.
 conda create -p /global/scratch/users/rdekayne/envs/cactus
