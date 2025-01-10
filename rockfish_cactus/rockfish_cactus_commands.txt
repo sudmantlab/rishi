@@ -61,6 +61,9 @@ sbatch --array=1 19wrun_test_busco.sh
 sbatch --array=2-21 19wrun_test_busco.sh
 
 
+##
+conda create -n BUSCO_phylogenomics -c bioconda busco_phylogenomics
+conda activate BUSCO_phylogenomics
 
 
 
