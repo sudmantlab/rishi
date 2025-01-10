@@ -1,0 +1,70 @@
+#
+mkdir -p /global/scratch/users/rdekayne/rockfish 
+
+mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS && cd /global/scratch/users/rdekayne/rockfish/01_BUSCOS
+
+#start by calculating buscos across the assemblies starting with the 19 that nicolas sent:
+conda create -p /global/scratch/users/rdekayne/envs/busco
+conda activate /global/scratch/users/rdekayne/envs/busco
+conda install -c conda-forge -c bioconda busco=5.8.2
+
+#19fasta_paths.txt
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0001.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0002.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0003.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0004.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0005.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0006.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0007.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/7164-PS-0008.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/m84185_240412_222911_s4.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesalascanusSEB-2.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesalutusPOP6.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesborealisSEB-8.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastescarnatusSEB-258.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebasteschrysomelasSEB-260.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastescrocotulusSEB-252.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesmelanostictusSEB-4.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesminiatusSEB-256.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesmystinusSEB-254.bp.p_ctg.fa
+
+sed -i 's/\/global\/scratch\/users\/nicolas931010\/rockfish_pangenome\/assembly\/fasta\///g' 19fasta_paths.txt
+
+##3fasta_paths.txt
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastespolyspinisSEB-5.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/Sebastesruberrimus12-Yellowye1a.bp.p_ctg.fa
+/global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/SebastesserranoidesSEB-259.bp.p_ctg.fa
+
+##19wrun_test_busco.sh
+
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco%j.out # output file
+#SBATCH --error=busco%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+file_name=$(cat /global/scratch/users/rdekayne/rockfish/01_BUSCOS/19fasta_paths.txt | sed -n ${numb}p)
+
+#now busco command
+busco -c 24 -i /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/${file_name} -o ${file_name}_busco -l actinopterygii_odb10 -m genome
+
+touch ./done_files/${file_name}.done
+
+##run
+sbatch --array=1 19wrun_test_busco.sh
+sbatch --array=2-21 19wrun_test_busco.sh
+
+
+
+
+
+#install conda cactus env.
+conda create -p /global/scratch/users/rdekayne/envs/cactus
+conda activate /global/scratch/users/rdekayne/envs/cactus
+conda install bioconda::cactus
