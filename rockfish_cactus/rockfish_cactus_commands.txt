@@ -191,7 +191,10 @@ done
 #####################################
 l
 ## https://github.com/jamiemcg/BUSCO_phylogenomics?tab=readme-ov-file
-conda create -n BUSCO_phylogenomics -c bioconda busco_phylogenomics
+git clone https://github.com/jamiemcg/BUSCO_phylogenomics
+cd BUSCO_phylogenomics
+
+conda env create -f conda_env.yaml
 conda activate BUSCO_phylogenomics
 
 mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/busco_output_folders
@@ -199,8 +202,27 @@ mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/busco_output_folders
 cp -r *.fa_busco busco_output_folders/
 cp -r *.fna_busco busco_output_folders/
 
-python BUSCO_phylogenomics.py -i busco_output_folders -o output_busco_phylogenomics -t 8
+cd /global/scratch/users/rdekayne/rockfish/01_BUSCOS
+python BUSCO_phylogenomics/BUSCO_phylogenomics.py -help
 
+#run_BUSCO_phyhlogenomics.sh
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco_phylo%j.out # output file
+#SBATCH --error=busco_phylo%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+python BUSCO_phylogenomics/BUSCO_phylogenomics.py -i ./busco_output_folders -o output_busco_phylogenomics -t 24
+
+touch BUSCO_phylogenomics_run1.done
+
+##run
+sbatch run_BUSCO_phyhlogenomics.sh
 
 #####################################
 #####################################
