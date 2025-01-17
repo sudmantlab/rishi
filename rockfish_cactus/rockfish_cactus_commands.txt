@@ -217,7 +217,7 @@ python BUSCO_phylogenomics/BUSCO_phylogenomics.py -help
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-python BUSCO_phylogenomics/BUSCO_phylogenomics.py -i ./busco_output_folders -o output_busco_phylogenomics -t 24
+python BUSCO_phylogenomics/BUSCO_phylogenomics.py -i ./busco_output_folders -o output_busco_phylogenomics --gene_trees_only --gene_tree_program iqtree -t 24
 
 touch BUSCO_phylogenomics_run1.done
 
