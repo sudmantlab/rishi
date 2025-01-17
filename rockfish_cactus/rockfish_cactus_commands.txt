@@ -45,11 +45,11 @@ cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/S
 cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_miniatus/referencegenome.FASTA ./rohit_assemblies/Sebastes_miniatus.rohit.fa
 
 ##3fasta_paths.txt
-cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/WTDBG/Sebastes_entomelas/referencegenome.FASTA ./rohit_assemblies/Sebastes_entomelas.rohit.fa
-cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_aleutianus/referencegenome.FASTA ./rohit_assemblies/Sebastes_aleutianus.rohit.fa
-cp /global/scratch/p2p3/pl1_sudmant/rohitkolora/Rockfish/Genomes/FREEZE/FALCON/Sebastes_miniatus/referencegenome.FASTA ./rohit_assemblies/Sebastes_miniatus.rohit.fa
+/global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/Sebastes_entomelas.rohit.fa
+/global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/Sebastes_aleutianus.rohit.fa
+/global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/Sebastes_miniatus.rohit.fa
 
-sed -i 's/\/global\/scratch\/users\/nicolas931010\/rockfish_pangenome\/assembly\/fasta\///g' 3fasta_paths.txt
+sed -i 's/\/global\/scratch\/users\/rdekayne\/rockfish\/01_BUSCOS\/rohit_assemblies\///g' 3fasta_paths.txt
 
 ##19wrun_test_busco.sh
 
@@ -101,6 +101,12 @@ busco23000532.out:    |C:99.3%[S:98.3%,D:1.1%],F:0.5%,M:0.1%,n:3640,E:1.9%      
 busco23000533.out:    |C:99.3%[S:98.2%,D:1.1%],F:0.5%,M:0.1%,n:3640,E:2.0%                                       |
 busco23000534.out:    |C:99.5%[S:98.9%,D:0.6%],F:0.4%,M:0.1%,n:3640,E:1.9%                                       |
 
+for file in *.out
+do
+grep "Results written in" ${file}
+grep "C:" ${file}
+done
+
 #remove black and yellow from list
 rm -r SebasteschrysomelasSEB-260.bp.p_ctg.fa_busco/
 
@@ -121,13 +127,62 @@ numb=${SLURM_ARRAY_TASK_ID}
 file_name=$(cat /global/scratch/users/rdekayne/rockfish/01_BUSCOS/3fasta_paths.txt | sed -n ${numb}p)
 
 #now busco command
-busco -c 24 -i /global/scratch/users/nicolas931010/rockfish_pangenome/assembly/fasta/${file_name} -o ${file_name}_busco -l actinopterygii_odb10 -m genome
+busco -c 24 -i /global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/${file_name} -o ${file_name}_busco -l actinopterygii_odb10 -m genome
 
 touch ./done_files/${file_name}.done
 
 ##run
 sbatch --array=1 3wrun_test_busco.sh
 sbatch --array=2-3 3wrun_test_busco.sh
+
+for file in busco2303832*.out
+do
+grep "Results written in" ${file}
+grep "C:" ${file}
+done
+
+##
+cd /global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/
+#cp /global/scratch/users/nicolas931010/rockfish_popgen/references/ouc_korean/Ssc.HIC.genome.fa
+
+#5fasta_paths.txt
+Ssc.HIC.genome.fa
+GCA_036937225.1_fSebPau1.0.hap1_genomic.fna
+GCA_043250625.1_fSebFas1.pri_genomic.fna
+GCA_045837885.1_fSebEnt1.0.p_genomic.fna
+GCF_015220745.1_fSebUmb1.pri_genomic.fna
+
+##5wrun_test_busco.sh
+
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco%j.out # output file
+#SBATCH --error=busco%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+file_name=$(cat /global/scratch/users/rdekayne/rockfish/01_BUSCOS/5fasta_paths.txt | sed -n ${numb}p)
+
+#now busco command
+busco -c 24 -i /global/scratch/users/rdekayne/rockfish/01_BUSCOS/rohit_assemblies/${file_name} -o ${file_name}_busco -l actinopterygii_odb10 -m genome
+
+touch ./done_files/${file_name}.done
+
+##run
+sbatch --array=1 5wrun_test_busco.sh
+sbatch --array=2-5 5wrun_test_busco.sh
+
+for file in busco2304*.out
+do
+grep "Results written in" ${file}
+grep "C:" ${file}
+done
+
 
 #####################################
 #####################################
@@ -138,6 +193,14 @@ l
 ## https://github.com/jamiemcg/BUSCO_phylogenomics?tab=readme-ov-file
 conda create -n BUSCO_phylogenomics -c bioconda busco_phylogenomics
 conda activate BUSCO_phylogenomics
+
+mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/busco_output_folders
+
+cp -r *.fa_busco busco_output_folders/
+cp -r *.fna_busco busco_output_folders/
+
+python BUSCO_phylogenomics.py -i busco_output_folders -o output_busco_phylogenomics -t 8
+
 
 #####################################
 #####################################
