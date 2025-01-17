@@ -253,20 +253,20 @@ cp all_buscos_28rockfish.tre all_buscos_28rockfish_renamed.tre
 
 sed -i 's/7164-PS-0001.bp.p_ctg.fa_busco/copper/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/7164-PS-0002.bp.p_ctg.fa_busco/black/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/7164-PS-0003.bp.p_ctg.fa_busco/blackspotted1/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/7164-PS-0004.bp.p_ctg.fa_busco/light_dusky/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/7164-PS-0003.bp.p_ctg.fa_busco/rougheye1/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/7164-PS-0004.bp.p_ctg.fa_busco/widow1/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/7164-PS-0005.bp.p_ctg.fa_busco/yellowtail/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/7164-PS-0006.bp.p_ctg.fa_busco/pop_b/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/7164-PS-0007.bp.p_ctg.fa_busco/dark_dusky/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/7164-PS-0007.bp.p_ctg.fa_busco/light_dusky/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/7164-PS-0008.bp.p_ctg.fa_busco/quillback/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/m84185_240412_222911_s4.bp.p_ctg.fa_busco/deacon/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastesalascanusSEB-2.bp.p_ctg.fa_busco/shortspine_thornyhead/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/Sebastes_aleutianus.rohit.fa_busco/rougheye/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/Sebastes_aleutianus.rohit.fa_busco/rougheye2/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastesalutusPOP6.bp.p_ctg.fa_busco/pop_a/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastesborealisSEB-8.bp.p_ctg.fa_busco/shortraker/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastescarnatusSEB-258.bp.p_ctg.fa_busco/gopher/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastescrocotulusSEB-252.bp.p_ctg.fa_busco/sunset/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/Sebastes_entomelas.rohit.fa_busco/widow1/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/Sebastes_entomelas.rohit.fa_busco/widow2/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastesmelanostictusSEB-4.bp.p_ctg.fa_busco/blackspotted2/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/Sebastes_miniatus.rohit.fa_busco/vermilion1/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/SebastesminiatusSEB-256.bp.p_ctg.fa_busco/vermilion2/g' all_buscos_28rockfish_renamed.tre
@@ -277,7 +277,7 @@ sed -i 's/SebastesserranoidesSEB-259.bp.p_ctg.fa_busco/olive/g' all_buscos_28roc
 sed -i 's/Ssc.HIC.genome.fa_busco/korean/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/GCA_036937225.1_fSebPau1.0.hap1_genomic.fna_busco/bocaccio/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/GCA_043250625.1_fSebFas1.pri_genomic.fna_busco/acadian_redfish/g' all_buscos_28rockfish_renamed.tre
-sed -i 's/GCA_045837885.1_fSebEnt1.0.p_genomic.fna_busco/widow2/g' all_buscos_28rockfish_renamed.tre
+sed -i 's/GCA_045837885.1_fSebEnt1.0.p_genomic.fna_busco/widow3/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/GCF_015220745.1_fSebUmb1.pri_genomic.fna_busco/honeycomb/g' all_buscos_28rockfish_renamed.tre
 
 
