@@ -286,8 +286,22 @@ sed -i 's/GCF_015220745.1_fSebUmb1.pri_genomic.fna_busco/honeycomb_GCF_015220745
 #            03_CACTUS
 #####################################
 #####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish/03_CACTUS && cd /global/scratch/users/rdekayne/rockfish/03_CACTUS
 
-#install conda cactus env.
-conda create -p /global/scratch/users/rdekayne/envs/cactus
-conda activate /global/scratch/users/rdekayne/envs/cactus
-conda install bioconda::cactus
+#followed installation instructions at: https://github.com/ComparativeGenomicsToolkit/cactus/blob/v2.9.3/README.md
+# https://docs-research-it.berkeley.edu/services/high-performance-computing/user-guide/software/using-software/using-singularity-savio/#trying-things-out-on-a-login-node
+#now do test:
+
+#test_cactus.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cactus ./js ./examples/evolverMammals.txt ./evolverMammals.hal --binariesMode singularity
