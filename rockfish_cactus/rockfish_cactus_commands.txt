@@ -280,6 +280,34 @@ sed -i 's/GCA_043250625.1_fSebFas1.pri_genomic.fna_busco/acadian_redfish_GCA_043
 sed -i 's/GCA_045837885.1_fSebEnt1.0.p_genomic.fna_busco/widow_GCA_045837885.1_fSebEnt1/g' all_buscos_28rockfish_renamed.tre
 sed -i 's/GCF_015220745.1_fSebUmb1.pri_genomic.fna_busco/honeycomb_GCF_015220745.1_fSebUmb1/g' all_buscos_28rockfish_renamed.tre
 
+#filter tree to only include the following
+-rw-r--r-- 1 nicolas931010 co_genomicdata 814M Jan  4  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0001.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 811M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0002.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 824M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0003.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 810M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0004.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 818M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0005.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 819M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0006.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 848M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0007.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 813M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/7164-PS-0008.masked
+-rw-r--r-- 1 nicolas931010 ucb            785M Jan 21 17:43 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/GCA_036937225.1_fSebPau1.0.hap1_genomic.fna.masked
+-rw-r--r-- 1 nicolas931010 ucb            812M Jan 21 17:46 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/GCA_043250625.1_fSebFas1.pri_genomic.fna.masked
+-rw-r--r-- 1 nicolas931010 ucb            801M Jan 21 17:46 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/GCA_045837885.1_fSebEnt1.0.p_genomic.fna.masked
+-rw-r--r-- 1 nicolas931010 ucb            780M Jan 21 17:38 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/GCF_015220745.1_fSebUmb1.pri_genomic.fna.masked
+-rw-r--r-- 1 nicolas931010 ucb            796M Jan 21 14:44 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/m84185_240412_222911_s4.masked
+-rw-r--r-- 1 nicolas931010 co_genomicdata 786M Jan  5  2024 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/rougheye-kolora.masked
+-rw-r--r-- 1 nicolas931010 ucb            889M Jan 21 14:50 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.masked
+-rw-r--r-- 1 nicolas931010 ucb            824M Jan 21 14:35 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalutusPOP6.masked
+-rw-r--r-- 1 nicolas931010 ucb            870M Jan 21 14:54 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesborealisSEB-8.masked
+-rw-r--r-- 1 nicolas931010 ucb            810M Jan 21 14:37 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastescarnatusSEB-258.masked
+-rw-r--r-- 1 nicolas931010 ucb            170M Jan 21 13:47 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebasteschrysomelasSEB-260.masked
+-rw-r--r-- 1 nicolas931010 ucb            800M Jan 21 14:35 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastescrocotulusSEB-252.masked
+-rw-r--r-- 1 nicolas931010 ucb            834M Jan 21 14:41 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesmelanostictusSEB-4.masked
+-rw-r--r-- 1 nicolas931010 ucb            802M Jan 21 14:35 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesminiatusSEB-256.masked
+-rw-r--r-- 1 nicolas931010 ucb            804M Jan 21 14:33 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesmystinusSEB-254.masked
+-rw-r--r-- 1 nicolas931010 ucb            846M Jan 21 14:37 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastespolyspinisSEB-5.masked
+-rw-r--r-- 1 nicolas931010 ucb            800M Jan 21 14:51 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/Sebastesruberrimus12-Yellowye1a.masked
+-rw-r--r-- 1 nicolas931010 ucb            807M Jan 21 14:32 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesserranoidesSEB-259.masked
+-rw-r--r-- 1 nicolas931010 ucb            790M Jan 21 17:36 /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/Ssc.HIC.genome.fa.masked
 
 #####################################
 #####################################
@@ -305,3 +333,24 @@ mkdir -p /global/scratch/users/rdekayne/rockfish/03_CACTUS && cd /global/scratch
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
 cactus ./js ./examples/evolverMammals.txt ./evolverMammals.hal --binariesMode singularity
+
+##new time
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+
+#test_26rockfish_alignment.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cactus ./js ../cactus_input_26rockfish.txt ./26_rockfish.hal --binariesMode singularity
+
+##RUN
+sbatch test_26rockfish_alignment.sh
