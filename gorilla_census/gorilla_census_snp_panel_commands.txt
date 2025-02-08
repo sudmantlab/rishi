@@ -2265,8 +2265,21 @@ bcftools view -H autosomes_output_filt_AN2_MAC1.vcf.gz | wc -l
 # 321
 
 #now filter for the list we wanted:
+## 10.6_filt_vcf_for_targets.sh
 
+bcftools index ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
 
+sed -i 's/pat/_pat_/g' target_markers.txt
+sed -i 's/mat/_mat_/g' target_markers.txt
+
+bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz > targets156_filtered.vcf
+bcftools view -H targets156_filtered.vcf | wc -l
+
+##get missingness summary
+conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
+
+vcftools --vcf targets156_filtered.vcf --missing-indv
+vcftools --vcf targets156_filtered.vcf --missing-site
 
 
 
