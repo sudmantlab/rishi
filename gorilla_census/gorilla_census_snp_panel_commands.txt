@@ -2082,9 +2082,37 @@ touch ${indiv_name}.processing.done
 
 ##submit
 sbatch --array=1 09.2_mapping_process_p1.sh 
-
 sbatch --array=1-39%8 09.2_mapping_process_p1.sh 
 
+mkdir all_err_out
+mv *.err all_err_out/
+mv *.out all_err_out/
+
+ls processed_bams/*.bam > bam_39_list.txt
+
+# 09.3_mapping_mosdepth_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=mos
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --output=mos.%j.out # output file
+#SBATCH --error=mos.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat bam_39_list.txt | sed -n ${ind}p)
+
+mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/09_mapping/processed_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
+
+##run 
+sbatch --array=1-39 09.3_mapping_mosdepth_p1.sh 
 
 
 
