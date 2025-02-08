@@ -2269,6 +2269,8 @@ bcftools view -H autosomes_output_filt_AN2_MAC1.vcf.gz | wc -l
 
 bcftools index ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
 
+###########################
+##target_markers.txt
 sed -i 's/pat/_pat_/g' target_markers.txt
 sed -i 's/mat/_mat_/g' target_markers.txt
 
@@ -2281,6 +2283,23 @@ conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
 vcftools --vcf targets156_filtered.vcf --missing-indv
 vcftools --vcf targets156_filtered.vcf --missing-site
 
+###########################
+##specific_targets.txt
+grep "_L" specific_targets.txt > specific_targets_filt.txt
+sed -i 's/_L//g' specific_targets_filt.txt
+sed -i 's/_/\t/g' specific_targets_filt.txt
+sed -i 's/pat/_pat_/g' specific_targets_filt.txt
+sed -i 's/mat/_mat_/g' specific_targets_filt.txt
+
+bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz > targets156_specific_filtered.vcf
+bcftools view -H targets156_specific_filtered.vcf | wc -l
+#85
+
+##get missingness summary
+conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
+
+vcftools --vcf targets156_specific_filtered.vcf --missing-indv
+vcftools --vcf targets156_specific_filtered.vcf --missing-site
 
 
 
