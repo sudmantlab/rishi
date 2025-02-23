@@ -354,3 +354,142 @@ cactus ./js ../cactus_input_26rockfish.txt ./26_rockfish.hal --binariesMode sing
 
 ##RUN
 sbatch test_26rockfish_alignment.sh
+
+#now HAL
+
+#run_halval_and_halstat.sh
+
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+singularity pull docker://quay.io/comparative-genomics-toolkit/cactus:v2.9.3
+singularity run cactus_v2.9.3.sif
+halValidate ./26_rockfish.hal
+halStats ./26_rockfish.hal
+
+hal v2.2
+((korean-ouc:1,(((SebastesborealisSEB-8:1,(SebastesmelanostictusSEB-4:1,(rougheye-kolora:1,7164-PS-0003:1)Anc15:0.246209)Anc09:0.301513)Anc05:0.0999126,(acadian-vgp:1,((SebastesalutusPOP6:1,7164-PS-0006:1)Anc16:0.713092,(SebastespolyspinisSEB-5:1,7164-PS-0007:1)Anc17:0.453406)Anc10:0.150332)Anc06:0.0244786)Anc03:0.0961719,((((bocaccio-ccgp:1,honeycomb-vgp:1)Anc18:0.0158201,(SebastescarnatusSEB-258:1,(7164-PS-0001:1,7164-PS-0008:1)Anc24:0.0112265)Anc19:0.841649)Anc11:0.00442815,(Sebastesruberrimus12-Yellowye1a:1,(SebastescrocotulusSEB-252:1,SebastesminiatusSEB-256:1.027)Anc20:0.868767)Anc12:0.00729953)Anc07:0.0864933,((SebastesserranoidesSEB-259:1,(7164-PS-0005:1,7164-PS-0002:1)Anc21:0.287969)Anc13:0.387429,((m84185_240412_222911_s4:1,SebastesmystinusSEB-254:1)Anc22:0.411042,(widow-ccgp:1.0081,7164-PS-0004:1)Anc23:0.609105)Anc14:0.304319)Anc08:0.173494)Anc04:0.0643379)Anc02:0.0789716)Anc01:0.5,SebastesalascanusSEB-2:0.5)Anc00;
+
+GenomeName, NumChildren, Length, NumSequences, NumTopSegments, NumBottomSegments
+Anc00, 2, 610378001, 1, 0, 17715687
+Anc01, 2, 748295405, 1, 21294161, 25701942
+korean-ouc, 0, 811820114, 66, 26726022, 0
+Anc02, 2, 762595800, 1, 26076406, 23094049
+Anc03, 2, 766423028, 1, 23109660, 5276400
+Anc05, 2, 783742944, 1, 5355012, 8593504
+SebastesborealisSEB-8, 0, 893916515, 243, 9211391, 0
+Anc09, 2, 788767757, 7, 8639818, 7996347
+SebastesmelanostictusSEB-4, 0, 856566335, 217, 8433692, 0
+Anc15, 2, 797138060, 22, 8112147, 5066163
+rougheye-kolora, 0, 807295316, 168, 5257247, 0
+7164-PS-0003, 0, 847028045, 216, 5336925, 0
+Anc06, 2, 770043350, 1, 5275816, 8966150
+acadian-vgp, 0, 833835073, 203, 9271088, 0
+Anc10, 2, 773413633, 3, 9060729, 9323699
+Anc16, 2, 799902269, 27, 9459848, 9328751
+SebastesalutusPOP6, 0, 846987306, 212, 9709890, 0
+7164-PS-0006, 0, 841753079, 227, 9690797, 0
+Anc17, 2, 803568655, 26, 9589273, 10306365
+SebastespolyspinisSEB-5, 0, 868972730, 432, 10912764, 0
+7164-PS-0007, 0, 871379929, 349, 10844659, 0
+Anc04, 2, 764536174, 1, 23069703, 4557882
+Anc07, 2, 766935735, 1, 4576752, 3767323
+Anc11, 2, 766747158, 3, 3745676, 6060525
+Anc18, 2, 770233367, 18, 6156446, 10126115
+bocaccio-ccgp, 0, 806866550, 211, 10048998, 0
+honeycomb-vgp, 0, 800904020, 138, 10462078, 0
+Anc19, 2, 784252591, 13, 6220747, 6512775
+SebastescarnatusSEB-258, 0, 832185576, 212, 6851889, 0
+Anc24, 2, 797534477, 31, 6670643, 4035615
+7164-PS-0001, 0, 836676697, 231, 4311129, 0
+7164-PS-0008, 0, 835697227, 222, 4373426, 0
+Anc12, 2, 775847372, 14, 3812667, 7086623
+Sebastesruberrimus12-Yellowye1a, 0, 821387232, 168, 7401932, 0
+Anc20, 2, 794291541, 34, 7216807, 6859423
+SebastescrocotulusSEB-252, 0, 821912870, 178, 7174837, 0
+SebastesminiatusSEB-256, 0, 823860536, 185, 7196826, 0
+Anc08, 2, 765801593, 2, 4586270, 7498378
+Anc13, 2, 777777433, 8, 7586873, 7793213
+SebastesserranoidesSEB-259, 0, 829077004, 177, 8079206, 0
+Anc21, 2, 795471234, 31, 7944265, 4880773
+7164-PS-0005, 0, 840056201, 174, 5197304, 0
+7164-PS-0002, 0, 833617282, 197, 5149647, 0
+Anc14, 2, 773686071, 6, 7634553, 7946225
+Anc22, 2, 788268860, 33, 8078445, 8090166
+m84185_240412_222911_s4, 0, 817533266, 259, 8355738, 0
+SebastesmystinusSEB-254, 0, 825552957, 176, 8473682, 0
+Anc23, 2, 797279714, 25, 8189174, 4824876
+widow-ccgp, 0, 823288076, 99, 5050335, 0
+7164-PS-0004, 0, 832493062, 319, 5114535, 0
+SebastesalascanusSEB-2, 0, 913527757, 414, 22584081, 0
+
+halSummarizeMutations ./26_rockfish.hal
+
+
+#########################################################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/
+
+#####################################
+#####################################
+#            01_BUSCOS
+#####################################
+#####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/01_BUSCOS
+mkdir -p /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas
+mkdir -p /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas
+mkdir -p /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics
+cd /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas
+cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/*.masked .
+
+for file in *.masked
+do
+mv ${file} ${file}.hap1
+done
+
+cd /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas
+cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap2/*.masked .
+
+for file in *.masked
+do
+mv ${file} ${file}.hap2
+done
+
+cd ../
+ls hap1_masked_fastas/*.hap1 >> hap12_file_paths.txt
+ls hap2_masked_fastas/*.hap2 >> hap12_file_paths.txt
+
+conda activate /global/scratch/users/rdekayne/envs/busco
+
+#50_rockfish_buscos.sh 
+
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco%j.out # output file
+#SBATCH --error=busco%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+numb=${SLURM_ARRAY_TASK_ID}
+file_name=$(cat /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap12_file_paths.txt | sed -n ${numb}p)
+
+#now busco command
+busco -c 24 -i ${file_name} -o output_busco_phylogenomics/${file_name}_busco -l actinopterygii_odb10 -m genome
+
+touch ./all.done
+
+##run
+sbatch --array=1-44 50_rockfish_buscos.sh 
+
+
