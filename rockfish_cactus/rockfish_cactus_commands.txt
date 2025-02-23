@@ -490,6 +490,8 @@ busco -c 24 -i ${file_name} -o output_busco_phylogenomics/${file_name}_busco -l 
 touch ./all.done
 
 ##run
-sbatch --array=1-44 50_rockfish_buscos.sh 
+sbatch --array=1 50_rockfish_buscos.sh 
+sbatch --array=2 50_rockfish_buscos.sh 
+sbatch --array=3-44%1 50_rockfish_buscos.sh 
 
 
