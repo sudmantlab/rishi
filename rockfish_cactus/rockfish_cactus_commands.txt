@@ -495,3 +495,10 @@ sbatch --array=2 50_rockfish_buscos.sh
 sbatch --array=3-44%1 50_rockfish_buscos.sh 
 
 
+for file in *.out
+do
+grep "Input file" ${file}
+grep "C:" ${file}
+done
+
+
