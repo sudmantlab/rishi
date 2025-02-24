@@ -2430,7 +2430,8 @@ vcftools --vcf targets156_specific_filtered_MAC0_SML.vcf --missing-site --out SM
 #LRG_.lmiss
 #SML_.lmiss
 
-
+#test - checking genotypes
+bcftools view -S 21-SmallerVolumeStrip-well1_S21_sample.txt -o S21_MAC0_LRG.vcf targets156_specific_filtered_MAC0_SML.vcf
 
 
 
