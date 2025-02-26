@@ -464,15 +464,16 @@ cactus-hal2maf -h
 #SBATCH --output=cactus_test%j.out # output file
 #SBATCH --error=cactus_test%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --binariesMode singularity --chunkSize 1000000
+export SINGULARITY_TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
+
+cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --binariesMode singularity --chunkSize 1000000 --batchMemory 50G --maxMemory 100G
 
 #run
 sbatch test_hal_to_maf.sh
-
-
 
 
 
