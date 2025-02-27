@@ -519,6 +519,7 @@ conda install bioconda::raxml
 conda install bioconda::pargenes
 conda install bedtools
 conda install samtools
+conda install conda-forge::ete3
 
 git clone --recursive https://github.com/BenoitMorel/ParGenes.git
 cd ParGenes
