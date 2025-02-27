@@ -567,7 +567,25 @@ cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p >
 singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../03_CACTUS/26_rockfish.hal ${numb}.maf --refGenome SebastesalascanusSEB-2 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
 
 ###run
-sbatch --array=1-20 run_hal2maf_windows.sh
+sbatch --array=1-1000%10 run_hal2maf_windows.sh
+sbatch --array=1001-2000%10 run_hal2maf_windows.sh
+sbatch --array=2001-3000%10 run_hal2maf_windows.sh
+sbatch --array=3001-4000%10 run_hal2maf_windows.sh
+sbatch --array=4001-5000%10 run_hal2maf_windows.sh
+sbatch --array=5001-6000%10 run_hal2maf_windows.sh
+sbatch --array=6001-7000%10 run_hal2maf_windows.sh
+sbatch --array=7001-8000%10 run_hal2maf_windows.sh
+sbatch --array=8001-9000%10 run_hal2maf_windows.sh
+sbatch --array=9001-10000%10 run_hal2maf_windows.sh
+sbatch --array=10001-11000%10 run_hal2maf_windows.sh
+sbatch --array=11001-12000%10 run_hal2maf_windows.sh
+sbatch --array=12001-13000%10 run_hal2maf_windows.sh
+sbatch --array=13001-14000%10 run_hal2maf_windows.sh
+sbatch --array=14001-15000%10 run_hal2maf_windows.sh
+sbatch --array=15001-16000%10 run_hal2maf_windows.sh
+sbatch --array=16001-17000%10 run_hal2maf_windows.sh
+sbatch --array=17001-18000%10 run_hal2maf_windows.sh
+sbatch --array=18001-18527%10 run_hal2maf_windows.sh
 
 mkdir msa_files
 
@@ -623,6 +641,8 @@ sbatch run_pargenes.sh
 
 
 
+###annotation
+https://bioconda.github.io/recipes/comparative-annotation-toolkit/README.html
 
 
 
