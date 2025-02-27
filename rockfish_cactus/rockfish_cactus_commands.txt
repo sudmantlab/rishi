@@ -701,7 +701,8 @@ for topology, tree_names in topologies.items():
 # Count how many unique topologies are present
 print(f"Number of unique topologies: {len(topologies)}")
 
-
+##
+/global/scratch/users/rdekayne/envs/trees/bin/python topology_process.py
 
 
 
