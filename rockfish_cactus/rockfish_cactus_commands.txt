@@ -561,17 +561,62 @@ bedtools makewindows -g /global/scratch/users/nicolas931010/rockfish_pangenome/r
 export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
 
 numb=${SLURM_ARRAY_TASK_ID}
-bed_window=$(cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p)
 
 cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p > ${numb}.bed
 
-singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal ${bed_window}.maf --refGenome SebastesalascanusSEB-2 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../03_CACTUS/26_rockfish.hal ${numb}.maf --refGenome SebastesalascanusSEB-2 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
 
 ###run
 sbatch --array=1-20 run_hal2maf_windows.sh
 
+mkdir msa_files
 
+conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
 
+#convert_maf2fasta.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
+
+numb=${SLURM_ARRAY_TASK_ID}
+
+msa_view ${numb}.maf -f -G 1 --unmask | seqkit seq -w 0 > ${numb}.fasta
+sed -e 's/\*/N/g' ${numb}.fasta > ${numb}.gap-replaced.fasta
+sed -i 's/> />/g' ${numb}.gap-replaced.fasta
+cp ${numb}.gap-replaced.fasta ./msa_files/${numb}.gap-replaced.fasta
+
+###run
+sbatch --array=1-20 convert_maf2fasta.sh
+
+conda activate /global/scratch/users/rdekayne/envs/trees
+
+#run_pargenes.sh
+#!/bin/bash
+#SBATCH --job-name=pargenes
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=pargenes%j.out # output file
+#SBATCH --error=pargenes%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+/global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes.py -a ./msa_files -o ./alignment_test_out --cores 64 -d nt -m --job-failure-fatal --use-astral
+
+##run
+sbatch run_pargenes.sh
 
 
 
