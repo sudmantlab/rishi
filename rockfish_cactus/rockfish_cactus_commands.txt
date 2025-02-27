@@ -475,6 +475,16 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ..
 #run
 sbatch test_hal_to_maf.sh
 
+#now to get from maf to fasta
+conda create -p /global/scratch/users/rdekayne/envs/maf_manipulation
+conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
+conda install bioconda::phast
+#conda install bioconda::bpp-phyl
+conda install bioconda::seqkit
+
+msa_view test.maf -f -G 1 --unmask | seqkit seq -w 0 > test.fasta
+sed -e 's/\*/-/g' test.fasta > test.gap-replaced.fasta
+
 
 
 
