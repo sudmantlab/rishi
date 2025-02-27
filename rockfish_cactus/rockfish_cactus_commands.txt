@@ -470,7 +470,7 @@ cactus-hal2maf -h
 
 export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
 
-singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --binariesMode singularity --chunkSize 1000000 --batchMemory 50G --maxMemory 100G
+singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome SebastesalascanusSEB-2 --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --chunkSize 1000000 --batchMemory 50G --maxMemory 100G
 
 #run
 sbatch test_hal_to_maf.sh
