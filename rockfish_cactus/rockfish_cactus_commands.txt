@@ -507,6 +507,7 @@ msa_view test.maf -f -G 1 --unmask | seqkit seq -w 0 > test.fasta
 sed -e 's/\*/-/g' test.fasta > test.gap-replaced.fasta
 
 #and for all file
+#http://compgen.cshl.edu/phast/help-pages/msa_view.txt
 msa_view test.maf -f -G 1 --unmask | seqkit seq -w 0 > test_all.fasta
 sed -e 's/\*/-/g' test_all.fasta > test_all.gap-replaced.fasta
 
