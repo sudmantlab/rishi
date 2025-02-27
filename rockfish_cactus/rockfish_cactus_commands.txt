@@ -704,7 +704,7 @@ print(f"Number of unique topologies: {len(topologies)}")
 ##
 /global/scratch/users/rdekayne/envs/trees/bin/python topology_process.py
 
-
+/global/scratch/users/rdekayne/envs/trees/bin/python process_topology_summary.py 
 
 
 
