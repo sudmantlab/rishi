@@ -433,10 +433,11 @@ SebastesalascanusSEB-2, 0, 913527757, 414, 22584081, 0
 
 halSummarizeMutations ./26_rockfish.hal
 
-##################################### TEST
-#want a way to convert a window of the hal to maf - tree
-#we will use cactus-hal2maf
-
+#######################################################################################################
+#######################################################################################################
+#                            HAL-MAF-MSA-TREE TEST
+#######################################################################################################
+#######################################################################################################
 #just want a maf for these three
 SebastesalascanusSEB-2  /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked
 SebastesalutusPOP6      /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalutusPOP6.fa.masked
@@ -445,14 +446,6 @@ SebastesborealisSEB-8   /global/scratch/users/nicolas931010/rockfish_pangenome/r
 cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
 source cactus_env/bin/activate
 cactus-hal2maf -h
-
-##
-#--refGenome (required): A genome from the alignment (can be an ancestor) to use as the MAF reference onto which all other alignments are projected. It will be the first row of each MAF block in the output.
-#--refSequence: Only process the given chromosome(s) from the reference genome
-#--noAncestors: Do not included reconstructed ancestors in the output (ex Anc0 etc)
-#--targetGenomes: Only include comma-separated list of genomes specified by this option in the output
-#--start / --length : Only process the given subrange(s) of the reference sequence(s)
-#--bedRanges : Only process the given subranges of reference genome
 
 #test_hal_to_maf.sh
 
@@ -538,6 +531,11 @@ sed -i 's/> />/g' TEST.fasta
 https://github.com/owensgl/maf_explore/blob/main/maf2alignmentstats.pl
 
 #######################################################################################################
+#######################################################################################################
+#                            FULL RUN
+#######################################################################################################
+#######################################################################################################
+
 cd /global/scratch/users/rdekayne/rockfish/maf_run
 cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked .
 samtools faidx SebastesalascanusSEB-2.fa.masked
@@ -545,6 +543,9 @@ cut -f1,2 SebastesalascanusSEB-2.fa.masked.fai > sizes.genome
 bedtools makewindows -g sizes.genome -w 50000 > 50kb.txt 
 
 bedtools makewindows -g /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked -w 50000 > 50kb.txt 
+
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
 
 #run_hal2maf_windows.sh
 #!/bin/bash
@@ -645,7 +646,17 @@ sbatch run_pargenes.sh
 ###annotation
 https://bioconda.github.io/recipes/comparative-annotation-toolkit/README.html
 
+### tree comparison
+mkdir -p /global/scratch/users/rdekayne/rockfish/tree_comparison && cd /global/scratch/users/rdekayne/rockfish/tree_comparison
 
+cat tree_test_file.txt                                                                                                                                         
+((A, B), (C, (D, E)));                                                                                                                                                                                                
+((A, (B, C)), (D, E));                                                                                                                                                                                                (((A, B), C), (D, E));
+
+cat ref_tree.txt 
+((A, B), (C, (D, E)));
+
+cat tree_test_file.txt | ete3 compare -r ref_tree.txt
 
 
 
