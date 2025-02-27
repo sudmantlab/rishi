@@ -500,7 +500,6 @@ sbatch test_hal_to_maf_all.sh
 conda create -p /global/scratch/users/rdekayne/envs/maf_manipulation
 conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
 conda install bioconda::phast
-#conda install bioconda::bpp-phyl
 conda install bioconda::seqkit
 
 msa_view test.maf -f -G 1 --unmask | seqkit seq -w 0 > test.fasta
@@ -518,6 +517,9 @@ conda create -p /global/scratch/users/rdekayne/envs/trees
 conda activate /global/scratch/users/rdekayne/envs/trees
 conda install bioconda::raxml
 conda install bioconda::pargenes
+conda install bedtools
+conda install samtools
+
 git clone --recursive https://github.com/BenoitMorel/ParGenes.git
 cd ParGenes
 module load cmake/3.27.7 
@@ -532,13 +534,41 @@ sed -e 's/-/N/g' test_3.gap-replaced.fasta > test_3.gap-replaced_NODASH.fasta
 sed -i 's/> />/g' TEST.fasta
 /global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes.py -a ./msa_files -o ./alignment_test_out --cores 64 -d nt -m --job-failure-fatal --use-astral
 
-
-
 https://github.com/owensgl/maf_explore/blob/main/maf2alignmentstats.pl
 
+#######################################################################################################
+cd /global/scratch/users/rdekayne/rockfish/maf_run
+cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked .
+samtools faidx SebastesalascanusSEB-2.fa.masked
+cut -f1,2 SebastesalascanusSEB-2.fa.masked.fai > sizes.genome
+bedtools makewindows -g sizes.genome -w 50000 > 50kb.txt 
 
+bedtools makewindows -g /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked -w 50000 > 50kb.txt 
 
+#run_hal2maf_windows.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
 
+export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
+
+numb=${SLURM_ARRAY_TASK_ID}
+bed_window=$(cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p)
+
+cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p > ${numb}.bed
+
+singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal ${bed_window}.maf --refGenome SebastesalascanusSEB-2 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+
+###run
+sbatch --array=1-20 run_hal2maf_windows.sh
 
 
 
