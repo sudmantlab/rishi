@@ -537,15 +537,14 @@ https://github.com/owensgl/maf_explore/blob/main/maf2alignmentstats.pl
 #######################################################################################################
 
 cd /global/scratch/users/rdekayne/rockfish/maf_run
-cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked .
+cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked .
 samtools faidx SebastesalascanusSEB-2.fa.masked
 cut -f1,2 SebastesalascanusSEB-2.fa.masked.fai > sizes.genome
 bedtools makewindows -g sizes.genome -w 50000 > 50kb.txt 
 
-bedtools makewindows -g /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/SebastesalascanusSEB-2.fa.masked -w 50000 > 50kb.txt 
-
 cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
 source cactus_env/bin/activate
+cd /global/scratch/users/rdekayne/rockfish/maf_run
 
 #run_hal2maf_windows.sh
 #!/bin/bash
@@ -569,7 +568,9 @@ cat /global/scratch/users/rdekayne/rockfish/maf_run/50kb.txt | sed -n ${numb}p >
 singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../03_CACTUS/26_rockfish.hal ${numb}.maf --refGenome SebastesalascanusSEB-2 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
 
 ###run
+mkdir maf_output
 sbatch --array=1-1000%10 run_hal2maf_windows.sh
+mv *.maf maf_output
 sbatch --array=1001-2000%10 run_hal2maf_windows.sh
 sbatch --array=2001-3000%10 run_hal2maf_windows.sh
 sbatch --array=3001-4000%10 run_hal2maf_windows.sh
