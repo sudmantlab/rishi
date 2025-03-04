@@ -570,8 +570,20 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ..
 ###run
 mkdir maf_output
 sbatch --array=1-1000%10 run_hal2maf_windows.sh
+ls *_js
+rm -r 163_js
+rm 163.bed
+rm -r 164_js
+rm 164.bed
+rm -r 500_js
+rm 500.bed
+rm -r 561_js
+rm 561.bed
+sbatch --array=163,164,500,561 run_hal2maf_windows.sh
 mv *.maf maf_output
-sbatch --array=1001-2000%10 run_hal2maf_windows.sh
+cp -r maf_output/ maf_output_1to1000
+
+sbatch --array=1001-2000%5 run_hal2maf_windows.sh
 sbatch --array=2001-3000%10 run_hal2maf_windows.sh
 sbatch --array=3001-4000%10 run_hal2maf_windows.sh
 sbatch --array=4001-5000%10 run_hal2maf_windows.sh
@@ -590,7 +602,8 @@ sbatch --array=16001-17000%10 run_hal2maf_windows.sh
 sbatch --array=17001-18000%10 run_hal2maf_windows.sh
 sbatch --array=18001-18527%10 run_hal2maf_windows.sh
 
-mkdir msa_files
+#1-608
+mkdir msa_files_ptg000001l
 
 conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
 
@@ -614,10 +627,10 @@ numb=${SLURM_ARRAY_TASK_ID}
 msa_view ${numb}.maf -f -G 1 --unmask | seqkit seq -w 0 > ${numb}.fasta
 sed -e 's/\*/N/g' ${numb}.fasta > ${numb}.gap-replaced.fasta
 sed -i 's/> />/g' ${numb}.gap-replaced.fasta
-cp ${numb}.gap-replaced.fasta ./msa_files/${numb}.gap-replaced.fasta
+cp ${numb}.gap-replaced.fasta ./msa_files_ptg000001l/${numb}.gap-replaced.fasta
 
 ###run
-sbatch --array=1-20 convert_maf2fasta.sh
+sbatch --array=1-608%10 convert_maf2fasta.sh
 
 conda activate /global/scratch/users/rdekayne/envs/trees
 
