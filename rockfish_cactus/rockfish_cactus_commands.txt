@@ -535,6 +535,7 @@ https://github.com/owensgl/maf_explore/blob/main/maf2alignmentstats.pl
 #                            FULL RUN
 #######################################################################################################
 #######################################################################################################
+200k 152
 
 cd /global/scratch/users/rdekayne/rockfish/maf_run
 cp /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/fasta/SebastesalascanusSEB-2.fa.masked .
@@ -544,7 +545,7 @@ bedtools makewindows -g sizes.genome -w 50000 > 50kb.txt
 
 cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
 source cactus_env/bin/activate
-cd /global/scratch/users/rdekayne/rockfish/maf_run
+cd /global/scratch/users/rdekayne/rockfish/maf_run100
 
 #run_hal2maf_windows.sh
 #!/bin/bash
@@ -645,15 +646,18 @@ conda activate /global/scratch/users/rdekayne/envs/trees
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --mem=100G
 #SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=24 # 2 CPUs per job
+#SBATCH --cpus-per-task=56 # 2 CPUs per job
 
-/global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes.py -a ./msa_files -o ./alignment_test_out --cores 64 -d nt -m --job-failure-fatal --use-astral
+/global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes-hpc.py -a ./msa_files_ptg000001l -o ./alignment_test_out_ptg000001l --cores 56 -d nt -m --job-failure-fatal --use-astral
 
 ##run
 sbatch run_pargenes.sh
 
+ls -v ./alignment_test_out_ptg000001l/modeltest_run/results/*_gap-replaced_fasta/*_gap-replaced_fasta.tree
 
-
+#
+for file in */*.log; do grep "Execution log" ${file} >> 200kblog.summary; grep "Invariant" ${file} >> 200kblog.summary; done
+sed -i 's/\/global\/scratch\/users\/rdekayne\/rockfish\/maf_run100\/maf_output_chr1\/alignment_test_out_ptg000001l\/mlsearch_run\/results\///g' 200kblog.summary
 
 
 
