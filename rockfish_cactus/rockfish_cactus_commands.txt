@@ -791,5 +791,69 @@ grep "Input file" ${file}
 grep "C:" ${file}
 done
 
+mkdir -p /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/all_busco_output
+cd /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/hap1_masked_fastas
+cp -r *_busco ../all_busco_output
+
+cd /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/hap2_masked_fastas
+cp -r *_busco ../all_busco_output
+
+
+#####################################
+#####################################
+#            02_TREES
+#####################################
+#####################################
+
+mkdir -p /global/scratch/users/rdekayne/rockfish50/02_TREES && cd /global/scratch/users/rdekayne/rockfish50/02_TREES
+conda activate BUSCO_phylogenomics
+
+#python BUSCO_phylogenomics/BUSCO_phylogenomics.py -help
+
+#run_BUSCO_phyhlogenomics.sh
+#!/bin/bash
+#SBATCH --job-name=busco
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=busco_phylo%j.out # output file
+#SBATCH --error=busco_phylo%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+python BUSCO_phylogenomics/BUSCO_phylogenomics.py -i /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/all_busco_output/ -o ./output_busco_phylogenomics --gene_trees_only --gene_tree_program iqtree -t 24
+
+touch BUSCO_phylogenomics_run1.done
+
+##run
+sbatch run_BUSCO_phyhlogenomics.sh
+
+conda install bioconda::astral-tree
+git clone https://github.com/smirarab/ASTRAL/
+module load openjdk/17.0.8.1_1-gcc-11.4.0
+./make.sh
+
+mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/astral_run1 && cd /global/scratch/users/rdekayne/rockfish/01_BUSCOS/astral_run1
+
+##make_astral_tree.sh
+#!/bin/bash
+#SBATCH --job-name=astral
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=astral%j.out # output file
+#SBATCH --error=astral%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+java -jar /global/scratch/users/rdekayne/rockfish/01_BUSCOS/ASTRAL/astral.5.7.8.jar -i /global/scratch/users/rdekayne/rockfish/01_BUSCOS/output_busco_phylogenomics/gene_trees_single_copy/ALL.tree -o all_buscos_28rockfish.tre
+touch tree.done
+
+##run
+sbatch make_astral_tree.sh
+
+cp all_buscos_28rockfish.tre all_buscos_28rockfish_renamed.tre
 
 
