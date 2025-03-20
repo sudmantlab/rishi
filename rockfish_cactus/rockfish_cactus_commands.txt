@@ -816,13 +816,14 @@ conda activate BUSCO_phylogenomics
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
 #SBATCH --output=busco_phylo%j.out # output file
 #SBATCH --error=busco_phylo%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-python BUSCO_phylogenomics/BUSCO_phylogenomics.py -i /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/all_busco_output/ -o ./output_busco_phylogenomics --gene_trees_only --gene_tree_program iqtree -t 24
+python /global/scratch/users/rdekayne/rockfish/01_BUSCOS/BUSCO_phylogenomics/BUSCO_phylogenomics.py  -i /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/output_busco_phylogenomics/all_busco_output/ -o ./output_busco_phylogenomics --gene_trees_only --gene_tree_program iqtree -t 24
 
 touch BUSCO_phylogenomics_run1.done
 
@@ -848,12 +849,104 @@ mkdir -p /global/scratch/users/rdekayne/rockfish/01_BUSCOS/astral_run1 && cd /gl
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-java -jar /global/scratch/users/rdekayne/rockfish/01_BUSCOS/ASTRAL/astral.5.7.8.jar -i /global/scratch/users/rdekayne/rockfish/01_BUSCOS/output_busco_phylogenomics/gene_trees_single_copy/ALL.tree -o all_buscos_28rockfish.tre
+java -jar /global/scratch/users/rdekayne/rockfish/01_BUSCOS/ASTRAL/astral.5.7.8.jar -i /global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics/gene_trees_single_copy/ALL.tree -o all_buscos_50rockfish.tre
 touch tree.done
 
 ##run
 sbatch make_astral_tree.sh
 
-cp all_buscos_28rockfish.tre all_buscos_28rockfish_renamed.tre
+#####################################
+#####################################
+#            03_CACTUS
+#####################################
+#####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/03_CACTUS && cd /global/scratch/users/rdekayne/rockfish50/03_CACTUS
+
+cp ../02_TREES/all_buscos_50rockfish.tre ./cactus_input_tree_rockfish50.tre
+
+sed -i 's/7164-PS-0001_copper.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0001_copper.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0002_black.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0002_black.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0003_rougheye.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0003_rougheye.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0004_widow.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0004_widow.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0005_yellowtail.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0005_yellowtail.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0006_popb.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0006_popb.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0007_lightdusky.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0007_lightdusky.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0008_quillback.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/7164-PS-0008_quillback.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/m84185_240412_222911_s4_deacon.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/m84185_240412_222911_s4_deacon.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesalutusPOP6_popa.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesalutusPOP6_popa.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesborealisSEB-8_shortraker.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesborealisSEB-8_shortraker.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastescarnatusSEB-258_gopher.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastescarnatusSEB-258_gopher.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastescrocotulusSEB-252_sunset.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastescrocotulusSEB-252_sunset.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesminiatusSEB-256_vermilion.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesminiatusSEB-256_vermilion.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesmystinusSEB-254_blue.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesmystinusSEB-254_blue.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastespolyspinisSEB-5_northern.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastespolyspinisSEB-5_northern.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/Sebastesruberrimus12-Yellowye1a.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/Sebastesruberrimus12-Yellowye1a.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesserranoidesSEB-259_olive.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/SebastesserranoidesSEB-259_olive.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/bocaccio-ccgp.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/bocaccio-ccgp.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/widow-ccgp.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/widow-ccgp.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/acadian-vgp.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/acadian-vgp.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/honeycomb-vgp.fa.masked.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/honeycomb-vgp.fa.masked.hap2_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/Sebastes_aleutianus_rougheye.rohit.fa.hap1_busco//g' cactus_input_tree_rockfish50.tre
+sed -i 's/Ssc.HIC_korean.fa.hap1_busco//g' cactus_input_tree_rockfish50.tre
 
 
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
+
+singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome SebastesalascanusSEB-2 --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --chunkSize 1000000 --batchMemory 50G --maxMemory 100G
+
+#run
+sbatch test_hal_to_maf.sh
+
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+singularity exec ../03_CACTUS/cactus_v2.9.3.sif cactus ./js ../cactus_input_26rockfish.txt ./26_rockfish.hal --binariesMode singularity
+
+##RUN
+sbatch test_26rockfish_alignment.sh
