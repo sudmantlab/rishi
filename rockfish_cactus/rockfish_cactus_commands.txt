@@ -870,6 +870,7 @@ sed -i 's/.fa.masked.hap1_busco/.1/g' cactus_input_tree_rockfish50.tre
 sed -i 's/.fa.masked.hap2_busco/.2/g' cactus_input_tree_rockfish50.tre
 
 #input cactus file:
+##cactus_input_50rockfish.txt
 (Ssc.HIC_korean,((SebastesalascanusSEB-2_shortspinethornyhead.1,SebastesalascanusSEB-2_shortspinethornyhead.2)1:4.084433495564716,((((SebastesborealisSEB-8_shortraker.1,SebastesborealisSEB-8_shortraker.2)1:0.7789235089108395,((SebastesmelanostictusSEB-4_blackspotted.1,SebastesmelanostictusSEB-4_blackspotted.2)1:0.22433104492464048,(Sebastes_aleutianus_rougheye,(7164-PS-0003_rougheye.1,7164-PS-0003_rougheye.2)0.84:0.020083284392738942)1:0.2828645729677182)1:0.2979681488386202)1:0.09774672136103887,((acadian-vgp.2,acadian-vgp.1)1:1.2613218338213825,(((7164-PS-0006_popb.1,7164-PS-0006_popb.2)0.99:0.031693555833783096,(SebastesalutusPOP6_popa.1,SebastesalutusPOP6_popa.2)0.85:0.019678405371807504)1:0.7141528384091491,((SebastespolyspinisSEB-5_northern.1,SebastespolyspinisSEB-5_northern.2)1:0.3325954526781119,(7164-PS-0007_lightdusky.1,7164-PS-0007_lightdusky.2)1:0.35169920083306605)1:0.459831293441406)1:0.14960374563653508)0.92:0.022574249374326984)1:0.09397775961008659,((((SebastesserranoidesSEB-259_olive.1,SebastesserranoidesSEB-259_olive.2)1:0.634036117646037,((7164-PS-0002_black.2,7164-PS-0002_black.1)1:0.14127251170426933,(7164-PS-0005_yellowtail.2,7164-PS-0005_yellowtail.1)1:0.16187909386465774)1:0.27839427557004387)1:0.375885637151295,(((SebastesmystinusSEB-254_blue.1,SebastesmystinusSEB-254_blue.2)1:0.12321509545298512,(m84185_240412_222911_s4_deacon.1,m84185_240412_222911_s4_deacon.2)1:0.12685842213153758)1:0.41165127775658406,(widow-ccgp.2,(widow-ccgp.1,(7164-PS-0004_widow.2,7164-PS-0004_widow.1)0.64:0.01091967745174437)0.56:0.00910280773395564)1:0.5998306622866464)1:0.3126707355155873)1:0.17327365209439646,(((SebastescrocotulusSEB-252_sunset.2,SebastescrocotulusSEB-252_sunset.1)0.99:0.031554477405261835,(SebastesminiatusSEB-256_vermilion.1,SebastesminiatusSEB-256_vermilion.2)0.87:0.0203201935266721)1:0.9262808380981956,((bocaccio-ccgp.2,bocaccio-ccgp.1)1:1.3724319678578847,(((honeycomb-vgp.1,honeycomb-vgp.2)1:0.7648123672070336,(Sebastesruberrimus12-Yellowye1a.2,Sebastesruberrimus12-Yellowye1a.1)1:0.7770253573946146)0.85:0.018875817296964165,(((7164-PS-0001_copper.2,7164-PS-0001_copper.1)1:0.15990403887356056,(7164-PS-0008_quillback.1,7164-PS-0008_quillback.2)1:0.1253432887470529)0.96:0.027077051620424942,(SebastescarnatusSEB-258_gopher.1,SebastescarnatusSEB-258_gopher.2)1:0.084268971884613)1:0.8079329630215969)0.5:0.006549751018274216)0.45:0.007248848743529533)1:0.0845141623452026)1:0.06663058235339567)1:0.08966557643352899):0.0); 
 
 7164-PS-0001_copper.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1
@@ -924,37 +925,24 @@ Sebastes_aleutianus_rougheye /global/scratch/users/rdekayne/rockfish50/01_BUSCOS
 Ssc.HIC_korean /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/Ssc.HIC_korean.fa.hap1
 
 
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+cd /global/scratch/users/rdekayne/rockfish50/03_CACTUS
+
+##run50cactus.sh
 #!/bin/bash
-#SBATCH --job-name=cactus_test
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --job-name=cactus_50
+#SBATCH --time=7-00:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
-#SBATCH --output=cactus_test%j.out # output file
-#SBATCH --error=cactus_test%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --mem=100G
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=24 # 2 CPUs per job
-
-export TMPDIR=/global/scratch/users/rdekayne/rockfish/maf_test/test_tmp
-
-singularity exec -B /global/scratch/users/rdekayne/rockfish/maf_test/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./js ../03_CACTUS/26_rockfish.hal test.maf --refGenome SebastesalascanusSEB-2 --noAncestors --targetGenomes SebastesalascanusSEB-2,SebastesalutusPOP6,SebastesborealisSEB-8 --bedRanges test.bed --chunkSize 1000000 --batchMemory 50G --maxMemory 100G
-
-#run
-sbatch test_hal_to_maf.sh
-
-#!/bin/bash
-#SBATCH --job-name=cactus_test
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
-#SBATCH --account=co_genomicdata
-#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
 #SBATCH --output=cactus_test%j.out # output file
 #SBATCH --error=cactus_test%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
 #SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=24 # 2 CPUs per job
+#SBATCH --cpus-per-task=56 # 2 CPUs per job
 
-singularity exec ../03_CACTUS/cactus_v2.9.3.sif cactus ./js ../cactus_input_26rockfish.txt ./26_rockfish.hal --binariesMode singularity
+singularity exec ../../rockfish/03_CACTUS/cactus_v2.9.3.sif cactus ./js ./cactus_input_50rockfish.txt ./50_rockfish.hal --binariesMode singularity
 
 ##RUN
-sbatch test_26rockfish_alignment.sh
+sbatch run50cactus.sh
