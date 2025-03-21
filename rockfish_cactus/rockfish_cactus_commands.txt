@@ -864,56 +864,64 @@ mkdir -p /global/scratch/users/rdekayne/rockfish50/03_CACTUS && cd /global/scrat
 
 cp ../02_TREES/all_buscos_50rockfish.tre ./cactus_input_tree_rockfish50.tre
 
-sed -i 's/7164-PS-0001_copper.fa.masked.hap1_busco/7164-PS-0001_copper.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0001_copper.fa.masked.hap2_busco/7164-PS-0001_copper.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0002_black.fa.masked.hap1_busco/7164-PS-0002_black.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0002_black.fa.masked.hap2_busco/7164-PS-0002_black.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0003_rougheye.fa.masked.hap1_busco/7164-PS-0003_rougheye.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0003_rougheye.fa.masked.hap2_busco/7164-PS-0003_rougheye.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0004_widow.fa.masked.hap1_busco/7164-PS-0004_widow.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0004_widow.fa.masked.hap2_busco/7164-PS-0004_widow.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0005_yellowtail.fa.masked.hap1_busco/7164-PS-0005_yellowtail.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0005_yellowtail.fa.masked.hap2_busco/7164-PS-0005_yellowtail.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0006_popb.fa.masked.hap1_busco/7164-PS-0006_popb.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0006_popb.fa.masked.hap2_busco/7164-PS-0006_popb.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0007_lightdusky.fa.masked.hap1_busco/7164-PS-0007_lightdusky.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0007_lightdusky.fa.masked.hap2_busco/7164-PS-0007_lightdusky.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0008_quillback.fa.masked.hap1_busco/7164-PS-0008_quillback.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/7164-PS-0008_quillback.fa.masked.hap2_busco/7164-PS-0008_quillback.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/m84185_240412_222911_s4_deacon.fa.masked.hap1_busco/m84185_240412_222911_s4_deacon.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/m84185_240412_222911_s4_deacon.fa.masked.hap2_busco/m84185_240412_222911_s4_deacon.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1_busco/SebastesalascanusSEB-2_shortspinethornyhead.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap2_busco/SebastesalascanusSEB-2_shortspinethornyhead.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesalutusPOP6_popa.fa.masked.hap1_busco/SebastesalutusPOP6_popa.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesalutusPOP6_popa.fa.masked.hap2_busco/SebastesalutusPOP6_popa.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesborealisSEB-8_shortraker.fa.masked.hap1_busco/SebastesborealisSEB-8_shortraker.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesborealisSEB-8_shortraker.fa.masked.hap2_busco/SebastesborealisSEB-8_shortraker.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastescarnatusSEB-258_gopher.fa.masked.hap1_busco/SebastescarnatusSEB-258_gopher.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastescarnatusSEB-258_gopher.fa.masked.hap2_busco/SebastescarnatusSEB-258_gopher.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastescrocotulusSEB-252_sunset.fa.masked.hap1_busco/SebastescrocotulusSEB-252_sunset.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastescrocotulusSEB-252_sunset.fa.masked.hap2_busco/SebastescrocotulusSEB-252_sunset.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap1_busco/SebastesmelanostictusSEB-4_blackspotted.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap2_busco/SebastesmelanostictusSEB-4_blackspotted.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesminiatusSEB-256_vermilion.fa.masked.hap1_busco/SebastesminiatusSEB-256_vermilion.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesminiatusSEB-256_vermilion.fa.masked.hap2_busco/SebastesminiatusSEB-256_vermilion.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesmystinusSEB-254_blue.fa.masked.hap1_busco/SebastesmystinusSEB-254_blue.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesmystinusSEB-254_blue.fa.masked.hap2_busco/SebastesmystinusSEB-254_blue.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastespolyspinisSEB-5_northern.fa.masked.hap1_busco/SebastespolyspinisSEB-5_northern.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastespolyspinisSEB-5_northern.fa.masked.hap2_busco/SebastespolyspinisSEB-5_northern.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/Sebastesruberrimus12-Yellowye1a.fa.masked.hap1_busco/Sebastesruberrimus12-Yellowye1a.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/Sebastesruberrimus12-Yellowye1a.fa.masked.hap2_busco/Sebastesruberrimus12-Yellowye1a.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesserranoidesSEB-259_olive.fa.masked.hap1_busco/SebastesserranoidesSEB-259_olive.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/SebastesserranoidesSEB-259_olive.fa.masked.hap2_busco/SebastesserranoidesSEB-259_olive.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/bocaccio-ccgp.fa.masked.hap1_busco/bocaccio-ccgp.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/bocaccio-ccgp.fa.masked.hap2_busco/bocaccio-ccgp.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/widow-ccgp.fa.masked.hap1_busco/widow-ccgp.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/widow-ccgp.fa.masked.hap2_busco/widow-ccgp.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/acadian-vgp.fa.masked.hap1_busco/acadian-vgp.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/acadian-vgp.fa.masked.hap2_busco/acadian-vgp.2/g' cactus_input_tree_rockfish50.tre
-sed -i 's/honeycomb-vgp.fa.masked.hap1_busco/honeycomb-vgp.1/g' cactus_input_tree_rockfish50.tre
-sed -i 's/honeycomb-vgp.fa.masked.hap2_busco/honeycomb-vgp.2/g' cactus_input_tree_rockfish50.tre
 sed -i 's/Sebastes_aleutianus_rougheye.rohit.fa.hap1_busco/Sebastes_aleutianus_rougheye/g' cactus_input_tree_rockfish50.tre
 sed -i 's/Ssc.HIC_korean.fa.hap1_busco/Ssc.HIC_korean/g' cactus_input_tree_rockfish50.tre
+sed -i 's/.fa.masked.hap1_busco/.1/g' cactus_input_tree_rockfish50.tre
+sed -i 's/.fa.masked.hap2_busco/.2/g' cactus_input_tree_rockfish50.tre
+
+#input cactus file:
+(Ssc.HIC_korean,((SebastesalascanusSEB-2_shortspinethornyhead.1,SebastesalascanusSEB-2_shortspinethornyhead.2)1:4.084433495564716,((((SebastesborealisSEB-8_shortraker.1,SebastesborealisSEB-8_shortraker.2)1:0.7789235089108395,((SebastesmelanostictusSEB-4_blackspotted.1,SebastesmelanostictusSEB-4_blackspotted.2)1:0.22433104492464048,(Sebastes_aleutianus_rougheye,(7164-PS-0003_rougheye.1,7164-PS-0003_rougheye.2)0.84:0.020083284392738942)1:0.2828645729677182)1:0.2979681488386202)1:0.09774672136103887,((acadian-vgp.2,acadian-vgp.1)1:1.2613218338213825,(((7164-PS-0006_popb.1,7164-PS-0006_popb.2)0.99:0.031693555833783096,(SebastesalutusPOP6_popa.1,SebastesalutusPOP6_popa.2)0.85:0.019678405371807504)1:0.7141528384091491,((SebastespolyspinisSEB-5_northern.1,SebastespolyspinisSEB-5_northern.2)1:0.3325954526781119,(7164-PS-0007_lightdusky.1,7164-PS-0007_lightdusky.2)1:0.35169920083306605)1:0.459831293441406)1:0.14960374563653508)0.92:0.022574249374326984)1:0.09397775961008659,((((SebastesserranoidesSEB-259_olive.1,SebastesserranoidesSEB-259_olive.2)1:0.634036117646037,((7164-PS-0002_black.2,7164-PS-0002_black.1)1:0.14127251170426933,(7164-PS-0005_yellowtail.2,7164-PS-0005_yellowtail.1)1:0.16187909386465774)1:0.27839427557004387)1:0.375885637151295,(((SebastesmystinusSEB-254_blue.1,SebastesmystinusSEB-254_blue.2)1:0.12321509545298512,(m84185_240412_222911_s4_deacon.1,m84185_240412_222911_s4_deacon.2)1:0.12685842213153758)1:0.41165127775658406,(widow-ccgp.2,(widow-ccgp.1,(7164-PS-0004_widow.2,7164-PS-0004_widow.1)0.64:0.01091967745174437)0.56:0.00910280773395564)1:0.5998306622866464)1:0.3126707355155873)1:0.17327365209439646,(((SebastescrocotulusSEB-252_sunset.2,SebastescrocotulusSEB-252_sunset.1)0.99:0.031554477405261835,(SebastesminiatusSEB-256_vermilion.1,SebastesminiatusSEB-256_vermilion.2)0.87:0.0203201935266721)1:0.9262808380981956,((bocaccio-ccgp.2,bocaccio-ccgp.1)1:1.3724319678578847,(((honeycomb-vgp.1,honeycomb-vgp.2)1:0.7648123672070336,(Sebastesruberrimus12-Yellowye1a.2,Sebastesruberrimus12-Yellowye1a.1)1:0.7770253573946146)0.85:0.018875817296964165,(((7164-PS-0001_copper.2,7164-PS-0001_copper.1)1:0.15990403887356056,(7164-PS-0008_quillback.1,7164-PS-0008_quillback.2)1:0.1253432887470529)0.96:0.027077051620424942,(SebastescarnatusSEB-258_gopher.1,SebastescarnatusSEB-258_gopher.2)1:0.084268971884613)1:0.8079329630215969)0.5:0.006549751018274216)0.45:0.007248848743529533)1:0.0845141623452026)1:0.06663058235339567)1:0.08966557643352899):0.0); 
+
+7164-PS-0001_copper.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1
+7164-PS-0001_copper.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0001_copper.fa.masked.hap2
+7164-PS-0002_black.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0002_black.fa.masked.hap1
+7164-PS-0002_black.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0002_black.fa.masked.hap2
+7164-PS-0003_rougheye.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0003_rougheye.fa.masked.hap1
+7164-PS-0003_rougheye.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0003_rougheye.fa.masked.hap2
+7164-PS-0004_widow.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0004_widow.fa.masked.hap1
+7164-PS-0004_widow.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0004_widow.fa.masked.hap2
+7164-PS-0005_yellowtail.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0005_yellowtail.fa.masked.hap1
+7164-PS-0005_yellowtail.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0005_yellowtail.fa.masked.hap2
+7164-PS-0006_popb.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0006_popb.fa.masked.hap1
+7164-PS-0006_popb.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0006_popb.fa.masked.hap2
+7164-PS-0007_lightdusky.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0007_lightdusky.fa.masked.hap1
+7164-PS-0007_lightdusky.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0007_lightdusky.fa.masked.hap2
+7164-PS-0008_quillback.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/7164-PS-0008_quillback.fa.masked.hap1
+7164-PS-0008_quillback.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/7164-PS-0008_quillback.fa.masked.hap2
+m84185_240412_222911_s4_deacon.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/m84185_240412_222911_s4_deacon.fa.masked.hap1
+m84185_240412_222911_s4_deacon.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/m84185_240412_222911_s4_deacon.fa.masked.hap2
+SebastesalascanusSEB-2_shortspinethornyhead.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
+SebastesalascanusSEB-2_shortspinethornyhead.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap2
+SebastesalutusPOP6_popa.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesalutusPOP6_popa.fa.masked.hap1
+SebastesalutusPOP6_popa.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesalutusPOP6_popa.fa.masked.hap2
+SebastesborealisSEB-8_shortraker.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesborealisSEB-8_shortraker.fa.masked.hap1
+SebastesborealisSEB-8_shortraker.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesborealisSEB-8_shortraker.fa.masked.hap2
+SebastescarnatusSEB-258_gopher.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastescarnatusSEB-258_gopher.fa.masked.hap1
+SebastescarnatusSEB-258_gopher.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastescarnatusSEB-258_gopher.fa.masked.hap2
+SebastescrocotulusSEB-252_sunset.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastescrocotulusSEB-252_sunset.fa.masked.hap1
+SebastescrocotulusSEB-252_sunset.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastescrocotulusSEB-252_sunset.fa.masked.hap2
+SebastesmelanostictusSEB-4_blackspotted.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap1
+SebastesmelanostictusSEB-4_blackspotted.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap2
+SebastesminiatusSEB-256_vermilion.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesminiatusSEB-256_vermilion.fa.masked.hap1
+SebastesminiatusSEB-256_vermilion.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesminiatusSEB-256_vermilion.fa.masked.hap2
+SebastesmystinusSEB-254_blue.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesmystinusSEB-254_blue.fa.masked.hap1
+SebastesmystinusSEB-254_blue.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesmystinusSEB-254_blue.fa.masked.hap2
+SebastespolyspinisSEB-5_northern.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastespolyspinisSEB-5_northern.fa.masked.hap1
+SebastespolyspinisSEB-5_northern.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastespolyspinisSEB-5_northern.fa.masked.hap2
+Sebastesruberrimus12-Yellowye1a.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/Sebastesruberrimus12-Yellowye1a.fa.masked.hap1
+Sebastesruberrimus12-Yellowye1a.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/Sebastesruberrimus12-Yellowye1a.fa.masked.hap2
+SebastesserranoidesSEB-259_olive.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/SebastesserranoidesSEB-259_olive.fa.masked.hap1
+SebastesserranoidesSEB-259_olive.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/SebastesserranoidesSEB-259_olive.fa.masked.hap2
+bocaccio-ccgp.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/bocaccio-ccgp.fa.masked.hap1
+bocaccio-ccgp.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/bocaccio-ccgp.fa.masked.hap2
+widow-ccgp.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/widow-ccgp.fa.masked.hap1
+widow-ccgp.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/widow-ccgp.fa.masked.hap2
+acadian-vgp.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/acadian-vgp.fa.masked.hap1
+acadian-vgp.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/acadian-vgp.fa.masked.hap2
+honeycomb-vgp.1 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/honeycomb-vgp.fa.masked.hap1
+honeycomb-vgp.2 /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap2_masked_fastas/honeycomb-vgp.fa.masked.hap2
+Sebastes_aleutianus_rougheye /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/Sebastes_aleutianus_rougheye.rohit.fa.hap1
+Ssc.HIC_korean /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/Ssc.HIC_korean.fa.hap1
 
 
 #!/bin/bash
