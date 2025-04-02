@@ -660,10 +660,6 @@ for file in */*.log; do grep "Execution log" ${file} >> 200kblog.summary; grep "
 sed -i 's/\/global\/scratch\/users\/rdekayne\/rockfish\/maf_run100\/maf_output_chr1\/alignment_test_out_ptg000001l\/mlsearch_run\/results\///g' 200kblog.summary
 
 
-
-###annotation
-https://bioconda.github.io/recipes/comparative-annotation-toolkit/README.html
-
 ### tree comparison
 mkdir -p /global/scratch/users/rdekayne/rockfish/tree_comparison && cd /global/scratch/users/rdekayne/rockfish/tree_comparison
 
@@ -724,6 +720,27 @@ print(f"Number of unique topologies: {len(topologies)}")
 
 /global/scratch/users/rdekayne/envs/trees/bin/python process_topology_summary.py 
 
+
+#####################################
+#####################################
+#            04_CAT_ANNO
+#####################################
+#####################################
+
+mkdir -p /global/scratch/users/rdekayne/rockfish/04_CAT_ANNO && cd /global/scratch/users/rdekayne/rockfish/04_CAT_ANNO
+
+###annotation
+https://bioconda.github.io/recipes/comparative-annotation-toolkit/README.html
+
+singularity build CAT.sif docker://github.com/ComparativeGenomicsToolkit/Comparative-Annotation-Toolkit/tree/master
+singularity pull docker:://hub.docker.com/r/realtkd/comparative-annotation-toolkit/
+
+
+singularity pull docker://hub.docker.com/r/realtkd/comparative-annotation-toolkit:20190220
+singularity run cactus_v2.9.3.sif
+halValidate --help
+halStats --help
+singularity run cactus_v2.9.3.sif
 
 
 #########################################################################
