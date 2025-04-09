@@ -963,3 +963,25 @@ singularity exec ../../rockfish/03_CACTUS/cactus_v2.9.3.sif cactus ./js ./cactus
 
 ##RUN
 sbatch run50cactus.sh
+
+
+#run_halval_and_halstat.sh
+
+#!/bin/bash
+#SBATCH --job-name=cactus_val_stat
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+singularity pull docker://quay.io/comparative-genomics-toolkit/cactus:v2.9.3
+singularity run cactus_v2.9.3.sif
+halValidate ./50_rockfish.hal
+halStats ./50_rockfish.hal
+
+##run
+sbatch run_halval_and_halstat.sh
