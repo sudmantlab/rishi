@@ -517,7 +517,7 @@ conda install conda-forge::ete3
 git clone --recursive https://github.com/BenoitMorel/ParGenes.git
 cd ParGenes
 module load cmake/3.27.7 
-./install 10
+./install.sh 10
 
 cd /global/scratch/users/rdekayne/rockfish
 mkdir ./pargenes_test
