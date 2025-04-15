@@ -660,67 +660,6 @@ for file in */*.log; do grep "Execution log" ${file} >> 200kblog.summary; grep "
 sed -i 's/\/global\/scratch\/users\/rdekayne\/rockfish\/maf_run100\/maf_output_chr1\/alignment_test_out_ptg000001l\/mlsearch_run\/results\///g' 200kblog.summary
 
 
-### tree comparison
-mkdir -p /global/scratch/users/rdekayne/rockfish/tree_comparison && cd /global/scratch/users/rdekayne/rockfish/tree_comparison
-
-cat tree_test_file.txt                                                                                                                                         
-((A, B), (C, (D, E)));                                                                                                                                                                                                
-((A, (B, C)), (D, E));                                                                                                                                                                                                (((A, B), C), (D, E));
-
-cat ref_tree.txt 
-((A, B), (C, (D, E)));
-
-cat tree_test_file.txt | ete3 compare -r ref_tree.txt
-
-from ete3 import Tree
-
-# Load trees and specify root species
-trees = {
-    "Tree1": Tree("((A, B), (C, (D, E)));"),
-    "Tree2": Tree("((A, (B, C)), (D, E));"),
-    "Tree3": Tree("(((A, B), C), (D, E));")
-}
-
-# Specify root species for each tree and root it
-root_species = {
-    "Tree1": "A",  # Example, root Tree1 at species A
-    "Tree2": "B",  # Example, root Tree2 at species B
-    "Tree3": "C"   # Example, root Tree3 at species C
-}
-
-# Root trees based on the root species
-for tree_name, tree in trees.items():
-    root_taxon = root_species[tree_name]
-    tree.set_outgroup(root_taxon)
-
-# Function to get the topology of a tree as a string
-def get_tree_topology(tree):
-    return tree.write(format=1)  # This gives Newick format, which can be used for comparison
-
-# Create a dictionary to store the topology of each tree
-topologies = {}
-
-for tree_name, tree in trees.items():
-    topology = get_tree_topology(tree)
-    if topology not in topologies:
-        topologies[topology] = []
-    topologies[topology].append(tree_name)
-
-# Output the unique topologies and the trees that correspond to each topology
-print("Unique Topologies:")
-for topology, tree_names in topologies.items():
-    print(f"Topology: {topology}")
-    print(f"Trees with this topology: {', '.join(tree_names)}")
-
-# Count how many unique topologies are present
-print(f"Number of unique topologies: {len(topologies)}")
-
-##
-/global/scratch/users/rdekayne/envs/trees/bin/python topology_process.py
-
-/global/scratch/users/rdekayne/envs/trees/bin/python process_topology_summary.py 
-
-
 #####################################
 #####################################
 #            04_CAT_ANNO
@@ -1089,3 +1028,45 @@ Anc38, 2, 803527785, 1813, 2816390, 3593549
 Anc36, 2, 797570388, 1620, 5902499, 3802612
 SebastescarnatusSEB-258_gopher.1, 0, 834936096, 381, 4091194, 0
 SebastescarnatusSEB-258_gopher.2, 0, 820708855, 163, 4021418, 0
+
+#####################################
+#####################################
+#            04_HAL_TO_TREES
+#####################################
+#####################################
+
+mkdir -p mkdir /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES && cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
+
+cp ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 .
+conda activate /global/scratch/users/rdekayne/envs/trees
+samtools faidx SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
+cut -f1,2 SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1.fai > sizes.genome
+bedtools makewindows -g sizes.genome -w 100000 > 100kb.txt
+
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+mkdir -p /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100 && cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100
+
+#run_hal2maf_windows.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_100kb
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+
+numb=${SLURM_ARRAY_TASK_ID}
+
+cat /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/h1tg000001l_windows.txt | sed -n ${numb}p > ${numb}.bed
+
+singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome SebastesalascanusSEB-2_shortspinethornyhead.1 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+
+###run
+sbatch --array=1-230%10 run_hal2maf_windows.sh
