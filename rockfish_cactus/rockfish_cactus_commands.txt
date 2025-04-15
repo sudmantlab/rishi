@@ -1047,6 +1047,7 @@ cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
 source cactus_env/bin/activate
 mkdir -p /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100 && cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100
 
+############################# HAL --> MAF
 #run_hal2maf_windows.sh
 #!/bin/bash
 #SBATCH --job-name=cactus_100kb
@@ -1070,3 +1071,51 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/te
 
 ###run
 sbatch --array=1-230%10 run_hal2maf_windows.sh
+
+############################# MAF --> FASTA/MSA
+
+mkdir -p /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100/msa_files_100k
+
+#convert_maf2fasta.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+
+numb=${SLURM_ARRAY_TASK_ID}
+
+msa_view ${numb}.maf -f -G 1 --unmask | seqkit seq -w 0 > ${numb}.fasta
+sed -e 's/\*/N/g' ${numb}.fasta > ${numb}.gap-replaced.fasta
+sed -i 's/> />/g' ${numb}.gap-replaced.fasta
+mv ${numb}.gap-replaced.fasta ./msa_files_100k/${numb}.gap-replaced.fasta
+
+###run
+sbatch --array=1-230%20 convert_maf2fasta.sh
+
+conda activate /global/scratch/users/rdekayne/envs/trees
+
+#run_pargenes.sh
+#!/bin/bash
+#SBATCH --job-name=pargenes
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=pargenes%j.out # output file
+#SBATCH --error=pargenes%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=56 # 2 CPUs per job
+
+/global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes-hpc.py -a ./msa_files_ptg000001l -o ./alignment_test_out_ptg000001l --cores 56 -d nt -m --job-failure-fatal --use-astral
+
+##run
