@@ -1075,6 +1075,7 @@ sbatch --array=1-230%10 run_hal2maf_windows.sh
 ############################# MAF --> FASTA/MSA
 
 mkdir -p /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100/msa_files_100k
+conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
 
 #convert_maf2fasta.sh
 #!/bin/bash
@@ -1116,6 +1117,34 @@ conda activate /global/scratch/users/rdekayne/envs/trees
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=56 # 2 CPUs per job
 
-/global/scratch/users/rdekayne/rockfish/maf_test/ParGenes/pargenes/pargenes-hpc.py -a ./msa_files_ptg000001l -o ./alignment_test_out_ptg000001l --cores 56 -d nt -m --job-failure-fatal --use-astral
+/global/scratch/users/rdekayne/rockfish/ParGenes/pargenes/pargenes.py -a ./msa_files_100k -o ./h1tg000001l_windows --cores 56 -d nt -m --job-failure-fatal --use-astral
 
 ##run
+sbatch run_pargenes.sh
+
+
+#####################################
+#####################################
+#            05_RER_BUSCOS
+#####################################
+#####################################
+
+#busco alignments are located here: 
+/global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics/gene_trees_single_copy/alignments_4
+
+#cactus tree to use as master tree is here:
+(Ssc.HIC_korean:1,((SebastesalascanusSEB-2_shortspinethornyhead.1:1,SebastesalascanusSEB-2_shortspinethornyhead.2:1)Anc02:4.08443,((((SebastesborealisSEB-8_shortraker.1:1,SebastesborealisSEB-8_shortraker.2:1)Anc09:0.778924,((SebastesmelanostictusSEB-4_blackspotted.1:1,SebastesmelanostictusSEB-4_blackspotted.2:1)Anc16:0.224331,(Sebastes_aleutianus_rougheye:1,(7164-PS-0003_rougheye.1:1,7164-PS-0003_rougheye.2:1)0.84:0.0200833)Anc17:0.282865)Anc10:0.297968)Anc06:0.0977467,((acadian-vgp.2:1,acadian-vgp.1:1)Anc11:1.26132,(((7164-PS-0006_popb.1:1,7164-PS-0006_popb.2:1)0.99:0.0316936,(SebastesalutusPOP6_popa.1:1,SebastesalutusPOP6_popa.2:1)0.85:0.0196784)Anc18:0.714153,((SebastespolyspinisSEB-5_northern.1:1,SebastespolyspinisSEB-5_northern.2:1)Anc26:0.332595,(7164-PS-0007_lightdusky.1:1,7164-PS-0007_lightdusky.2:1)Anc27:0.351699)Anc19:0.459831)Anc12:0.149604)0.92:0.0225742)Anc04:0.0939778,((((SebastesserranoidesSEB-259_olive.1:1,SebastesserranoidesSEB-259_olive.2:1)Anc20:0.634036,((7164-PS-0002_black.2:1,7164-PS-0002_black.1:1)Anc28:0.141273,(7164-PS-0005_yellowtail.2:1,7164-PS-0005_yellowtail.1:1)Anc29:0.161879)Anc21:0.278394)Anc13:0.375886,(((SebastesmystinusSEB-254_blue.1:1,SebastesmystinusSEB-254_blue.2:1)Anc30:0.123215,(m84185_240412_222911_s4_deacon.1:1,m84185_240412_222911_s4_deacon.2:1)Anc31:0.126858)Anc22:0.411651,(widow-ccgp.2:1,(widow-ccgp.1:1,(7164-PS-0004_widow.2:1,7164-PS-0004_widow.1:1)0.64:0.0109197)0.56:0.00910281)Anc23:0.599831)Anc14:0.312671)Anc07:0.173274,(((SebastescrocotulusSEB-252_sunset.2:1,SebastescrocotulusSEB-252_sunset.1:1)Anc24:0.0315545,(SebastesminiatusSEB-256_vermilion.1:1,SebastesminiatusSEB-256_vermilion.2:1)0.87:0.0203202)Anc15:0.926281,((bocaccio-ccgp.2:1,bocaccio-ccgp.1:1)Anc25:1.37243,(((honeycomb-vgp.1:1,honeycomb-vgp.2:1)Anc34:0.764812,(Sebastesruberrimus12-Yellowye1a.2:1,Sebastesruberrimus12-Yellowye1a.1:1)Anc35:0.777025)Anc32:0.0188758,(((7164-PS-0001_copper.2:1,7164-PS-0001_copper.1:1)Anc37:0.159904,(7164-PS-0008_quillback.1:1,7164-PS-0008_quillback.2:1)Anc38:0.125343)0.96:0.0270771,(SebastescarnatusSEB-258_gopher.1:1,SebastescarnatusSEB-258_gopher.2:1)Anc36:0.084269)Anc33:0.807933)0.5:0.00654975)0.45:0.00724885)Anc08:0.0845142)Anc05:0.0666306)Anc03:0.0896656)Anc01:0)Anc00;
+
+#need to process this and rename for RER converge using process_cactus_tree_for_RER.R
+
+#get count of genes:
+ls /global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics/gene_trees_single_copy/alignments_4/* | wc -l
+##3621
+
+#then load conda env "/global/scratch/users/rdekayne/envs/RER/" in terminal on RStudio OOD and do RER converge bit with: 
+
+
+
+
+
+
