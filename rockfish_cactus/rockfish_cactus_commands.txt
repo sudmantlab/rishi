@@ -1035,6 +1035,47 @@ SebastescarnatusSEB-258_gopher.2, 0, 820708855, 163, 4021418, 0
 #####################################
 #####################################
 
+#try converting whole hal to maf
+
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
+mkdir -p mkdir whole_hal_to_maf && cd whole_hal_to_maf
+
+#conv_hal_to_maf.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_hal_to_maf
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+
+singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./rockfish50_js ../../03_CACTUS/50_rockfish.hal 50_rockfish.maf --refGenome SebastesalascanusSEB-2_shortspinethornyhead.1 --noAncestors --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+
+#run
+sbatch conv_hal_to_maf.sh
+
+#then index the MAF
+taffy index -i TAF_FILE (or MAF_FILE)
+
+#then extract specific sequence bits:
+taffy view -r hg38.chr10:550000-600000 will extract the 50000bp (0-based, open-ended) interval on hg38.chr10 in either TAF (default) or MAF (add -m) format. 
+
+
+
+
+
+
+
+
+
 mkdir -p mkdir /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES && cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
 
 cp ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 .
