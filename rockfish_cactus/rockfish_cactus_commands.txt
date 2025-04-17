@@ -1062,6 +1062,15 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/te
 #run
 sbatch conv_hal_to_maf.sh
 
+conda create -p /global/scratch/users/rdekayne/envs/taf
+conda activate /global/scratch/users/rdekayne/envs/taf
+conda install bioconda::htslib
+
+
+git clone --recursive https://github.com/BenoitMorel/ParGenes.git
+cd ParGenes
+module load cmake/3.27.7 
+./install.sh 10
 #then index the MAF
 taffy index -i TAF_FILE (or MAF_FILE)
 
