@@ -1065,6 +1065,7 @@ sbatch conv_hal_to_maf.sh
 conda create -p /global/scratch/users/rdekayne/envs/taf
 conda activate /global/scratch/users/rdekayne/envs/taf
 conda install bioconda::htslib
+conda install bioconda::samtools
 
 
 git clone --recursive https://github.com/BenoitMorel/ParGenes.git
