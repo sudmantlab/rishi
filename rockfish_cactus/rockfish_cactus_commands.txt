@@ -1180,6 +1180,8 @@ sbatch run_pargenes.sh
 #####################################
 #####################################
 
+mkdir -p /global/scratch/users/rdekayne/rockfish50/05_RER_BUSCOS && cd /global/scratch/users/rdekayne/rockfish50/05_RER_BUSCOS
+
 #busco alignments are located here: 
 /global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics/gene_trees_single_copy/alignments_4
 
@@ -1194,6 +1196,23 @@ ls /global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics
 
 #then load conda env "/global/scratch/users/rdekayne/envs/RER/" in terminal on RStudio OOD and do RER converge bit with: 
 
+mkdir -p unproblematic_alignments
+cp /global/scratch/users/rdekayne/rockfish50/02_TREES/output_busco_phylogenomics/gene_trees_single_copy/alignments_4/* unproblematic_alignments
+
+#now remove busco alignments with fewer than 50 headers
+for file in *.aln; do
+  if [ -f "$file" ]; then
+    count=$(grep -c '^>' "$file")
+    if [ "$count" -lt 50 ]; then
+      echo "Deleting $file (only $count lines with '>')"
+      rm "$file"
+    fi
+  fi
+done
+
+#see how many are left
+ls -lh | wc -l
+##2157
 
 
 
