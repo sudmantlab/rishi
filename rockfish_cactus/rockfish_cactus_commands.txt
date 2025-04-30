@@ -1116,11 +1116,30 @@ git clone --recursive https://github.com/BenoitMorel/ParGenes.git
 cd ParGenes
 module load cmake/3.27.7 
 ./install.sh 10
-#then index the MAF
-taffy index -i TAF_FILE (or MAF_FILE)
 
-#then extract specific sequence bits:
-taffy view -r hg38.chr10:550000-600000 will extract the 50000bp (0-based, open-ended) interval on hg38.chr10 in either TAF (default) or MAF (add -m) format. 
+#make an index of the MAF file
+conda activate /global/scratch/users/rdekayne/envs/wgatools
+cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
+
+#index_maf.sh
+#!/bin/bash
+#SBATCH --job-name=index_maf
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=index%j.out # output file
+#SBATCH --error=index%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+wgatools maf-index ./whole_hal_to_maf/50_rockfish.maf 
+
+#run
+sbatch index_maf.sh
+
+
 
 
 
