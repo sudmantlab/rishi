@@ -1062,12 +1062,36 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/te
 #run
 sbatch conv_hal_to_maf.sh
 
+######make some environments/install software
 conda create -p /global/scratch/users/rdekayne/envs/taf
 conda activate /global/scratch/users/rdekayne/envs/taf
 conda install bioconda::htslib
 conda install bioconda::samtools
 
+#add to bashrc
+#vim ~/.bashrc
+#export MODULEPATH=$MODULEPATH:/global/home/groups/co_genomicdata/modules/moduleFiles
 
+## TAFFY
+module load htslib/1.21 gcc/13.2.0
+git clone https://github.com/ComparativeGenomicsToolkit/taffy.git --recursive
+cd taffy && make
+#bin/taffy view -h
+
+## PHAST
+conda create -p /global/scratch/users/rdekayne/envs/phast
+conda activate /global/scratch/users/rdekayne/envs/phast
+conda install bioconda::phast
+#phylop -h
+
+## WGATOOLS
+conda create -p /global/scratch/users/rdekayne/envs/wgatools
+conda activate /global/scratch/users/rdekayne/envs/wgatools
+conda install conda-forge::libgcc-ng
+conda install wgatools -c bioconda
+#wgatools tview -h
+
+## PARGENES
 git clone --recursive https://github.com/BenoitMorel/ParGenes.git
 cd ParGenes
 module load cmake/3.27.7 
