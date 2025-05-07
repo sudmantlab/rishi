@@ -1118,7 +1118,6 @@ module load cmake/3.27.7
 ./install.sh 10
 
 #make an index of the MAF file
-conda activate /global/scratch/users/rdekayne/envs/wgatools
 cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
 
 #index_maf.sh
@@ -1134,12 +1133,29 @@ cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-wgatools maf-index ./whole_hal_to_maf/50_rockfish.maf 
+/global/scratch/users/rdekayne/taffy/bin/taffy  index -i ./whole_hal_to_maf/50_rockfish_honey.maf 
 
 #run
 sbatch index_maf.sh
 
+#test_taffy_maf.sh
 
+#!/bin/bash
+#SBATCH --job-name=test_maf
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=test_maf%j.out # output file
+#SBATCH --error=test_maf%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=20G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+/global/scratch/users/rdekayne/taffy/bin/taffy view -i ./whole_hal_to_maf/50_rockfish_honey.maf -r honeycomb-vgp.1.NC_051269.1:1-10000 > test_mini_honeycomb-vgp.1.NC_051269.1:1_10000.maf
+
+##run
+sbatch test_taffy_maf.sh
 
 
 
@@ -1277,6 +1293,239 @@ done
 ls -lh | wc -l
 ##2157
 
+#####################################
+#####################################
+#            06_VCF_TO_RER
+#####################################
+#####################################
+
+mkdir -p /global/scratch/users/rdekayne/rockfish50/06_VCF_TO_RER && cd /global/scratch/users/rdekayne/rockfish50/06_VCF_TO_RER
+cp /global/scratch/users/gregoryowens/shared/50_rockfish.umbrosus.filtered.allsites.vcf.gz .
+cp /global/scratch/users/rdekayne/rockfish50/01_BUSCOS/hap1_masked_fastas/honeycomb-vgp.fa.masked.hap1 .
+
+conda activate /global/scratch/users/rdekayne/envs/geno
+
+bcftools query -l ./50_rockfish.umbrosus.filtered.allsites.vcf.gz
+
+## make_reference_vcf.sh
+#!/bin/bash
+
+# Usage: ./make_reference_vcf.sh reference.fasta output.vcf
+
+set -euo pipefail
+
+REFERENCE=$1
+OUTVCF=$2
+
+# List of 50 sample names
+SAMPLES=(
+7164-PS-0001_copper.1
+7164-PS-0001_copper.2
+7164-PS-0002_black.1
+7164-PS-0002_black.2
+7164-PS-0003_rougheye.1
+7164-PS-0003_rougheye.2
+7164-PS-0004_widow.1
+7164-PS-0004_widow.2
+7164-PS-0005_yellowtail.1
+7164-PS-0005_yellowtail.2
+7164-PS-0006_popb.1
+7164-PS-0006_popb.2
+7164-PS-0007_lightdusky.1
+7164-PS-0007_lightdusky.2
+7164-PS-0008_quillback.1
+7164-PS-0008_quillback.2
+acadian-vgp.1
+acadian-vgp.2
+bocaccio-ccgp.1
+bocaccio-ccgp.2
+honeycomb-vgp.1
+honeycomb-vgp.2
+m84185_240412_222911_s4_deacon.1
+m84185_240412_222911_s4_deacon.2
+SebastesalascanusSEB-2_shortspinethornyhead.1
+SebastesalascanusSEB-2_shortspinethornyhead.2
+Sebastes_aleutianus_rougheye.Sebastes_aleutianus
+SebastesalutusPOP6_popa.1
+SebastesalutusPOP6_popa.2
+SebastesborealisSEB-8_shortraker.1
+SebastesborealisSEB-8_shortraker.2
+SebastescarnatusSEB-258_gopher.1
+SebastescarnatusSEB-258_gopher.2
+SebastescrocotulusSEB-252_sunset.1
+SebastescrocotulusSEB-252_sunset.2
+SebastesmelanostictusSEB-4_blackspotted.1
+SebastesmelanostictusSEB-4_blackspotted.2
+SebastesminiatusSEB-256_vermilion.1
+SebastesminiatusSEB-256_vermilion.2
+SebastesmystinusSEB-254_blue.1
+SebastesmystinusSEB-254_blue.2
+SebastespolyspinisSEB-5_northern.1
+SebastespolyspinisSEB-5_northern.2
+Sebastesruberrimus12-Yellowye1a.1
+Sebastesruberrimus12-Yellowye1a.2
+SebastesserranoidesSEB-259_olive.1
+SebastesserranoidesSEB-259_olive.2
+Ssc.HIC_korean
+widow-ccgp.1
+widow-ccgp.2
+)
+
+echo "[INFO] Indexing reference..."
+samtools faidx "$REFERENCE"
+
+echo "[INFO] Creating BED file of all positions..."
+cut -f1,2 "${REFERENCE}.fai" | awk '{for(i=1;i<=$2;i++) print $1"\t"i-1"\t"i}' > genome_positions.bed
+
+echo "[INFO] Extracting reference sequence at each position..."
+bedtools getfasta -fi "$REFERENCE" -bed genome_positions.bed -tab > genome_seq.tsv
+
+echo "[INFO] Writing VCF..."
+{
+    echo "##fileformat=VCFv4.2"
+    echo "##source=make_reference_vcf"
+    echo "##reference=$REFERENCE"
+    echo "##INFO=<ID=.,Number=0,Type=String,Description=\"No alternate allele\">"
+    echo "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">"
+    echo -n "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
+    for s in "${SAMPLES[@]}"; do
+        echo -ne "\t$s"
+    done
+    echo
+
+    awk -v OFS="\t" -v samples="${#SAMPLES[@]}" '
+    {
+        chrom=$1;
+        ref=$2;
+        pos=NR;
+        printf "%s\t%d\t.\t%s\t.\t.\tPASS\t.\tGT", chrom, pos, ref;
+        for (i=1; i<=samples; i++) printf "\t0/0";
+        print "";
+    }' genome_seq.tsv
+} > "$OUTVCF"
+
+echo "[INFO] Done. Output written to $OUTVCF"
+
+##
+#!/bin/bash
+
+# Usage: ./make_reference_vcf_exclude.sh reference.fasta vcf2.vcf output_merged.vcf
+
+set -euo pipefail
+
+REFERENCE=$1
+EXCLUDE_VCF=$2
+OUTVCF=$3
+
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
+
+echo "[INFO] Indexing reference..."
+samtools faidx "$REFERENCE"
+
+echo "[INFO] Creating BED file of all positions..."
+cut -f1,2 "${REFERENCE}.fai" | awk '{for(i=1;i<=$2;i++) print $1"\t"i-1"\t"i}' > "$TMPDIR/genome_positions.bed"
+
+echo "[INFO] Extracting reference sequence at each position..."
+bedtools getfasta -fi "$REFERENCE" -bed "$TMPDIR/genome_positions.bed" -tab > "$TMPDIR/genome_seq.tsv"
+
+echo "[INFO] Extracting exclusion positions from $EXCLUDE_VCF..."
+bcftools query -f'%CHROM\t%POS0\t%POS\n' "$EXCLUDE_VCF" | sort -k1,1 -k2,2n > "$TMPDIR/exclude.bed"
+
+echo "[INFO] Removing excluded positions..."
+bedtools intersect -v -a "$TMPDIR/genome_positions.bed" -b "$TMPDIR/exclude.bed" > "$TMPDIR/filtered_positions.bed"
+bedtools getfasta -fi "$REFERENCE" -bed "$TMPDIR/filtered_positions.bed" -tab > "$TMPDIR/filtered_seq.tsv"
+
+# List of sample names (exactly as provided)
+SAMPLES=(
+7164-PS-0001_copper.1
+7164-PS-0001_copper.2
+7164-PS-0002_black.1
+7164-PS-0002_black.2
+7164-PS-0003_rougheye.1
+7164-PS-0003_rougheye.2
+7164-PS-0004_widow.1
+7164-PS-0004_widow.2
+7164-PS-0005_yellowtail.1
+7164-PS-0005_yellowtail.2
+7164-PS-0006_popb.1
+7164-PS-0006_popb.2
+7164-PS-0007_lightdusky.1
+7164-PS-0007_lightdusky.2
+7164-PS-0008_quillback.1
+7164-PS-0008_quillback.2
+acadian-vgp.1
+acadian-vgp.2
+bocaccio-ccgp.1
+bocaccio-ccgp.2
+honeycomb-vgp.1
+honeycomb-vgp.2
+m84185_240412_222911_s4_deacon.1
+m84185_240412_222911_s4_deacon.2
+SebastesalascanusSEB-2_shortspinethornyhead.1
+SebastesalascanusSEB-2_shortspinethornyhead.2
+Sebastes_aleutianus_rougheye.Sebastes_aleutianus
+SebastesalutusPOP6_popa.1
+SebastesalutusPOP6_popa.2
+SebastesborealisSEB-8_shortraker.1
+SebastesborealisSEB-8_shortraker.2
+SebastescarnatusSEB-258_gopher.1
+SebastescarnatusSEB-258_gopher.2
+SebastescrocotulusSEB-252_sunset.1
+SebastescrocotulusSEB-252_sunset.2
+SebastesmelanostictusSEB-4_blackspotted.1
+SebastesmelanostictusSEB-4_blackspotted.2
+SebastesminiatusSEB-256_vermilion.1
+SebastesminiatusSEB-256_vermilion.2
+SebastesmystinusSEB-254_blue.1
+SebastesmystinusSEB-254_blue.2
+SebastespolyspinisSEB-5_northern.1
+SebastespolyspinisSEB-5_northern.2
+Sebastesruberrimus12-Yellowye1a.1
+Sebastesruberrimus12-Yellowye1a.2
+SebastesserranoidesSEB-259_olive.1
+SebastesserranoidesSEB-259_olive.2
+Ssc.HIC_korean
+widow-ccgp.1
+widow-ccgp.2
+)
+
+echo "[INFO] Writing reference VCF without excluded sites..."
+BLANK_VCF="$TMPDIR/blank.vcf"
+
+{
+    echo "##fileformat=VCFv4.2"
+    echo "##source=make_reference_vcf_exclude"
+    echo "##reference=$REFERENCE"
+    echo "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">"
+    echo -n "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
+    for s in "${SAMPLES[@]}"; do
+        echo -ne "\t$s"
+    done
+    echo
+
+    awk -v OFS="\t" -v samples="${#SAMPLES[@]}" '
+    {
+        chrom=$1;
+        ref=$2;
+        pos=NR;
+        printf "%s\t%d\t.\t%s\t.\t.\tPASS\t.\tGT", chrom, pos, ref;
+        for (i=1; i<=samples; i++) printf "\t0/0";
+        print "";
+    }' "$TMPDIR/filtered_seq.tsv"
+} > "$BLANK_VCF"
+
+echo "[INFO] Merging reference VCF and $EXCLUDE_VCF..."
+# Ensure both VCFs are sorted and bgzipped
+bgzip -c "$BLANK_VCF" > "$TMPDIR/blank.vcf.gz"
+bcftools sort "$EXCLUDE_VCF" -Oz -o "$TMPDIR/vcf2_sorted.vcf.gz"
+tabix -f "$TMPDIR/blank.vcf.gz"
+tabix -f "$TMPDIR/vcf2_sorted.vcf.gz"
+
+bcftools merge --force-samples -Oz -o "${OUTVCF}.gz" "$TMPDIR/vcf2_sorted.vcf.gz" "$TMPDIR/blank.vcf.gz"
+tabix -f "${OUTVCF}.gz"
+
+echo "[✅ DONE] Merged VCF written to: ${OUTVCF}.gz"
 
 
 
