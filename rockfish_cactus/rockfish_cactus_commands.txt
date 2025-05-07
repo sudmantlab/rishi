@@ -1406,7 +1406,7 @@ echo "[INFO] Writing VCF..."
 
 echo "[INFO] Done. Output written to $OUTVCF"
 
-##
+##make_reference_vcf_exclude.sh
 #!/bin/bash
 
 # Usage: ./make_reference_vcf_exclude.sh reference.fasta vcf2.vcf output_merged.vcf
@@ -1527,6 +1527,57 @@ tabix -f "${OUTVCF}.gz"
 
 echo "[✅ DONE] Merged VCF written to: ${OUTVCF}.gz"
 
+#submit_make_vcf.sh
+#!/bin/bash
+#SBATCH --job-name=vcf
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=vcf%j.out # output file
+#SBATCH --error=vcf%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=20G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+./make_reference_vcf_exclude.sh honeycomb-vgp.fa.masked.hap1 50_rockfish.umbrosus.filtered.allsites.vcf.gz output_merged.vcf
+touch all.done
+
+##run
+sbatch submit_make_vcf.sh
+
+
+#####################################
+#####################################
+#            GREG_OUTLIER_GO
+#####################################
+#####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/GREG_OUTLIER_GO && cd /global/scratch/users/rdekayne/rockfish50/GREG_OUTLIER_GO
+cp /global/scratch/users/gregoryowens/shared/50_rockfish.umbrosus.filtered.derived.results.test.wza.formatted.txt . 
+cp ../06_VCF_TO_RER/honeycomb* .
+## orthofinder/agat
+conda create -p /global/scratch/users/rdekayne/envs/orthof
+conda activate /global/scratch/users/rdekayne/envs/orthof
+conda install bioconda::orthofinder
+conda install bioconda::agat
+
+wget https://github.com/davidemms/OrthoFinder/releases/latest/download/OrthoFinder.tar.gz
+tar xzvf OrthoFinder.tar.gz
+cd OrthoFinder/ 
+orthofinder -h
+
+agat_sp_extract_sequences.pl --gff honeycomb.gff -f honeycomb-vgp.fa.masked.hap1 -p -o honeycomb.protein.fa
+
+mv RER.protein.fa primary_transcripts/
+
+orthofinder -f primary_transcripts/
+
+#output in /hb/home/rdekayne/11_RERconverge/RER_0D2D/proteomes/primary_transcripts/OrthoFinder/Results_Nov15/
+
+cd /hb/home/rdekayne/11_RERconverge/RER_0D2D/proteomes2
+for f in Homo_sapiens.GRCh38.pep.all.fa ; do python ../../../orthofinder/OrthoFinder/tools/primary_transcript.py $f ; done
+cp honeycomb.protein.fa primary_transcripts/
+orthofinder -f primary_transcripts/
 
 
 
