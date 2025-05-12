@@ -1158,20 +1158,22 @@ sbatch index_maf.sh
 sbatch test_taffy_maf.sh
 
 
-
-
-
-
-
-
-
 mkdir -p mkdir /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES && cd /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES
 
-cp ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 .
+#cp ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 .
+#conda activate /global/scratch/users/rdekayne/envs/trees
+#samtools faidx SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
+#cut -f1,2 SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1.fai > sizes.genome
+#bedtools makewindows -g sizes.genome -w 100000 > 100kb.txt
+
+cp ../01_BUSCOS/hap1_masked_fastas/honeycomb-vgp.fa.masked.hap1 .
 conda activate /global/scratch/users/rdekayne/envs/trees
-samtools faidx SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
-cut -f1,2 SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1.fai > sizes.genome
+samtools faidx honeycomb-vgp.fa.masked.hap1
+cut -f1,2 honeycomb-vgp.fa.masked.hap1.fai > sizes.genome
 bedtools makewindows -g sizes.genome -w 100000 > 100kb.txt
+#for chr1
+grep "NC_051269.1" 100kb.txt | wc -l
+##441
 
 cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
 source cactus_env/bin/activate
@@ -1195,12 +1197,13 @@ export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
 
 numb=${SLURM_ARRAY_TASK_ID}
 
-cat /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/h1tg000001l_windows.txt | sed -n ${numb}p > ${numb}.bed
+cat /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/100kb.txt | sed -n ${numb}p > ${numb}.bed
 
-singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome SebastesalascanusSEB-2_shortspinethornyhead.1 --noAncestors --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
 
 ###run
-sbatch --array=1-230%10 run_hal2maf_windows.sh
+sbatch --array=1-100%10 run_hal2maf_windows.sh
+sbatch --array=101-441%10 run_hal2maf_windows.sh
 
 ############################# MAF --> FASTA/MSA
 
