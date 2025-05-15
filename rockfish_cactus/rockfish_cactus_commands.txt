@@ -1286,9 +1286,32 @@ mv ${numb}.gap-replaced.fasta ./msa_files_100k/${numb}.gap-replaced.fasta
 ###run
 sbatch --array=1-441%20 convert_maf2fasta.sh
 
+mkdir 50_taxa_msas
+
+##check_msas.sh 
+#!/bin/bash
+
+# Output file
+output_file="all_taxa_msas.txt"
+
+# Clear the output file if it exists
+> "$output_file"
+
+# Loop through all .fasta files in the current directory
+for file in *.fasta; do
+    # Count lines starting with '>'
+    header_count=$(grep -c '^>' "$file")
+
+    # If count is exactly 50, append filename to output
+    if [ "$header_count" -eq 50 ]; then
+        echo "$file" >> "$output_file"
+        cp "$file" 50_taxa_msas
+    fi
+done
+
 conda activate /global/scratch/users/rdekayne/envs/trees
 
-#run_pargenes.sh
+#pargenes.sh
 #!/bin/bash
 #SBATCH --job-name=pargenes
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
@@ -1301,7 +1324,7 @@ conda activate /global/scratch/users/rdekayne/envs/trees
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=56 # 2 CPUs per job
 
-/global/scratch/users/rdekayne/rockfish/ParGenes/pargenes/pargenes.py -a ./msa_files_100k -o ./h1tg000001l_windows --cores 56 -d nt -m --job-failure-fatal --use-astral
+/global/scratch/users/rdekayne/rockfish/ParGenes/pargenes/pargenes.py -a /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/maf_run100/msa_files_100k/50_taxa_msas -o ./chr1_windows --cores 56 -d nt -m --job-failure-fatal --use-astral
 
 ##run
 sbatch run_pargenes.sh
@@ -1693,8 +1716,20 @@ touch mash_sketch.done
 ##run
 sbatch run_mash.sh
 
+#run_mash2.sh
+#!/bin/bash
+#SBATCH --job-name=mash
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=mash%j.out # output file
+#SBATCH --error=mash%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=50G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-mash dist genome1.fna.msh genome2.fna.msh
-
+mash dist ../01_BUSCOS/hap1_masked_fastas/*.msh
+touch mash_dist.done
 
 
