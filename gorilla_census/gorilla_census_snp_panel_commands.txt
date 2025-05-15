@@ -2432,6 +2432,7 @@ vcftools --vcf targets156_specific_filtered_MAC0_SML.vcf --missing-site --out SM
 
 #test - checking genotypes
 bcftools view -S 21-SmallerVolumeStrip-well1_S21_sample.txt -o S21_MAC0_LRG.vcf targets156_specific_filtered_MAC0_SML.vcf
+bcftools view -S sml_vol_sample_list.txt -o targets156_specific_filtered_MAC0_SML.vcf targets156_specific_filtered_MAC0.vcf
 
 #####################################
 #            11_PCA
@@ -2470,11 +2471,22 @@ sbatch 11.1_PCA_unfilt.sh
 
 scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/11_PCA/*.eigen* .
 
+##
+#Want to check new single PCR targets were genotyped previously
+#put target amplicons in: 40_singlestep_amplicons.txt
 
+bgzip targets156_specific_filtered_MAC0.vcf
+bcftools index targets156_specific_filtered_MAC0.vcf.gz
+bcftools view -R 40_singlestep_amplicons.txt targets156_specific_filtered_MAC0.vcf.gz > targets156_specific_filtered_MAC0_40ss_amplicons.vcf
+bcftools view -H targets156_specific_filtered_MAC0_40ss_amplicons.vcf | wc -l
+#32
 
+#now look at SML indivs for these loci
+cp sml_vol_sample_list.txt sml_vol_sample_list_NO6.txt
+#remove well6 == negative control
+bcftools view -S sml_vol_sample_list_NO6.txt -o targets156_specific_filtered_MAC0_40ss_amplicons_SML_no6.vcf targets156_specific_filtered_MAC0_40ss_amplicons.vcf
 
-
-
+vcftools --vcf targets156_specific_filtered_MAC0_40ss_amplicons_SML_no6.vcf --missing-site --out SML_40ss_no6_
 
 
 
