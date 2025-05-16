@@ -1685,14 +1685,11 @@ conda install --yes -c conda-forge -c bioconda quicktree snakemake intervaltree 
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-mash sketch -o reference ../01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0002_black.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0003_rougheye.fa.masked.hap1 mash sketch ../01_BUSCOS/hap1_masked_fastas/7164-PS-0004_widow.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0005_yellowtail.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0006_popb.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0007_lightdusky.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0008_quillback.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/acadian-vgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/bocaccio-ccgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/honeycomb-vgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/m84185_240412_222911_s4_deacon.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Sebastes_aleutianus_rougheye.rohit.fa.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesalutusPOP6_popa.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesborealisSEB-8_shortraker.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastescarnatusSEB-258_gopher.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastescrocotulusSEB-252_sunset.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesminiatusSEB-256_vermilion.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesmystinusSEB-254_blue.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastespolyspinisSEB-5_northern.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Sebastesruberrimus12-Yellowye1a.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesserranoidesSEB-259_olive.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Ssc.HIC_korean.fa.hap1 ../01_BUSCOS/hap1_masked_fastas/widow-ccgp.fa.masked.hap1
+mash sketch -o reference ../01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0002_black.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0003_rougheye.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0004_widow.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0005_yellowtail.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0006_popb.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0007_lightdusky.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/7164-PS-0008_quillback.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/acadian-vgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/bocaccio-ccgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/honeycomb-vgp.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/m84185_240412_222911_s4_deacon.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Sebastes_aleutianus_rougheye.rohit.fa.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesalutusPOP6_popa.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesborealisSEB-8_shortraker.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastescarnatusSEB-258_gopher.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastescrocotulusSEB-252_sunset.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesmelanostictusSEB-4_blackspotted.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesminiatusSEB-256_vermilion.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesmystinusSEB-254_blue.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastespolyspinisSEB-5_northern.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Sebastesruberrimus12-Yellowye1a.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/SebastesserranoidesSEB-259_olive.fa.masked.hap1 ../01_BUSCOS/hap1_masked_fastas/Ssc.HIC_korean.fa.hap1 ../01_BUSCOS/hap1_masked_fastas/widow-ccgp.fa.masked.hap1
 touch mash_sketch.done
 
 ##run
 sbatch run_mash.sh
-
-mash info reference.msh
-mash dist reference.msh
 
 #run_mash2.sh
 #!/bin/bash
@@ -1707,7 +1704,38 @@ mash dist reference.msh
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-mash dist ../01_BUSCOS/hap1_masked_fastas/*.msh
+mash info reference.msh
+mash dist reference.msh reference.msh
 touch mash_dist.done
 
+##run
+sbatch run_mash2.sh
 
+cp mash25312468.out rockfish50_distances.txt
+grep "^../" rockfish50_distances.txt | sed 's/..\/01_BUSCOS\/hap1_masked_fastas\///g' > rockfish50_distances_clean.txt
+
+ls ../01_BUSCOS/hap1_masked_fastas/*.hap1 > hap1_fasta_list.txt
+
+#run_ntsynt.sh
+#!/bin/bash
+#SBATCH --job-name=ntsynt
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=ntsynt%j.out # output file
+#SBATCH --error=ntsynt%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=50G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+ntSynt --fastas_list hap1_fasta_list.txt -d 7 -b 100,000 -p ntsynt_output_b10k_d7 -t 24
+
+##run
+sbatch run_ntsynt.sh
+
+conda activate /global/scratch/users/rdekayne/envs/geno
+
+#get .fai files for all assemblies
+
+usage: denovo_synteny_block_stats.py [-h] --tsv TSV --fai FAI [FAI ...]
