@@ -1691,6 +1691,9 @@ touch mash_sketch.done
 ##run
 sbatch run_mash.sh
 
+mash info reference.msh
+mash dist reference.msh
+
 #run_mash2.sh
 #!/bin/bash
 #SBATCH --job-name=mash
