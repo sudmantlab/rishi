@@ -1640,23 +1640,39 @@ conda activate /global/scratch/users/rdekayne/envs/orthof
 conda install bioconda::orthofinder
 conda install bioconda::agat
 
+cd /global/scratch/users/rdekayne/envs/orthof
+rm diamond
+wget http://github.com/bbuchfink/diamond/releases/download/v2.1.11/diamond-linux64.tar.gz
+tar xzf diamond-linux64.tar.gz
+
 wget https://github.com/davidemms/OrthoFinder/releases/latest/download/OrthoFinder.tar.gz
 tar xzvf OrthoFinder.tar.gz
 cd OrthoFinder/ 
-orthofinder -h
 
 agat_sp_extract_sequences.pl --gff honeycomb.gff -f honeycomb-vgp.fa.masked.hap1 -p -o honeycomb.protein.fa
 
-mv RER.protein.fa primary_transcripts/
+#https://ftp.ensembl.org/pub/release-114/fasta/homo_sapiens/pep/
+for f in *.fa ; do python ./OrthoFinder/tools/primary_transcript.py $f ; done
+
+#run_orthofinder.sh
+#!/bin/bash
+#SBATCH --job-name=orthof
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=orthof%j.out # output file
+#SBATCH --error=orthof%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=50G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
 
 orthofinder -f primary_transcripts/
+
+##run
+sbatch run_orthofinder.sh
 
 #output in /hb/home/rdekayne/11_RERconverge/RER_0D2D/proteomes/primary_transcripts/OrthoFinder/Results_Nov15/
-
-cd /hb/home/rdekayne/11_RERconverge/RER_0D2D/proteomes2
-for f in Homo_sapiens.GRCh38.pep.all.fa ; do python ../../../orthofinder/OrthoFinder/tools/primary_transcript.py $f ; done
-cp honeycomb.protein.fa primary_transcripts/
-orthofinder -f primary_transcripts/
 
 #####################################
 #####################################
