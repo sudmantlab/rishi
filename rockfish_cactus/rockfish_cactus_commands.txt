@@ -1332,9 +1332,6 @@ conda activate /global/scratch/users/rdekayne/envs/trees
 ##run
 sbatch run_pargenes.sh
 
-#####now do the same but for exons
-
-
 #####################################
 #####################################
 #            05_RER_BUSCOS
@@ -1374,6 +1371,75 @@ done
 #see how many are left
 ls -lh | wc -l
 ##2157
+
+
+#####################################
+#####################################
+#            06_GENE_RER
+#####################################
+#####################################
+#going to run RER converge on genes 
+
+#take honeycomb gff (honeycomb.gff) and filter out gene and exon lines
+grep -v "#" honeycomb.gff > honeycomb_nohash.gff
+awk '$3 == "gene" || $3 == "exon"' honeycomb_nohash.gff > gene_exon_honey.gff
+
+awk '$3 == "gene" { match($0, /gene=([^;]+)/, arr); if (arr[1]) print arr[1] }' gene_exon_honey.gff | sort -u > sorted_unique_gene_names.txt
+
+#run_hal2maf_windows.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_100kb
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+
+#get number
+numb=${SLURM_ARRAY_TASK_ID}
+
+#extract gene name
+gene=$(cat sorted_unique_gene_names.txt | sed -n ${numb}p)
+
+#get exons from gene_exon_honey.gff
+grep "${gene}" gene_exon_honey.gff > tmp_${gene}_exons.txt
+
+# Remove the 'gene' line and keep only exons
+grep -v -P "\tgene\t" tmp_${gene}_exons.txt > tmp_${gene}_exon_only.txt
+
+# Count the number of exons
+num_exons=$(wc -l < tmp_${gene}_exon_only.txt)
+
+# Loop through each exon
+for i in $(seq 1 $num_exons); do
+    # Zero-pad exon number (e.g. 001, 002, ...)
+    exon_num=$(printf "%03d" $i)
+
+    # Extract the exon line
+    exon_line=$(sed -n "${i}p" tmp_${gene}_exon_only.txt)
+
+    # Get the chromosome, start, and end (columns 1, 4, 5)
+    chr=$(echo "$exon_line" | cut -f1)
+    start=$(echo "$exon_line" | cut -f4)
+    end=$(echo "$exon_line" | cut -f5)
+
+    # Save to a new tmp file
+    echo -e "${chr}\t${start}\t${end}" > tmp_${gene}_exon${exon_num}.bed
+
+    singularity exec -B /global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../../03_CACTUS/50_rockfish.hal ${gene}_exon${exon_num}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --bedRanges tmp_${gene}_exon${exon_num}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+
+    #tidy output
+    #rm tmp_${gene}_exon*
+done
+
+
+
 
 
 #####################################
@@ -1432,6 +1498,19 @@ grep -v "," /global/scratch/users/rdekayne/rockfish50/GREG_OUTLIER_GO/primary_tr
 
 awk 'gsub(/ENSG/, "&") == 1' /global/scratch/users/rdekayne/rockfish50/GREG_OUTLIER_GO/primary_transcripts/OrthoFinder/Results_May20_2/Orthogroups/Orthogroups.tsv | wc -l
 11546
+
+##now use .gaf from https://ftp.ncbi.nlm.nih.gov/genomes/all/annotation_releases/72105/100/GCF_015220745.1_fSebUmb1.pri/
+scp GCF_015220745.1_fSebUmb1.pri_gene_ontology.gaf rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/rockfish50/GREG_OUTLIER_GO
+
+#want to extract info from gff file to get whether each gene is significant or not:
+grep "ID=gene" honeycomb.gff > honeycomb_genes_only.txt
+wc -l honeycomb_genes_only.txt 
+##30334 honeycomb_genes_only.txt
+
+
+
+
+
 
 #####################################
 #####################################
@@ -1544,3 +1623,5 @@ ntsynt_viz.py --blocks ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_
 
 ##run
 sbatch run_ntsynt_viz.sh
+
+mkdir -p /global/scratch/users/rdekayne/rockfish50/07_MASH_SYNTENY/nt_run_reordered && cd /global/scratch/users/rdekayne/rockfish50/07_MASH_SYNTENY/nt_run_reordered
