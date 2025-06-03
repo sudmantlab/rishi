@@ -1223,7 +1223,7 @@ conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
 #SBATCH --output=cactus_test%j.out # output file
 #SBATCH --error=cactus_test%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
-#SBATCH --mem=100G
+#SBATCH --mem=30G
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
@@ -1451,7 +1451,151 @@ done
 ##run 
 sbatch --array=1%20 run_hal2maf_genes00.sh
 
+##then we want to convert these maf files to a msa file for each exon, make sure all taxa are present in the msa and if so combine into a single gene msa
+mkdir -p exon_msas
+mkdir -p gene_msas
 
+conda activate /global/scratch/users/rdekayne/envs/maf_manipulation
+
+#convert_maf2fasta00.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_test
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=30G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp
+
+numb=${SLURM_ARRAY_TASK_ID}
+
+#extract gene name
+gene=$(cat cut_sorted_genes00 | sed -n ${numb}p)
+
+#get exons from gene_exon_honey.gff
+grep "${gene}" gene_exon_honey.gff > tmp_${gene}_exons.txt
+
+# Remove the 'gene' line and keep only exons
+grep -v -P "\tgene\t" tmp_${gene}_exons.txt > tmp_${gene}_exon_only.txt
+
+# Count the number of exons
+num_exons=$(wc -l < tmp_${gene}_exon_only.txt)
+
+ls ./gene_exon_maf_files/${gene}_exon*.maf > full_${gene}_exon_list.txt
+
+num_exon_files=$(wc -l < full_${gene}_exon_list.txt)
+
+# Loop through each exon
+for i in $(seq 1 $num_exon_files); do
+    exon_maf_filename=$(cat full_${gene}_exon_list.txt | sed -n ${i}p)
+
+    sed -i 's/Ssc.HIC_korean/Ssc_HIC_korean/g' ${exon_maf_filename}
+    sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.1/SebastesalascanusSEB-2_shortspinethornyhead_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesalascanusSEB-2_shortspinethornyhead.2/SebastesalascanusSEB-2_shortspinethornyhead_2/g' ${exon_maf_filename}
+    sed -i 's/SebastesborealisSEB-8_shortraker.1/SebastesborealisSEB-8_shortraker_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesborealisSEB-8_shortraker.2/SebastesborealisSEB-8_shortraker_2/g' ${exon_maf_filename}
+    sed -i 's/SebastesmelanostictusSEB-4_blackspotted.1/SebastesmelanostictusSEB-4_blackspotted_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesmelanostictusSEB-4_blackspotted.2/SebastesmelanostictusSEB-4_blackspotted_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0003_rougheye.1/7164-PS-0003_rougheye_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0003_rougheye.2/7164-PS-0003_rougheye_2/g' ${exon_maf_filename}
+    sed -i 's/acadian-vgp.2/acadian-vgp_2/g' ${exon_maf_filename}
+    sed -i 's/acadian-vgp.1/acadian-vgp_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0006_popb.1/7164-PS-0006_popb_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0006_popb.2/7164-PS-0006_popb_2/g' ${exon_maf_filename}
+    sed -i 's/SebastesalutusPOP6_popa.1/SebastesalutusPOP6_popa_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesalutusPOP6_popa.2/SebastesalutusPOP6_popa_2/g' ${exon_maf_filename}
+    sed -i 's/SebastespolyspinisSEB-5_northern.1/SebastespolyspinisSEB-5_northern_1/g' ${exon_maf_filename}
+    sed -i 's/SebastespolyspinisSEB-5_northern.2/SebastespolyspinisSEB-5_northern_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0007_lightdusky.1/7164-PS-0007_lightdusky_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0007_lightdusky.2/7164-PS-0007_lightdusky_2/g' ${exon_maf_filename}
+    sed -i 's/SebastesserranoidesSEB-259_olive.1/SebastesserranoidesSEB-259_olive_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesserranoidesSEB-259_olive.2/SebastesserranoidesSEB-259_olive_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0002_black.2/7164-PS-0002_black_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0002_black.1/7164-PS-0002_black_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0005_yellowtail.2/7164-PS-0005_yellowtail_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0005_yellowtail.1/7164-PS-0005_yellowtail_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesmystinusSEB-254_blue.1/SebastesmystinusSEB-254_blue_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesmystinusSEB-254_blue.2/SebastesmystinusSEB-254_blue_2/g' ${exon_maf_filename}
+    sed -i 's/m84185_240412_222911_s4_deacon.1/m84185_240412_222911_s4_deacon_1/g' ${exon_maf_filename}
+    sed -i 's/m84185_240412_222911_s4_deacon.2/m84185_240412_222911_s4_deacon_2/g' ${exon_maf_filename}
+    sed -i 's/widow-ccgp.2/widow-ccgp_2/g' ${exon_maf_filename}
+    sed -i 's/widow-ccgp.1/widow-ccgp_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0004_widow.2/7164-PS-0004_widow_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0004_widow.1/7164-PS-0004_widow_1/g' ${exon_maf_filename}
+    sed -i 's/SebastescrocotulusSEB-252_sunset.2/SebastescrocotulusSEB-252_sunset_2/g' ${exon_maf_filename}
+    sed -i 's/SebastescrocotulusSEB-252_sunset.1/SebastescrocotulusSEB-252_sunset_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesminiatusSEB-256_vermilion.1/SebastesminiatusSEB-256_vermilion_1/g' ${exon_maf_filename}
+    sed -i 's/SebastesminiatusSEB-256_vermilion.2/SebastesminiatusSEB-256_vermilion_2/g' ${exon_maf_filename}
+    sed -i 's/bocaccio-ccgp.2/bocaccio-ccgp_2/g' ${exon_maf_filename}
+    sed -i 's/bocaccio-ccgp.1/bocaccio-ccgp_1/g' ${exon_maf_filename}
+    sed -i 's/honeycomb-vgp.1/honeycomb-vgp_1/g' ${exon_maf_filename}
+    sed -i 's/honeycomb-vgp.2/honeycomb-vgp_2/g' ${exon_maf_filename}
+    sed -i 's/Sebastesruberrimus12-Yellowye1a.2/Sebastesruberrimus12-Yellowye1a_2/g' ${exon_maf_filename}
+    sed -i 's/Sebastesruberrimus12-Yellowye1a.1/Sebastesruberrimus12-Yellowye1a_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0001_copper.2/7164-PS-0001_copper_2/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0001_copper.1/7164-PS-0001_copper_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0008_quillback.1/7164-PS-0008_quillback_1/g' ${exon_maf_filename}
+    sed -i 's/7164-PS-0008_quillback.2/7164-PS-0008_quillback_2/g' ${exon_maf_filename}
+    sed -i 's/SebastescarnatusSEB-258_gopher.1/SebastescarnatusSEB-258_gopher_1/g' ${exon_maf_filename}
+    sed -i 's/SebastescarnatusSEB-258_gopher.2/SebastescarnatusSEB-258_gopher_2/g' ${exon_maf_filename}
+    
+    msa_view ${exon_maf_filename} --seqs Ssc_HIC_korean,SebastesalascanusSEB-2_shortspinethornyhead_1,SebastesalascanusSEB-2_shortspinethornyhead_2,SebastesborealisSEB-8_shortraker_1,SebastesborealisSEB-8_shortraker_2,SebastesmelanostictusSEB-4_blackspotted_1,SebastesmelanostictusSEB-4_blackspotted_2,Sebastes_aleutianus_rougheye,7164-PS-0003_rougheye_1,7164-PS-0003_rougheye_2,acadian-vgp_2,acadian-vgp_1,7164-PS-0006_popb_1,7164-PS-0006_popb_2,SebastesalutusPOP6_popa_1,SebastesalutusPOP6_popa_2,SebastespolyspinisSEB-5_northern_1,SebastespolyspinisSEB-5_northern_2,7164-PS-0007_lightdusky_1,7164-PS-0007_lightdusky_2,SebastesserranoidesSEB-259_olive_1,SebastesserranoidesSEB-259_olive_2,7164-PS-0002_black_2,7164-PS-0002_black_1,7164-PS-0005_yellowtail_2,7164-PS-0005_yellowtail_1,SebastesmystinusSEB-254_blue_1,SebastesmystinusSEB-254_blue_2,m84185_240412_222911_s4_deacon_1,m84185_240412_222911_s4_deacon_2,widow-ccgp_2,widow-ccgp_1,7164-PS-0004_widow_2,7164-PS-0004_widow_1,SebastescrocotulusSEB-252_sunset_2,SebastescrocotulusSEB-252_sunset_1,SebastesminiatusSEB-256_vermilion_1,SebastesminiatusSEB-256_vermilion_2,bocaccio-ccgp_2,bocaccio-ccgp_1,honeycomb-vgp_1,honeycomb-vgp_2,Sebastesruberrimus12-Yellowye1a_2,Sebastesruberrimus12-Yellowye1a_1,7164-PS-0001_copper_2,7164-PS-0001_copper_1,7164-PS-0008_quillback_1,7164-PS-0008_quillback_2,SebastescarnatusSEB-258_gopher_1,SebastescarnatusSEB-258_gopher_2, -f -G 1 --unmask | seqkit seq -w 0 > ${exon_maf_filename}.fasta
+    
+    sed -e 's/\*/N/g' ${exon_maf_filename}.fasta > ${exon_maf_filename}.gap-replaced.fasta
+    sed -i 's/> />/g' ${exon_maf_filename}.gap-replaced.fasta
+    rm ${exon_maf_filename}.fasta
+    mv ./gene_exon_maf_files/${gene}_exon*.gap-replaced.fasta ./exon_msas/
+
+    #tidy output
+    #rm tmp_${gene}_exon*
+done
+
+# Set the prefix (e.g., "gene_a")
+output="${gene}_full.fasta"
+
+# Temporary directory for storing intermediate files
+tmp_dir=$(mktemp -d)
+
+# Loop through all exon FASTA files matching the prefix
+for fasta in ./exon_msas/${gene}_exon*.fasta; do
+    # Count number of FASTA headers (i.e., number of sequences)
+    num_headers=$(grep -c "^>" "$fasta")
+
+    # Only include files with exactly 50 sequences
+    if [ "$num_headers" -eq 50 ]; then
+        echo "Including $fasta (50 sequences)"
+        awk -v dir="$tmp_dir" '
+        /^>/ {header=$0; gsub(/^>/, "", header); next}
+        {
+            print >> dir "/" header
+        }' "$fasta"
+    else
+        echo "Skipping $fasta (has $num_headers sequences)"
+    fi
+done
+
+# Concatenate the sequences by taxon into the final output
+> "$output"  # Create or clear the output file
+for taxon_file in "$tmp_dir"/*; do
+    taxon=$(basename "$taxon_file")
+    echo ">$taxon" >> "$output"
+    tr -d '\n' < "$taxon_file" >> "$output"
+    echo >> "$output"
+done
+
+# Step 3: Clean up
+mv "$output" ./gene_msas/"$output"
+rm -r "$tmp_dir"
+rm full_${gene}_exon_list.txt 
+echo "Combined alignment written to $output"
+
+##run 
+sbatch --array=1%20 convert_maf2fasta00.sh
 
 
 
