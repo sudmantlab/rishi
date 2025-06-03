@@ -1199,7 +1199,9 @@ numb=${SLURM_ARRAY_TASK_ID}
 
 cat /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/100kb.txt | sed -n ${numb}p > ${numb}.bed
 
-singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif hal2maf ../../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --refTargets ${numb}.bed
+
+#singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../../03_CACTUS/50_rockfish.hal ${numb}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --bedRanges ${numb}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
 
 ###run
 sbatch --array=1-100%10 run_hal2maf_windows.sh
@@ -1386,26 +1388,34 @@ awk '$3 == "gene" || $3 == "exon"' honeycomb_nohash.gff > gene_exon_honey.gff
 
 awk '$3 == "gene" { match($0, /gene=([^;]+)/, arr); if (arr[1]) print arr[1] }' gene_exon_honey.gff | sort -u > sorted_unique_gene_names.txt
 
-#run_hal2maf_windows.sh
+#since this is 28k long we need to split this into files we can submit with bash so do:
+split -l 999 -d sorted_unique_gene_names.txt cut_sorted_genes
+mkdir gene_exon_maf_files
+
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+cd /global/scratch/users/rdekayne/rockfish50/06_GENE_RER
+
+#run_hal2maf_genes00.sh
 #!/bin/bash
 #SBATCH --job-name=cactus_100kb
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
-#SBATCH --output=cactus_test%j.out # output file
-#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --output=cactus_gene%j.out # output file
+#SBATCH --error=cactus_gene%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
-#SBATCH --mem=100G
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=24 # 2 CPUs per job
+#SBATCH --mem=50G
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24 
 
-export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp
 
 #get number
 numb=${SLURM_ARRAY_TASK_ID}
 
 #extract gene name
-gene=$(cat sorted_unique_gene_names.txt | sed -n ${numb}p)
+gene=$(cat cut_sorted_genes00 | sed -n ${numb}p)
 
 #get exons from gene_exon_honey.gff
 grep "${gene}" gene_exon_honey.gff > tmp_${gene}_exons.txt
@@ -1432,11 +1442,14 @@ for i in $(seq 1 $num_exons); do
     # Save to a new tmp file
     echo -e "${chr}\t${start}\t${end}" > tmp_${gene}_exon${exon_num}.bed
 
-    singularity exec -B /global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp ../../03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./${numb}_js ../../03_CACTUS/50_rockfish.hal ${gene}_exon${exon_num}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --bedRanges tmp_${gene}_exon${exon_num}.bed --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+    singularity exec -B /global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp ../03_CACTUS/cactus_v2.9.3.sif hal2maf ../03_CACTUS/50_rockfish.hal ./gene_exon_maf_files/${gene}_exon${exon_num}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --refTargets tmp_${gene}_exon${exon_num}.bed
 
     #tidy output
     #rm tmp_${gene}_exon*
 done
+
+##run 
+sbatch --array=1%20 run_hal2maf_genes00.sh
 
 
 
