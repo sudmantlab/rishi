@@ -1481,7 +1481,7 @@ numb=${SLURM_ARRAY_TASK_ID}
 gene=$(cat cut_sorted_genes00 | sed -n ${numb}p)
 
 #get exons from gene_exon_honey.gff
-grep "${gene}" gene_exon_honey.gff > tmp_${gene}_exons.txt
+grep ";gene=${gene};" gene_exon_honey.gff > tmp_${gene}_exons.txt
 
 #remove the 'gene' line and keep only exons
 grep -v -P "\tgene\t" tmp_${gene}_exons.txt > tmp_${gene}_exon_only.txt
@@ -1617,6 +1617,7 @@ echo "Combined alignment written to $output"
 
 ##run 
 sbatch --array=1%20 convert_maf2fasta00.sh
+sbatch --array=1-999%20 convert_maf2fasta00.sh
 
 
 
