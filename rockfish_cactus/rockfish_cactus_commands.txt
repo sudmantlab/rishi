@@ -1418,7 +1418,7 @@ numb=${SLURM_ARRAY_TASK_ID}
 gene=$(cat cut_sorted_genes00 | sed -n ${numb}p)
 
 #get exons from gene_exon_honey.gff
-grep "${gene}" gene_exon_honey.gff > tmp_${gene}_exons.txt
+grep ";gene=${gene};" gene_exon_honey.gff > tmp_${gene}_exons.txt
 
 # Remove the 'gene' line and keep only exons
 grep -v -P "\tgene\t" tmp_${gene}_exons.txt > tmp_${gene}_exon_only.txt
@@ -1444,12 +1444,14 @@ for i in $(seq 1 $num_exons); do
 
     singularity exec -B /global/scratch/users/rdekayne/rockfish50/06_GENE_RER/test_tmp ../03_CACTUS/cactus_v2.9.3.sif hal2maf ../03_CACTUS/50_rockfish.hal ./gene_exon_maf_files/${gene}_exon${exon_num}.maf --refGenome honeycomb-vgp.1 --noAncestors --noDupes --unique --refTargets tmp_${gene}_exon${exon_num}.bed
 
-    #tidy output
-    #rm tmp_${gene}_exon*
 done
+
+#tidy output
+rm tmp_${gene}_exon*
 
 ##run 
 sbatch --array=1%20 run_hal2maf_genes00.sh
+sbatch --array=1-999%20 run_hal2maf_genes00.sh
 
 ##then we want to convert these maf files to a msa file for each exon, make sure all taxa are present in the msa and if so combine into a single gene msa
 mkdir -p exon_msas
@@ -1581,7 +1583,7 @@ for fasta in ./exon_msas/${gene}_exon*.fasta; do
         grep ">" "$fasta" > "${fasta}_md5_tmp.txt"
 
         #another conditional to check the md5 with a known order
-        if [ "$(md5sum $fasta_md5_tmp.txt | awk '{print $1}')" = "$(md5sum md5_fasta_headers.txt | awk '{print $1}')" ]; then
+        if [ "$(md5sum ${fasta}_md5_tmp.txt | awk '{print $1}')" = "$(md5sum md5_fasta_headers.txt | awk '{print $1}')" ]; then
             echo "Files have the same MD5 checksum."
             echo "Including $fasta (50 sequences)"
             awk -v dir="$tmp_dir" '
