@@ -1621,6 +1621,24 @@ sbatch --array=1-999%20 convert_maf2fasta00.sh
 
 
 
+#create directory for tiny files (small)
+mkdir -p small_files
+
+# Loop through each file passed as an argument
+for file in *.fasta; do
+    # Check if it's a regular file
+    if [ -f "$file" ]; then
+        # Get the file size in bytes (Linux)
+        size=$(stat -c%s "$file")
+
+        # If size is less than or equal to 5, copy to small_files/
+        if [ "$size" -le 20000 ]; then
+            mv "$file" small_files/
+        fi
+    fi
+done
+
+mkdir -p problem_genes
 #####################################
 #####################################
 #            GREG_OUTLIER_GO
