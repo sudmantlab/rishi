@@ -1671,7 +1671,11 @@ python run_phykit_vs_all.py
 sbatch run_phykit.sh
 
 #repeat with:
-phykit aln_len
+#phykit aln_len_no_gaps gene.fasta
+col1: number of sites without gaps
+col2: total number of sites
+col3: percentage of sites without gaps
+
 
 #####################################
 #####################################
