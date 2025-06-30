@@ -1639,6 +1639,40 @@ for file in *.fasta; do
 done
 
 mkdir -p problem_genes
+
+#now we want to know how many variable sites are in each gene and only analyse genes with some amount of variation
+#will try using https://jlsteenwyk.com/PhyKIT/tutorials/index.html
+#syntax for variable sites is:
+#phykit vs Steenwyk_etal_mBio_2019_EOG091N44MS.aln.fa
+#col1: number of variable sites
+#col2: total number of sites
+#col3: percentage of variable sites
+
+conda create -p /global/scratch/users/rdekayne/envs/phykit
+conda activate /global/scratch/users/rdekayne/envs/phykit
+conda install bioconda::phykit
+
+#run_phykit.sh
+#!/bin/bash
+#SBATCH --job-name=phykit
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=phykit_%j.out # output file
+#SBATCH --error=phykit_%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=30G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+python run_phykit_vs_all.py
+
+##run
+sbatch run_phykit.sh
+
+#repeat with:
+phykit aln_len
+
 #####################################
 #####################################
 #            GREG_OUTLIER_GO
