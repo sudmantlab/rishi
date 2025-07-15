@@ -1676,7 +1676,73 @@ col1: number of sites without gaps
 col2: total number of sites
 col3: percentage of sites without gaps
 
+#####################################
+#####################################
+#            09_MACSE
+#####################################
+#####################################
+#https://www.agap-ge2pop.org/macsee-pipelines/
 
+mkdir -p /global/scratch/users/rdekayne/rockfish50/09_MACSE && cd /global/scratch/users/rdekayne/rockfish50/09_MACSE
+scp ./macse_v2.07.jar rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/rockfish50/09_MACSE
+
+module load openjdk/17.0.8.1_1-gcc-11.4.0
+
+java -jar /global/scratch/users/rdekayne/rockfish50/09_MACSE/macse_v2.07.jar -h
+
+-i /global/scratch/users/rdekayne/rockfish/01_BUSCOS/output_busco_phylogenomics/gene_trees_single_copy/ALL.tree -o all_buscos_28rockfish.tre
+
+#####################################
+#####################################
+#            08_HYPHY
+#####################################
+#####################################
+
+conda create -p /global/scratch/users/rdekayne/envs/hyphy
+conda activate /global/scratch/users/rdekayne/envs/hyphy
+conda config --add channels bioconda
+conda install -c bioconda hyphy
+
+
+#####################################
+#####################################
+#            10_PHYLOP
+#####################################
+#####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/10_PHYLOP && cd /global/scratch/users/rdekayne/rockfish50/10_PHYLOP
+
+cd /global/scratch/users/rdekayne/rockfish/03_CACTUS/cactus
+source cactus_env/bin/activate
+cd /global/scratch/users/rdekayne/rockfish50/10_PHYLOP
+
+#take whole MAF file generated with 
+
+#conv_hal_to_maf_filt.sh
+#!/bin/bash
+#SBATCH --job-name=cactus_hal_to_maf
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=100G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+export TMPDIR=/global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp
+
+singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/test_tmp /global/scratch/users/rdekayne/rockfish50/03_CACTUS/cactus_v2.9.3.sif cactus-hal2maf ./rockfish50_js /global/scratch/users/rdekayne/rockfish50/03_CACTUS/50_rockfish.hal ./50_rockfish_filt.maf --dupeMode single --filterGapCausingDupes --refGenome SebastesalascanusSEB-2_shortspinethornyhead.1 --noAncestors --chunkSize 1000000 --batchMemory 25G --maxMemory 50G
+
+#run
+sbatch conv_hal_to_maf_filt.sh
+
+phyloFit ./50_rockfish_honey.maf
+--subst-mod REV --tree (NEWICK OF TREE)
+
+phylop --mode CONACC --method LRT
+
+phastcons --target-coverage 0.3 --expected-length 45 --rho 0.4 --most-conserved
 #####################################
 #####################################
 #            GREG_OUTLIER_GO
