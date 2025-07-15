@@ -1737,12 +1737,61 @@ singularity exec -B /global/scratch/users/rdekayne/rockfish50/04_HAL_TO_TREES/te
 #run
 sbatch conv_hal_to_maf_filt.sh
 
-phyloFit ./50_rockfish_honey.maf
---subst-mod REV --tree (NEWICK OF TREE)
+#now run the phast bits : http://compgen.cshl.edu/phast/phyloP-tutorial.php
+phyloFit --tree "((galGal2,((rn3,mm5),fr1)),hg17)" --subst-mod REV --out-root modelfile ./50_rockfish_honey.maf
 
-phylop --mode CONACC --method LRT
+phyloP --mode CONACC --method LRT --wig-scores neutralmodel.mod alignment.maf> phyloPscores.wig
 
 phastcons --target-coverage 0.3 --expected-length 45 --rho 0.4 --most-conserved
+
+
+#####################################
+#####################################
+#            PSMC
+#####################################
+#####################################
+mkdir -p /global/scratch/users/rdekayne/rockfish50/psmc && cd /global/scratch/users/rdekayne/rockfish50/psmc
+cp ../01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1 .
+cp ../01_BUSCOS/hap2_masked_fastas/7164-PS-0001_copper.fa.masked.hap2 .
+
+conda activate /global/scratch/users/rdekayne/envs/mapping
+
+#index_hap1.sh
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-04:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=10G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+bwa-mem2 index 7164-PS-0001_copper.fa.masked.hap1
+
+##run
+sbatch index_hap1.sh
+
+#mapping.sh
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --time=0-04:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=cactus_test%j.out # output file
+#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=20G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+bwa-mem2 mem -t 24 7164-PS-0001_copper.fa.masked.hap1 7164-PS-0001_copper.fa.masked.hap2 | samtools sort -@24 -o copper.raw.bam && touch copper.mapping.done
+
+##run
+sbatch mapping.sh
+
 #####################################
 #####################################
 #            GREG_OUTLIER_GO
