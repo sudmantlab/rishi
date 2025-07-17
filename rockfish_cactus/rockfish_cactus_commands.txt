@@ -1792,10 +1792,63 @@ phastcons --target-coverage 0.3 --expected-length 45 --rho 0.4 --most-conserved
 #####################################
 #####################################
 mkdir -p /global/scratch/users/rdekayne/rockfish50/psmc && cd /global/scratch/users/rdekayne/rockfish50/psmc
-cp ../01_BUSCOS/hap1_masked_fastas/7164-PS-0001_copper.fa.masked.hap1 .
-cp ../01_BUSCOS/hap2_masked_fastas/7164-PS-0001_copper.fa.masked.hap2 .
 
-conda activate /global/scratch/users/rdekayne/envs/mapping
+conda create -p /global/scratch/users/rdekayne/envs/psmc2
+conda activate /global/scratch/users/rdekayne/envs/psmc2
+conda install bcftools -c conda-forge
+conda install conda-forge::libgcc-ng
+conda install bioconda::psmc
+conda install bioconda::seqtk
+
+cp /global/scratch/users/nicolas931010/rockfish_pangenome/sv_detection/paftools/hap2_to_hap1/7164-PS-0001* .
+
+#psmc_test.sh
+#!/bin/bash
+#SBATCH --job-name=psmc
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=psmc%j.out # output file
+#SBATCH --error=psmc%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --mem=20G
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=4 # 2 CPUs per job
+
+bcftools view -m2 -M2 -v snps 7164-PS-0001.vcf | /global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/vcf2snp.pl - > 7164-PS-0001.snp
+seqtk mutfa /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/7164-PS-0001.fa.masked 7164-PS-0001.snp > 7164-PS-0001.pseudo.fa
+seqtk seq -cM 7164-PS-0001.bed -l80 7164-PS-0001.pseudo.fa > 7164-PS-0001.masked.fa
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/fq2psmcfa 7164-PS-0001.masked.fa > 7164-PS-0001.psmcfa
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o 7164-PS-0001.psmc 7164-PS-0001.psmcfa
+touch psmc.done
+
+#run
+sbatch psmc_test.sh
+
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/psmc_plot.pl -R -u 4.36e-09 -g 7.4 7164-PS-0001.plot 7164-PS-0001.psmc
+
+Usage:   psmc_plot.pl [options] <out.prefix> <in.psmc>
+
+Options: -u FLOAT   absolute mutation rate per nucleotide [2.5e-08]
+         -s INT     skip used in data preparation [100]
+         -X FLOAT   maximum generations, 0 for auto [0]
+         -x FLOAT   minimum generations, 0 for auto [10000]
+         -Y FLOAT   maximum popsize, 0 for auto [0]
+         -m INT     minimum number of iteration [5]
+         -n INT     take n-th iteration (suppress GOF) [20]
+         -M titles  multiline mode [null]
+         -f STR     font for title, labels and tics [Helvetica,16]
+         -g INT     number of years per generation [25]
+         -w INT     line width [4]
+         -P STR     position of the keys [right top]
+         -T STR     figure title [null]
+         -N FLOAT   false negative rate [0]
+         -S         no scaling
+         -L         show the last bin
+         -p         convert to PDF (with epstopdf)
+         -R         do not remove temporary files
+         -G         plot grid
+
 
 #index_hap1.sh
 #!/bin/bash
