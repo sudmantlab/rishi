@@ -1795,10 +1795,14 @@ mkdir -p /global/scratch/users/rdekayne/rockfish50/psmc && cd /global/scratch/us
 
 conda create -p /global/scratch/users/rdekayne/envs/psmc2
 conda activate /global/scratch/users/rdekayne/envs/psmc2
-conda install bcftools -c conda-forge
+conda install -c conda-forge -c bioconda bcftools=1.16
 conda install conda-forge::libgcc-ng
 conda install bioconda::psmc
 conda install bioconda::seqtk
+conda install bioconda::samtools
+conda install conda-forge::gnuplot
+conda install conda-forge::texlive-core
+conda install conda-forge::ghostscript
 
 cp /global/scratch/users/nicolas931010/rockfish_pangenome/sv_detection/paftools/hap2_to_hap1/7164-PS-0001* .
 
@@ -1815,11 +1819,15 @@ cp /global/scratch/users/nicolas931010/rockfish_pangenome/sv_detection/paftools/
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=4 # 2 CPUs per job
 
-bcftools view -m2 -M2 -v snps 7164-PS-0001.vcf | /global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/vcf2snp.pl - > 7164-PS-0001.snp
+sed 's/1\/1/0\/1/g' 7164-PS-0001.vcf | bcftools +fill-tags -o 7164-PS-0001.filt.vcf -- -t AN,AC,AF 
+bcftools view -m2 -M2 -v snps 7164-PS-0001.filt.vcf | /global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/vcf2snp.pl - > 7164-PS-0001.snp
 seqtk mutfa /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/7164-PS-0001.fa.masked 7164-PS-0001.snp > 7164-PS-0001.pseudo.fa
-seqtk seq -cM 7164-PS-0001.bed -l80 7164-PS-0001.pseudo.fa > 7164-PS-0001.masked.fa
-/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/fq2psmcfa 7164-PS-0001.masked.fa > 7164-PS-0001.psmcfa
-psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o 7164-PS-0001.psmc 7164-PS-0001.psmcfa
+seqtk seq -cM 7164-PS-0001.callable.bed -l80 7164-PS-0001.pseudo.fa > 7164-PS-0001.masked.fa
+seqtk seq -l0 7164-PS-0001.masked.fa > 7164-PS-0001.masked.seq.fa
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/fq2psmcfa 7164-PS-0001.masked.seq.fa > 7164-PS-0001.psmcfa
+seqtk seq -l0 7164-PS-0001.psmcfa > 7164-PS-0001.seq.psmcfa
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o 7164-PS-0001.psmc 7164-PS-0001.seq.psmcfa
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/psmc_plot.pl -R -u 4.36e-09 -g 7.4 7164-PS-0001.plot 7164-PS-0001.psmc
 touch psmc.done
 
 #run
@@ -1827,64 +1835,61 @@ sbatch psmc_test.sh
 
 /global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/psmc_plot.pl -R -u 4.36e-09 -g 7.4 7164-PS-0001.plot 7164-PS-0001.psmc
 
-Usage:   psmc_plot.pl [options] <out.prefix> <in.psmc>
+#now do full run
+mkdir -p full_run && cd full_run
+mkdir output
 
-Options: -u FLOAT   absolute mutation rate per nucleotide [2.5e-08]
-         -s INT     skip used in data preparation [100]
-         -X FLOAT   maximum generations, 0 for auto [0]
-         -x FLOAT   minimum generations, 0 for auto [10000]
-         -Y FLOAT   maximum popsize, 0 for auto [0]
-         -m INT     minimum number of iteration [5]
-         -n INT     take n-th iteration (suppress GOF) [20]
-         -M titles  multiline mode [null]
-         -f STR     font for title, labels and tics [Helvetica,16]
-         -g INT     number of years per generation [25]
-         -w INT     line width [4]
-         -P STR     position of the keys [right top]
-         -T STR     figure title [null]
-         -N FLOAT   false negative rate [0]
-         -S         no scaling
-         -L         show the last bin
-         -p         convert to PDF (with epstopdf)
-         -R         do not remove temporary files
-         -G         plot grid
+##indiv_list.txt
+7164-PS-0001
+7164-PS-0002
+7164-PS-0003
+7164-PS-0004
+7164-PS-0005
+7164-PS-0006
+7164-PS-0007
+7164-PS-0008
+m84185_240412_222911_s4
+SebastesalascanusSEB-2
+SebastesalutusPOP6
+SebastesborealisSEB-8
+SebastescarnatusSEB-258
+SebastescrocotulusSEB-252
+SebastesmelanostictusSEB-4
+SebastesminiatusSEB-256
+SebastesmystinusSEB-254
+SebastespolyspinisSEB-5
+Sebastesruberrimus12-Yellowye1a
+SebastesserranoidesSEB-259
 
-
-#index_hap1.sh
+##all_psmc.sh
 #!/bin/bash
-#SBATCH --job-name=index
-#SBATCH --time=0-04:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --job-name=psmc
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
-#SBATCH --output=cactus_test%j.out # output file
-#SBATCH --error=cactus_test%j.err # error file
+#SBATCH --output=psmc%j.out # output file
+#SBATCH --error=psmc%j.err # error file
 #SBATCH --ntasks=1 # Run 1 job
-#SBATCH --mem=10G
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=4 # 2 CPUs per job
-
-bwa-mem2 index 7164-PS-0001_copper.fa.masked.hap1
-
-##run
-sbatch index_hap1.sh
-
-#mapping.sh
-#!/bin/bash
-#SBATCH --job-name=index
-#SBATCH --time=0-04:00:00 # Wall clock time limit in Days-Hours:min:seconds
-#SBATCH --account=co_genomicdata
-#SBATCH --partition=savio4_htc
-#SBATCH --output=cactus_test%j.out # output file
-#SBATCH --error=cactus_test%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --mem=20G
 #SBATCH --ntasks-per-node=1 # One task per computer
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
-bwa-mem2 mem -t 24 7164-PS-0001_copper.fa.masked.hap1 7164-PS-0001_copper.fa.masked.hap2 | samtools sort -@24 -o copper.raw.bam && touch copper.mapping.done
+numb=${SLURM_ARRAY_TASK_ID}
+file_name=$(cat /global/scratch/users/rdekayne/rockfish50/psmc/full_run/indiv_list.txt | sed -n ${numb}p)
+
+sed 's/1\/1/0\/1/g' /global/scratch/users/nicolas931010/rockfish_pangenome/sv_detection/paftools/hap2_to_hap1/${file_name}.vcf | bcftools +fill-tags -o ./${file_name}.filt.vcf -- -t AN,AC,AF 
+bcftools view -m2 -M2 -v snps ${file_name}.filt.vcf | /global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/vcf2snp.pl - > ${file_name}.snp
+seqtk mutfa /global/scratch/users/nicolas931010/rockfish_pangenome/repeat_annotation/repeatmasker/hap1/${file_name}.fa.masked ${file_name}.snp > ${file_name}.pseudo.fa
+seqtk seq -cM /global/scratch/users/nicolas931010/rockfish_pangenome/sv_detection/paftools/hap2_to_hap1/${file_name}.callable.bed -l80 ${file_name}.fa > ${file_name}.masked.fa
+seqtk seq -l0 ${file_name}.masked.fa > ${file_name}.masked.seq.fa
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/fq2psmcfa ${file_name}.masked.seq.fa > ${file_name}.psmcfa
+seqtk seq -l0 ${file_name}.psmcfa > ${file_name}.seq.psmcfa
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o ${file_name}.psmc ${file_name}.seq.psmcfa
+/global/scratch/users/rdekayne/rockfish50/psmc/psmc/utils/psmc_plot.pl -R -u 4.36e-09 -g 7.4 -p ${file_name}.plot ${file_name}.psmc
+
+touch ${file_name}.done
 
 ##run
-sbatch mapping.sh
+sbatch --array=1-20 all_psmc.sh
 
 #####################################
 #####################################
