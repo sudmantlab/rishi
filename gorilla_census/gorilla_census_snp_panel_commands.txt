@@ -2502,13 +2502,84 @@ cut -f1,2 pi_output.sites.pi_over_25.pi > positions.txt
 vcftools --gzvcf ./autosomes_output_filt_mindepth7_minqual30_AN22_chrrename.pruned.vcf.gz --positions positions.txt --recode --recode-INFO-all --out gorilla_snps_with_pi_over_25.vcf
 
 
+#####################################
+#####################################
+#            JULY 2025 single PCR test output
+#####################################
+#####################################
+#first run fastp on the raw fastq files
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/ && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/
 
+conda activate /global/scratch/users/rdekayne/envs/fastp
 
+## QC_fastp.sh 
 
+#!/bin/bash
+#SBATCH --job-name=fastp
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=fastq1.%j.out # output file
+#SBATCH --error=fastq1.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=16 # 2 CPUs per job
 
+fastp -i 18032D-186-01_S234_L007_R1_001.fastq.gz -I 18032D-186-01_S234_L007_R2_001.fastq.gz --thread 16 -o 18032D-186-01_S234_L007_R1_001.out.fastq.gz -O 18032D-186-01_S234_L007_R2_001.out.fastq.gz -j OUTPUT.json -h OUTPUT.html && touch fastp.done
 
+##run
+sbatch QC_fastp.sh 
 
+seqkit grep -p '^NNNNNGGG' -d read_1.fq.gz -o out_1.fq.gz
 
+#trial demultiplexing test:
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder
+
+cp ../S1* .
+#demultiplex_S1.sh
+
+#!/bin/bash
+#SBATCH --job-name=demult
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --output=demult.%j.out # output file
+#SBATCH --error=demult.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=16 # 2 CPUs per job
+
+../fastq-multx/fastq-multx -B S1_regular_barcodes.txt ../18032D-186-01_S234_L007_R1_001.fastq.gz ../18032D-186-01_S234_L007_R2_001.fastq.gz -o ./demux/%_R1.fastq.gz ./demux/%_R2.fastq.gz -m 1
+
+rev_compl.sh
+
+#!/bin/bash
+
+# Input and output files
+INPUT="all_primers_for_demultiplexing.txt"
+OUTPUT="all_primers_for_demultiplexing_REVCOMP2.txt"
+
+# Function to get reverse complement
+revcomp() {
+    echo "$1" | tr "ACGTacgt" "TGCAtgca" | rev
+}
+
+# Process each line
+while read -r line; do
+    sample=$(echo "$line" | cut -f1)
+    barcodes=$(echo "$line" | cut -f2)
+    fwd=$(echo "$barcodes" | cut -d'-' -f1)
+    rev=$(echo "$barcodes" | cut -d'-' -f2)
+
+    fwd_rc=$(revcomp "$fwd")
+    rev_rc=$(revcomp "$rev")
+
+    echo -e "${sample}\t${rev_rc}-${fwd_rc}"
+done < "$INPUT" > "$OUTPUT"
+
+echo "Reverse complements written to $OUTPUT"
 
 
 
