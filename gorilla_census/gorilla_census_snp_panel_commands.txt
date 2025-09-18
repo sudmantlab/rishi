@@ -2581,7 +2581,35 @@ done < "$INPUT" > "$OUTPUT"
 
 echo "Reverse complements written to $OUTPUT"
 
+#now prior to mapping we want to concatenate for each combination of F and R
 
+##concatentate_reads.sh
+#!/bin/bash
+
+# Loop over F_01 to F_12
+for i in $(seq -w 1 12); do
+  F="F_$i"
+
+  # Loop over R_01 to R_08
+  for j in $(seq -w 1 8); do
+    R="R_$j"
+    prefix="${F}_${R}"
+
+    echo "Processing ${prefix}..."
+
+    # Define output filenames
+    out_R1="concat_${prefix}_R1.fastq.gz"
+    out_R2="concat_${prefix}_R2.fastq.gz"
+
+    # Concatenate R1 files
+    cat ${prefix}_*R1.fastq.gz > "$out_R1"
+
+    # Concatenate R2 files
+    cat ${prefix}_*R2.fastq.gz > "$out_R2"
+
+    echo "Created $out_R1 and $out_R2"
+  done
+done
 
 
 
