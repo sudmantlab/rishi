@@ -2583,36 +2583,166 @@ echo "Reverse complements written to $OUTPUT"
 
 #now prior to mapping we want to concatenate for each combination of F and R
 
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas
 ##concatentate_reads.sh
 #!/bin/bash
 
+# Enable nullglob so that unmatched globs expand to nothing instead of themselves
+shopt -s nullglob
+
+# Create output directory if it doesn't exist
+mkdir -p ./combined_indiv_fastas
+
 # Loop over F_01 to F_12
-for i in $(seq -w 1 12); do
+for i in $(printf "%02d\n" {1..12}); do
   F="F_$i"
 
   # Loop over R_01 to R_08
-  for j in $(seq -w 1 8); do
+  for j in $(printf "%02d\n" {1..8}); do
     R="R_$j"
     prefix="${F}_${R}"
 
     echo "Processing ${prefix}..."
 
     # Define output filenames
-    out_R1="concat_${prefix}_R1.fastq.gz"
-    out_R2="concat_${prefix}_R2.fastq.gz"
+    out_R1="./combined_indiv_fastas/concat_${prefix}_R1.fastq.gz"
+    out_R2="./combined_indiv_fastas/concat_${prefix}_R2.fastq.gz"
 
-    # Concatenate R1 files
-    cat ${prefix}_*R1.fastq.gz > "$out_R1"
+    # Collect matching files
+    R1_files=(demux/${prefix}_*R1.fastq.gz demux_rev/${prefix}_*R1.fastq.gz)
+    R2_files=(demux/${prefix}_*R2.fastq.gz demux_rev/${prefix}_*R2.fastq.gz)
 
-    # Concatenate R2 files
-    cat ${prefix}_*R2.fastq.gz > "$out_R2"
+    # Check if files exist before concatenating
+    if [ ${#R1_files[@]} -eq 0 ]; then
+      echo "⚠️  No R1 files found for ${prefix}, skipping..."
+    else
+      cat "${R1_files[@]}" > "$out_R1"
+      echo "✅ Created $out_R1"
+    fi
 
-    echo "Created $out_R1 and $out_R2"
+    if [ ${#R2_files[@]} -eq 0 ]; then
+      echo "⚠️  No R2 files found for ${prefix}, skipping..."
+    else
+      cat "${R2_files[@]}" > "$out_R2"
+      echo "✅ Created $out_R2"
+    fi
+
+    echo ""
   done
 done
 
 
+chmod +x concatentate_reads.sh 
+./concatentate_reads.sh 
 
+#####################################
+#              mapping
+#####################################
+
+mkdir /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/mapping && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/mapping
+conda activate /global/scratch/users/rdekayne/envs/mapping
+
+mkdir /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/raw_bams
+
+ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas | grep _R1.fastq.gz | sed 's/_R1.fastq.gz//g' > sample_prefixes.txt
+
+## mapping_map_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=bwa_map
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=10G
+#SBATCH --time=24:00:00
+#SBATCH --output=bwa_map.%j.out
+#SBATCH --error=bwa_map.%j.err
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/mapping/sample_prefixes.txt | sed -n ${ind}p)
+
+# call bwa
+bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mGorGor1.pri.cur.20231122.fasta /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas/${indiv_name}_R1.fastq.gz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas/${indiv_name}_R2.fastq.gz | samtools sort -@24 -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/raw_bams/${indiv_name}.raw.bam && touch ${indiv_name}.mapping.done
+
+##run
+sbatch --array=1-96 mapping_map_p1.sh 
+
+mkdir all_err_out
+mv *.err all_err_out/
+mv *.out all_err_out/
+
+rm *.done
+
+module load java/22.0.1
+
+# 09.2_mapping_process_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=bwa_proc
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=100G
+#SBATCH --time=24:00:00
+#SBATCH --output=bwa_proc.%j.out
+#SBATCH --error=bwa_proc.%j.err
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat /global/scratch/users/rdekayne/gorilla_census/Jan_2025_library_test_UCB/Fastq_fastp_filtered/sample_prefixes.txt | sed -n ${ind}p)
+
+#PART1
+picard FixMateInformation I=/global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/${indiv_name}.raw.bam VALIDATION_STRINGENCY=LENIENT OUTPUT=/global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/tmp_bam/${indiv_name}.raw.bam
+
+sambamba sort /global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/tmp_bam/${indiv_name}.raw.bam -o /global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/tmp_bam/${indiv_name}.sorted.raw.bam -t 24 -m 50GB
+
+picard MarkDuplicates INPUT=/global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/tmp_bam/${indiv_name}.sorted.raw.bam OUTPUT=/global/scratch/users/rdekayne/gorilla_census/09_mapping/processed_bams/${indiv_name}.sorted.dup.bam METRICS_FILE=/global/scratch/users/rdekayne/gorilla_census/09_mapping/processed_bams/${indiv_name}.sorted.dup.txt VALIDATION_STRINGENCY=LENIENT MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1024
+
+sambamba index /global/scratch/users/rdekayne/gorilla_census/09_mapping/processed_bams/${indiv_name}.sorted.dup.bam
+
+#now remove all intermediate files
+rm /global/scratch/users/rdekayne/gorilla_census/09_mapping/raw_bams/tmp_bam/${indiv_name}*
+
+touch ${indiv_name}.processing.done
+
+##submit
+sbatch --array=1 09.2_mapping_process_p1.sh 
+sbatch --array=1-39%8 09.2_mapping_process_p1.sh 
+
+mkdir all_err_out
+mv *.err all_err_out/
+mv *.out all_err_out/
+
+ls processed_bams/*.bam > bam_39_list.txt
+
+# 09.3_mapping_mosdepth_p1.sh 
+
+#!/bin/bash
+#SBATCH --job-name=mos
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --output=mos.%j.out # output file
+#SBATCH --error=mos.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat bam_39_list.txt | sed -n ${ind}p)
+
+mosdepth -n ${indiv_name} /global/scratch/users/rdekayne/gorilla_census/09_mapping/processed_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+samtools flagstat ${indiv_name} && touch ${indiv_name}.flagstst.done
+
+##run 
+sbatch --array=1-39 09.3_mapping_mosdepth_p1.sh 
 
 
 
