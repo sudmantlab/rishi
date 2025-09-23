@@ -2770,77 +2770,81 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UC
 
 #!/bin/bash
 #SBATCH --job-name=rehead
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
-#SBATCH --account=co_genomicdata
-#SBATCH --partition=savio4_htc
-#SBATCH --qos=genomicdata_htc4_normal
-#SBATCH --output=rehead.%j.out # output file
-#SBATCH --error=rehead.%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=4 # 2 CPUs per job
-
-numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
-
-bcftools reheader --samples /global/scratch/users/rdekayne/gorilla_census/10_genotyping/reheader.txt -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_vcfs/"${scaf_name}".reheader.raw.vcf.gz /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_vcfs/"${scaf_name}".raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_vcfs/"${scaf_name}".rehead.done
-
-#run
-sbatch --array=1-25 10.2_genotyping_rehead.sh
-
-## 10.3_vcf_index.sh
-
-#!/bin/bash
-#SBATCH --job-name=index
-#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
-#SBATCH --account=co_genomicdata
-#SBATCH --partition=savio4_htc
-#SBATCH --qos=genomicdata_htc4_normal
-#SBATCH --output=index.%j.out # output file
-#SBATCH --error=index.%j.err # error file
-#SBATCH --ntasks=1 # Run 1 job
-#SBATCH --ntasks-per-node=1 # One task per computer
-#SBATCH --cpus-per-task=4 # 2 CPUs per job
-
-numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
-
-bcftools index /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz
-
-##run
-sbatch --array=1-25 10.3_vcf_index.sh
-
-mkdir -p /global/scratch/users/rdekayne/gorilla_census/10_genotyping/filt_vcfs
-
-## 10.4_vcf_filt2.sh
-
-#!/bin/bash
-#SBATCH --job-name=filt
 #SBATCH --account=co_genomicdata
 #SBATCH --partition=savio4_htc
 #SBATCH --qos=genomicdata_htc4_normal
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=50G
-#SBATCH --time=24:00:00
-#SBATCH --output=filt.%j.out
-#SBATCH --error=filt.%j.err
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=20G
+#SBATCH --time=4:00:00
+#SBATCH --output=rehead.%j.out
+#SBATCH --error=rehead.%j.err
 
 numb=${SLURM_ARRAY_TASK_ID}
-scaf_name=$(cat l | sed -n ${numb}p)
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
+
+bcftools reheader --samples /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/reheader.txt -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_vcfs/"${scaf_name}".reheader.raw.vcf.gz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_vcfs/"${scaf_name}".raw.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_vcfs/"${scaf_name}".rehead.done
+
+#run
+sbatch --array=1-23 genotyping_rehead.sh
+
+mv raw_vcfs/*.reheader* raw_reheader_vcfs/
+
+## vcf_index.sh
+
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=20G
+#SBATCH --time=4:00:00
+#SBATCH --output=index.%j.out
+#SBATCH --error=index.%j.err
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
+
+bcftools index /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz
+
+##run
+sbatch --array=1-23 vcf_index.sh
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs
+
+## vcf_filt2.sh
+
+#!/bin/bash
+#SBATCH --job-name=index
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=50G
+#SBATCH --time=4:00:00
+#SBATCH --output=index.%j.out
+#SBATCH --error=index.%j.err
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | sed -n ${numb}p)
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}"
 
-#bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN2.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/10_genotyping/done_files/"${scaf_name}"_filt2.done
+#bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN2.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}"_filt2.done
 
-bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/10_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 1' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN1.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/10_genotyping/done_files/"${scaf_name}"_filt2.done
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 1' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN1.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}"_filt2.done
 
 ##run
-sbatch --array=1-23 10.4_vcf_filt2.sh
+sbatch --array=1-23 vcf_filt2.sh
 
-ls /global/scratch/users/rdekayne/gorilla_census/10_genotyping/filt_vcfs/*.vcf.gz > autosomes_filt_to_merge.txt
-ls /global/scratch/users/rdekayne/gorilla_census/10_genotyping/filt_vcfs/*AN1.vcf.gz > autosomes_filt_to_mergeAN1.txt
+ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/*AN2.vcf.gz > autosomes_filt_to_mergeAN2.txt
+ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/*AN1.vcf.gz > autosomes_filt_to_mergeAN1.txt
 
 ## 10.5_vcf_auto_concat_filt.sh
 
