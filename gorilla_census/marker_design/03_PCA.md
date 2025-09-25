@@ -242,14 +242,7 @@ legend('topright',
        cex = 1) 
 dev.off()
 ```
-PC1 vs PC2
-[11_gorilla_PC1PC2.tiff](https://github.com/user-attachments/files/22547354/11_gorilla_PC1PC2.tiff)
 
-PC1 vs PC3
-[11_gorilla_PC1PC3.tiff](https://github.com/user-attachments/files/22547356/11_gorilla_PC1PC3.tiff)
-
-PC2 vs PC3
-[11_gorilla_PC2PC3.tiff](https://github.com/user-attachments/files/22547358/11_gorilla_PC2PC3.tiff)
 
 
 
