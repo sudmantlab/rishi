@@ -154,6 +154,78 @@ bcftools index /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_r
 sbatch --array=1-25 02.4_vcf_index.sh
 ```
 
+Make directory for filtered vcfs
+```
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs
+```
+Then get a list of autosomes since we need to filt autosomes and sex chromosomes separately
+```
+cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | grep -v "chrX" | grep -v "chrY" > autosomes_scaffold_list.txt
+```
+Now we will filter the raw vcf files we made above - `02.5_vcf_filt2.sh`
+Filter genotypes with low depth or low quality using `-e 'FORMAT/DP < 7 | FORMAT/GQ < 30'`
+Set missing genotypes to ./. `--set-GTs .`
+Exclude variant sites where the allele number (AN) is less than 2 `-e 'AN < 2'` i.e. filter out sites where all individuals are ./.
+```
+#!/bin/bash
+#SBATCH --job-name=filt
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=50G
+#SBATCH --time=24:00:00
+#SBATCH --output=filt.%j.out
+#SBATCH --error=filt.%j.err
+
+numb=${SLURM_ARRAY_TASK_ID}
+scaf_name=$(cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/autosomes_scaffold_list.txt | sed -n ${numb}p)
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}"
+
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/02_genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'FORMAT/DP < 7 | FORMAT/GQ < 30' --set-GTs . -O u | bcftools filter -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/"${scaf_name}".reheader_filt_mindepth7_minqual30.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/done_files/"${scaf_name}"_filt2.done
+```
+Submit `sbatch --array=1-23 02.5_vcf_filt2.sh`
+
+Make list of vcf files to merge
+```
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/*.vcf.gz > autosomes_filt_to_merge.txt
+```
+Now concatenate all the autosomes into a single large vcf file - `02.6_vcf_auto_concat_filt.sh`
+And then filter the resulting file to keep sites that are biallelic `-m2 -M2` have a minor allele count of 1 and at least 22 alleles `-e 'INFO/MAC < 1 | AN < 22'`
+```
+#!/bin/bash
+#SBATCH --job-name=concat
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=100G
+#SBATCH --time=24:00:00
+#SBATCH --output=concat.%j.out
+#SBATCH --error=concat.%j.err
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge
+bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/02_genotyping/autosomes_filt_to_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/autosomes_output_filt_mindepth7_minqual30.vcf.gz
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2
+#max 0 missing filter for SNPs
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/autosomes_output_filt_mindepth7_minqual30.vcf.gz -e 'INFO/MAC < 1 | AN < 22' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_vcfs/autosomes_output_filt_mindepth7_minqual30_AN22.vcf.gz
+
+touch concat_auto.done
+```
+Submit - `sbatch 02.6_vcf_auto_concat_filt.sh`
+
+Count the number of sites retained
+```
+bcftools view -H autosomes_output_filt_mindepth7_minqual30_AN22.vcf.gz | wc -l
+```
+# 4799902
+
 
 
 
