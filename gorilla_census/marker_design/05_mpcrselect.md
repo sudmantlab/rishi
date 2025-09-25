@@ -176,3 +176,5 @@ module load openjdk/17.0.8.1_1-gcc-11.4.0
 nextflow run ellieearmstrong/mPCRselect -r main -c run_one.config
 ```
 Run - `sbatch submit_run_one_mpcrselect.sh`
+
+The contig file run_one.contig can be found [HERE](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/files/run_one.config)
