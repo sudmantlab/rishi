@@ -2838,7 +2838,7 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_nam
 
 #bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 2' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN2.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}"_filt2.done
 
-bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 1' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN1.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}"_filt2.done
+bcftools filter -Ou /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_reheader_vcfs/"${scaf_name}".reheader.raw.vcf.gz -e 'AN < 1' | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_temp_"${scaf_name}" -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}".reheader_filt_AN1.vcf.gz && touch /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/"${scaf_name}"_filt22.done
 
 ##run
 sbatch --array=1-23 vcf_filt2.sh
@@ -2846,7 +2846,7 @@ sbatch --array=1-23 vcf_filt2.sh
 ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/*AN2.vcf.gz > autosomes_filt_to_mergeAN2.txt
 ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/filt_vcfs/*AN1.vcf.gz > autosomes_filt_to_mergeAN1.txt
 
-## 10.5_vcf_auto_concat_filt.sh
+## vcf_auto_concat_filt.sh
 
 #!/bin/bash
 #SBATCH --job-name=concat
@@ -2855,74 +2855,55 @@ ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/geno
 #SBATCH --qos=genomicdata_htc4_normal
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=20
-#SBATCH --mem=100G
-#SBATCH --time=24:00:00
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=50G
+#SBATCH --time=4:00:00
 #SBATCH --output=concat.%j.out
 #SBATCH --error=concat.%j.err
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge
-#bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/10_genotyping/autosomes_filt_to_merge.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz
-
-#bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/10_genotyping/autosomes_filt_to_mergeAN1.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz
+bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/autosomes_filt_to_mergeAN2.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge
+bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/autosomes_filt_to_mergeAN1.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2
 #max 0 missing filter for SNPs
-#bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz -e 'INFO/MAC < 1' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
-
-bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz -e 'INFO/MAC < 1' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz -e 'INFO/MAC < 1' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz -e 'INFO/MAC < 1' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz
 
 touch concat_auto.done
 
 ## run
-sbatch 10.5_vcf_auto_concat_filt.sh
+sbatch vcf_auto_concat_filt.sh
 
-bcftools view -H autosomes_output_filt_AN2_MAC1.vcf.gz | wc -l
-# 321
-bcftools view -H autosomes_output_filt_AN1_MAC1.vcf.gz | wc -l
-#321
+bcftools view -H concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz | wc -l
+# 278
+bcftools view -H concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz | wc -l
+# 278
 
 #now filter for the list we wanted:
 
 bcftools index ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
 bcftools index ./concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz
 
-###########################
-##target_markers.txt
-sed -i 's/pat/_pat_/g' target_markers.txt
-sed -i 's/mat/_mat_/g' target_markers.txt
-
-bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz > targets156_filtered.vcf
-bcftools view -H targets156_filtered.vcf | wc -l
-#299
-
-bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz > targets156_filteredAN1.vcf
-bcftools view -H targets156_filteredAN1.vcf | wc -l
-#299
 
 ###########################
-##specific_targets.txt
-grep "_L" specific_targets.txt > specific_targets_filt.txt
-sed -i 's/_L//g' specific_targets_filt.txt
-sed -i 's/_/\t/g' specific_targets_filt.txt
-sed -i 's/pat/_pat_/g' specific_targets_filt.txt
-sed -i 's/mat/_mat_/g' specific_targets_filt.txt
+##sspecific_targets_filt.txt
+#e.g. 
+head specific_targets_filt.txt 
+chr1_pat_hsa1	16135961
+chr1_pat_hsa1	89063346
+chr1_pat_hsa1	120783018
+chr1_pat_hsa1	172049113
+chr10_mat_hsa12	72338625
+chr18_pat_hsa16	102360960
+chr2_pat_hsa3	146849078
+chr2_pat_hsa3	190070041
+chr22_mat_hsa21	43263002
+chr3_pat_hsa4	41166257
 
-bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz > targets156_specific_filtered.vcf
-bcftools view -H targets156_specific_filtered.vcf | wc -l
-#85
-
-bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz > targets156_specific_filteredAN1.vcf
-bcftools view -H targets156_specific_filteredAN1.vcf | wc -l
-#85
-
-##get missingness summary
-conda activate /global/scratch/users/rdekayne/envs/mpcrselectenv
-
-vcftools --vcf targets156_specific_filtered.vcf --missing-indv
-vcftools --vcf targets156_specific_filtered.vcf --missing-site
-
-## 10.6_vcf_auto_concat_filt_inc_invariant.sh
+## vcf_auto_concat_filt_inc_invariant.sh
 
 #!/bin/bash
 #SBATCH --job-name=concat
@@ -2939,48 +2920,39 @@ vcftools --vcf targets156_specific_filtered.vcf --missing-site
 
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2
 #max 0 missing filter for SNPs
-#bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz -e 'INFO/MAC < 0' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz
-
-bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz -e 'INFO/MAC < 0' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o /global/scratch/users/rdekayne/gorilla_census/10_genotyping/concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz -e 'INFO/MAC < 0' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge2 -o ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge3
+bcftools filter -Oz /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz -e 'INFO/MAC < 0' | bcftools view -m2 -M2 -v snps | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge3 -o ./concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz
 
 touch concat_auto.done
 
 ## run
-sbatch 10.6_vcf_auto_concat_filt_inc_invariant.sh
+sbatch vcf_auto_concat_filt_inc_invariant.sh
 
-bcftools view -H autosomes_output_filt_AN2_MAC0.vcf.gz | wc -l
+bcftools view -H ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz | wc -l
 #(OTHER MAC1) 321
-# 485
+# 623
 
-bcftools view -H autosomes_output_filt_AN1_MAC0.vcf.gz | wc -l
+bcftools view -H ./concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz | wc -l
 #(OTHER MAC1) 321
-# 485
+# 623
 
 #now filter for the list we wanted:
 bcftools index ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz
 bcftools index ./concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz
 
 ###########################
-##target_markers.txt
-sed -i 's/pat/_pat_/g' target_markers.txt
-sed -i 's/mat/_mat_/g' target_markers.txt
+bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz > targets40_specific_filtered_MAC0.vcf
+bcftools view -H targets40_specific_filtered_MAC0.vcf | wc -l
+#17
 
-bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz > targets156_filtered_MAC0.vcf
-bcftools view -H targets156_filtered_MAC0.vcf | wc -l
-# 322
+bcftools view -R specific_targets_filt.txt /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz > targets40_specific_filtered_AN2.vcf
+bcftools view -H targets40_specific_filtered_AN2.vcf | wc -l
+#40
 
-bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz > targets156_filtered_AN1MAC0.vcf
-bcftools view -H targets156_filtered_AN1MAC0.vcf | wc -l
-# 322
-
-###########################
-bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC0.vcf.gz > targets156_specific_filtered_MAC0.vcf
-bcftools view -H targets156_specific_filtered_MAC0.vcf | wc -l
-#105
-
-bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_AN1_MAC0.vcf.gz > targets156_specific_filtered_AN1MAC0.vcf
-bcftools view -H targets156_specific_filtered_AN1MAC0.vcf | wc -l
-#105
+bcftools view -R specific_targets_filt.txt /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN1.vcf.gz > targets40_specific_filtered_AN1.vcf
+bcftools view -H targets40_specific_filtered_AN1.vcf | wc -l
+#40
 
 #now split by extraction kit
 bcftools view -S lrg_vol_sample_list.txt -o targets156_specific_filtered_MAC0_LRG.vcf targets156_specific_filtered_MAC0.vcf
