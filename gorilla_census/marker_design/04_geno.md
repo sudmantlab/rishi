@@ -82,6 +82,12 @@ ind13_Ntabwoba  elow
 ind14_Mkubwa  elow
 ind15_Kaisi  elow
 ```
+Now prep list for calculating pi per chromosome
+```
+ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/*AN28.vcf.gz > filt_vcfs_to_convert.txt
+sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/02_genotyping\/filt_vcfs\///g' filt_vcfs_to_convert.txt
+sed -i 's/_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz//g' filt_vcfs_to_convert.txt
+```
 Now calculate pi in a loop - `04.3_geno_pi.sh`
 Worth noting that genomics.py needs to be here
 ```
