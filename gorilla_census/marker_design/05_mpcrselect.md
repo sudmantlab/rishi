@@ -63,17 +63,17 @@ gem install baitstools-1.8.1.gem
 Produce sample csv file
 ```
 Sample,Population
-ind01_Maisha,mont
-ind02_Tuck,mont
-ind03_Turimaso,mont
-ind04_Umurimo,mont
-ind05_Imfura,mont
-ind06_Kaboko,mont
-ind07_Zirikana,mont
-ind17_Bwiruka,mont
-ind19_Katungi,mont
-ind20_Nyamunwa,mont
-ind21_Semehe,mont
+ind01_Maisha,mont1
+ind02_Tuck,mont1
+ind03_Turimaso,mont1
+ind04_Umurimo,mont1
+ind05_Imfura,mont1
+ind06_Kaboko,mont1
+ind07_Zirikana,mont1
+ind17_Bwiruka,mont2
+ind19_Katungi,mont2
+ind20_Nyamunwa,mont2
+ind21_Semehe,mont2
 ```
 
 We will be editing one config file for the run - `test.config`
