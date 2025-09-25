@@ -1,4 +1,5 @@
-Code to create .geno files from .vcf files to calculate popgen statistics using genomics_general tools (https://github.com/simonhmartin/genomics_general)
+Code to create .geno files from .vcf files to calculate popgen statistics using [genomics_general](https://github.com/simonhmartin/genomics_general) tools
+This specific section was carried out on an earlier iteration of the pipeline where we had 14 samples and is only retained here for clarity (hence why samples have AN28 rather than AN22 which was in the final version)
 
 Download the set of tools from github and make directories
 ```
