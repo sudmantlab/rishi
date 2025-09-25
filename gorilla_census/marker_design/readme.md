@@ -5,3 +5,4 @@ Each markdown file explains a specific step in the process:
 - [02_genotyping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/02_genotyping.md) covers genotyping and vcf file filtering (for quality etc.)
 - [03_PCA.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/03_PCA.md) explains the production of PCAs from this data
 - [04_geno.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/04_geno.md) outlines how to convert the vcf files to .geno files and then carry out popgen analyses on these files
+- [05_mpcrselect](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/05_mpcrselect.md) covers running the mPCRselect pipeline to select putative target SNPs
