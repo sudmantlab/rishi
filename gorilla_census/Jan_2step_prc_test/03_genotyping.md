@@ -331,6 +331,7 @@ vcftools --vcf targets156_specific_filtered_MAC0_LRG.vcf --missing-site --out LR
 vcftools --vcf targets156_specific_filtered_MAC0_SML.vcf --missing-site --out SML_
 ```
 LRG_.lmiss
+
 SML_.lmiss
 
 
