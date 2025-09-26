@@ -92,6 +92,7 @@ bcftools mpileup -O u -d 250 --skip-indels -f /global/scratch/users/rdekayne/gor
 Submit with `sbatch 02.2_genotyping.sh`
 
 This produces vcf files but with weird naming so we want to reaheader the vcf files with short names (removing the filepath)
+
 Get the current names
 ```
 bcftools query -l raw_vcfs/chr10_mat_hsa12.raw.vcf.gz  > old_names.txt
@@ -163,8 +164,11 @@ Then get a list of autosomes since we need to filt autosomes and sex chromosomes
 cat /global/scratch/users/rdekayne/gorilla_census/02_genotyping/scaf.list | grep -v "chrX" | grep -v "chrY" > autosomes_scaffold_list.txt
 ```
 Now we will filter the raw vcf files we made above - `02.5_vcf_filt2.sh`
+
 Filter genotypes with low depth or low quality using `-e 'FORMAT/DP < 7 | FORMAT/GQ < 30'`
+
 Set missing genotypes to ./. `--set-GTs .`
+
 Exclude variant sites where the allele number (AN) is less than 2 `-e 'AN < 2'` i.e. filter out sites where all individuals are ./.
 ```
 #!/bin/bash
@@ -194,6 +198,7 @@ Make list of vcf files to merge
 ls /global/scratch/users/rdekayne/gorilla_census/02_genotyping/filt_vcfs/*.vcf.gz > autosomes_filt_to_merge.txt
 ```
 Now concatenate all the autosomes into a single large vcf file - `02.6_vcf_auto_concat_filt.sh`
+
 And then filter the resulting file to keep sites that are biallelic `-m2 -M2` have a minor allele count of 1 and at least 22 alleles `-e 'INFO/MAC < 1 | AN < 22'`
 ```
 #!/bin/bash
