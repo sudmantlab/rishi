@@ -1,4 +1,5 @@
 Code outlining QC of reads for gorilla 1step PCR test  
+
 Load conda env and make directory
 ```
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/ && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/
@@ -28,6 +29,7 @@ Now going to demultiplex the reads. Make directory
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder
 ```
 Now we need to demultiplex our reads - this is a bit complicated because illumina barcodes have ligated in both orientations  
+
 First run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R`
 ```
 #De-Kayne 2025
@@ -125,6 +127,7 @@ Demultiplex the forwards reads `demultiplex_all_fwd.sh`
 ../fastq-multx/fastq-multx -B all_primers_for_demultiplexing_ad ../18032D-186-01_S234_L007_R1_001.fastq.gz ../18032D-186-01_S234_L007_R2_001.fastq.gz -o ./demux/%_R1.fastq.gz ./demux/%_R2.fastq.gz -m 1
 ```
 and run `sbatch demultiplex_all_fwd.sh`  
+
 Now demultiplex the reverse reads `demultiplex_all_revcomp.sh`
 ```
 #!/bin/bash
@@ -148,6 +151,7 @@ Now demultiplex the reverse reads `demultiplex_all_revcomp.sh`
 ../fastq-multx/fastq-multx -B all_primers_for_demultiplexing_REVCOMP_ad ../18032D-186-01_S234_L007_R1_001.fastq.gz ../18032D-186-01_S234_L007_R2_001.fastq.gz -o ./demux_rev/%_R1.fastq.gz ./demux_rev/%_R2.fastq.gz -m 1
 ```
 and submit `sbatch demultiplex_all_revcomp.sh`  
+
 This produces many files for each individual barcode set and locus
 ```
 ls demux/* | wc -l
@@ -159,7 +163,9 @@ ls demux_rev/* | wc -l
 :7682
   
 Now we will concatenate all the reads per primer set i.e. per individual/replicate  
+
 We need forwards and reverse orientation together  
+
 Make directory  
 ```
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/all_demultiplex/combined_indiv_fastas
