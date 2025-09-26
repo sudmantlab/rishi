@@ -121,6 +121,7 @@ bwa-mem2 mem -t 24 /global/scratch/users/rdekayne/gorilla_census/data/genomes/mG
 and run with `sbatch --array=1-131 01.3_mapping_map_p1.sh `
 
 Load java - `module load java/22.0.1`
+
 Then we are going to process the bam files including fixing mate information, marking duplicates, and sorting and indexing using a mixture of tools with `01.4_mapping_process_p1.sh `
 ```
 #!/bin/bash
@@ -165,6 +166,7 @@ touch ${VAR1}_${VAR2}.processing.done
 Submit that `sbatch --array=1-131%8 01.4_mapping_process_p1.sh`
 
 Now move directory
+
 `mkdir -p /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams`
   
 We are now going to merge bam files for individuals with multiple bams - `01.5_mapping_merge_p1.sh`
