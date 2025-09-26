@@ -1,4 +1,5 @@
 Code for running popgen statistics on mpcrselect output
+
 We needed to produce a few 1000 markers so that we can produce primers that are compatible with one another through pooling
 
 Run plink PCA on output vcf file with 11 individuals and 2000 snps as output by mPCRselect - `06_PCA.sh`
