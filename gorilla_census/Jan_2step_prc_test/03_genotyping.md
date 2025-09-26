@@ -166,7 +166,8 @@ bcftools view -H autosomes_output_filt_AN1_MAC1.vcf.gz | wc -l
 ```
 321
 
-Now filter for the exact amplicons we were targetting
+Now filter for the exact amplicons we were targetting  
+
 First index the files
 ```
 bcftools index ./concat_vcfs/autosomes_output_filt_AN2_MAC1.vcf.gz
