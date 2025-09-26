@@ -1,4 +1,5 @@
-Code for genotyping re-sequencing data for the 156 target SNPs  
+Code for genotyping re-sequencing data for the 156 target SNPs
+
 Make directories and load conda envs
 ```
 conda activate /global/scratch/users/rdekayne/envs/geno
