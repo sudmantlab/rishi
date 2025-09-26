@@ -1,4 +1,5 @@
 Code to create .geno files from .vcf files to calculate popgen statistics using [genomics_general](https://github.com/simonhmartin/genomics_general) tools
+
 This specific section was carried out on an earlier iteration of the pipeline where we had 14 samples and is only retained here for clarity (hence why samples have AN28 rather than AN22 which was in the final version)
 
 Download the set of tools from github and make directories
@@ -38,9 +39,11 @@ touch /global/scratch/users/rdekayne/gorilla_census/02_genotyping/genos/"${scaf_
 And run: `sbatch --array=1-23 04.1_geno_convert.sh`
 
 Do the same with sex chromosomes:
+```
 cat ../02_genotyping/X_ploidy.txt | sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/01_mapping\/indiv_bams\///g' | sed 's/_1file.bam//g' > x_geno_ploidy.txt
 cat ../02_genotyping/Y_ploidy.txt | sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/01_mapping\/indiv_bams\///g' | sed 's/_1file.bam//g' > y_geno_ploidy.txt
 #error with y so put ploidy to 1
+```
 
 `04.2_geno_convert_sex.sh`
 ```
@@ -90,6 +93,7 @@ sed -i 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/02_genotyping\/fil
 sed -i 's/_filt_mindepth7_minqual30_m2M2_AN28.vcf.gz//g' filt_vcfs_to_convert.txt
 ```
 Now calculate pi in a loop - `04.3_geno_pi.sh`
+
 Worth noting that genomics.py needs to be here
 ```
 #!/bin/bash
