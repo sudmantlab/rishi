@@ -28,6 +28,7 @@ plink --vcf /global/scratch/users/rdekayne/gorilla_census/02_genotyping/concat_v
 touch /global/scratch/users/rdekayne/gorilla_census/03_PCA/11_pca.done
 ```
 Now run - `sbatch 03.1_PCA_unfilt.sh`
+
 We get: 3823659 variants and 14 people pass filters and QC.
 
 And then download the data from the cluster `scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/03_PCA/*.eigen* .`
