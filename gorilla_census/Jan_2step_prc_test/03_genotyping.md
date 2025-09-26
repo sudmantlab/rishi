@@ -184,6 +184,7 @@ bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN2_MAC1
 bcftools view -H targets156_filtered.vcf | wc -l
 ```
 299
+
 And for the other file
 ```
 bcftools view -R target_markers.txt ./concat_vcfs/autosomes_output_filt_AN1_MAC1.vcf.gz > targets156_filteredAN1.vcf
@@ -269,6 +270,7 @@ bcftools view -R specific_targets_filt.txt ./concat_vcfs/autosomes_output_filt_A
 bcftools view -H targets156_specific_filtered_AN1MAC0.vcf | wc -l
 ```
 105
+
 Manage to get more loci this way (likeley some had missing data)
 
 #now split our samples by the two different extraction kits we tired
