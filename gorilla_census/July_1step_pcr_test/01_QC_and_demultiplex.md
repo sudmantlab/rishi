@@ -30,7 +30,15 @@ mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UC
 ```
 Now we need to demultiplex our reads - this is a bit complicated because illumina barcodes have ligated in both orientations  
 
-First run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R`
+This requires a directory `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCBbarcode_primer_files/` which contains text files named F_01-F_12 and R_01-R_08 containing lists of primer sequence e.g. `F_01` starts with:
+```
+AGACTATGAGGAACTGAAACTTACCAGATTAC
+AGACTATGACGCGGTTGGTGTAGTAT
+AGACTATGGCTCCAAGCTGTGCATTT
+```
+
+Run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R` to prepare forwards and reverse primer lists
+
 ```
 #De-Kayne 2025
 #produce list of barcodes for every combination of F and R primers for 40 loci
