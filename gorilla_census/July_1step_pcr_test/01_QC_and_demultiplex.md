@@ -1,4 +1,4 @@
-Code outlining QC of reads for gorilla 1step PCR test
+Code outlining QC of reads for gorilla 1step PCR test  
 Load conda env and make directory
 ```
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/ && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/
@@ -27,7 +27,7 @@ Now going to demultiplex the reads. Make directory
 ```
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/S1_folder
 ```
-Now we need to demultiplex our reads - this is a bit complicated because illumina barcodes have ligated in both orientations
+Now we need to demultiplex our reads - this is a bit complicated because illumina barcodes have ligated in both orientations  
 First run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R`
 ```
 #De-Kayne 2025
