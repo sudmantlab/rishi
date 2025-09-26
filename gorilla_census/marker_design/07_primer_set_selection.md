@@ -1,4 +1,5 @@
 Code to select a test target site for the Jan 2025 test
+
 Katie Solari sent over a number of sets of compatible primers for us to check
 
 Activate conda env, make directory, and upload test snp sets
