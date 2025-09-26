@@ -1,4 +1,5 @@
 Code for plotting PCAs from target snps in test run
+
 Make directories and load conda env
 ```
 conda activate /global/scratch/users/rdekayne/envs/pca
@@ -28,6 +29,7 @@ plink --vcf /global/scratch/users/rdekayne/gorilla_census/10_genotyping/targets1
 touch /global/scratch/users/rdekayne/gorilla_census/11_PCA/pca.done
 ```
 Submit `sbatch 11.1_PCA_unfilt.sh`
+
 Output:
 ```
 105 variants and 18 people pass filters and QC.
