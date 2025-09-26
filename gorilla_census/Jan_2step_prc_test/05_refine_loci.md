@@ -1,4 +1,5 @@
 Code for selecting new loci for second test using a 1step pcr to reduce risk of contamination
+
 See how many loci from 40 selected SNPs (pickeda at random) we sequenced here
 
 Target amplicons in: `40_singlestep_amplicons.txt`
