@@ -36,8 +36,9 @@ AGACTATGAGGAACTGAAACTTACCAGATTAC
 AGACTATGACGCGGTTGGTGTAGTAT
 AGACTATGGCTCCAAGCTGTGCATTT
 ```
+A copy of this directory with the barcodes can be found [HERE](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/July_1step_pcr_test/barcode_primer_files)
 
-Run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R` to prepare forwards and reverse primer lists
+Now run the R script `/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/make_primer_list.R` to prepare forwards and reverse primer lists
 
 ```
 #De-Kayne 2025
