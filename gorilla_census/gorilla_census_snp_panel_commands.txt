@@ -2954,6 +2954,17 @@ bcftools view -R specific_targets_filt.txt /global/scratch/users/rdekayne/gorill
 bcftools view -H targets40_specific_filtered_AN1.vcf | wc -l
 #40
 
+
+
+
+
+
+
+
+
+
+
+
 #now split by extraction kit
 bcftools view -S lrg_vol_sample_list.txt -o targets156_specific_filtered_MAC0_LRG.vcf targets156_specific_filtered_MAC0.vcf
 bcftools view -S sml_vol_sample_list.txt -o targets156_specific_filtered_MAC0_SML.vcf targets156_specific_filtered_MAC0.vcf
