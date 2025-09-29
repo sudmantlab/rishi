@@ -254,4 +254,7 @@ bcftools view -H targets40_specific_filtered_AN1.vcf | wc -l
 40
 
 These both contain the same information and info of all 40 target snps so we will now plot these using an R script to show a heatmap
+```
+scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/targets40_specific_filtered_AN1.vcf .
+```
 
