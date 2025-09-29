@@ -197,6 +197,50 @@ And run `sbatch vcf_auto_concat_filt_inc_invariant.sh`
 
 Now we want to filter vcfs to get only our 40 target sites
 
+We have a file `specific_targets_filt.txt` containing these targets:
+``` 
+chr2_pat_hsa3	63820727
+chr4_pat_hsa17x5	139673146
+chr15_pat_hsa14	36212595
+chr1_pat_hsa1	10233235
+chr6_mat_hsa7	11390729
+chr7_pat_hsa8	5143130
+chr19_pat_hsa5x17	24137428
+chr1_pat_hsa1	51992760
+chr2_pat_hsa3	104430425
+chr3_pat_hsa4	121313448
+chr4_pat_hsa17x5	181243267
+chr5_mat_hsa6	61734828
+chr6_mat_hsa7	163795044
+chr7_pat_hsa8	39191000
+chr7_pat_hsa8	45067101
+chr7_pat_hsa8	63184015
+chr8_pat_hsa10	86733664
+chr8_pat_hsa10	145958666
+chr9_pat_hsa11	44720414
+chr9_pat_hsa11	70173757
+chr10_mat_hsa12	20613085
+chr13_pat_hsa9	35940167
+chr17_mat_hsa18	82026819
+chr18_pat_hsa16	103784314
+chr1_pat_hsa1	180923230
+chr4_pat_hsa17x5	169976139
+chr8_pat_hsa10	26547585
+chr9_pat_hsa11	134720610
+chr10_mat_hsa12	107788170
+chr18_pat_hsa16	74778095
+chr4_pat_hsa17x5	49217303
+chr5_mat_hsa6	93647643
+chr9_pat_hsa11	27699017
+chr10_mat_hsa12	64331685
+chr10_mat_hsa12	75066868
+chr16_pat_hsa15	55694687
+chr16_pat_hsa15	79107645
+chr18_pat_hsa16	111163844
+chr19_pat_hsa5x17	18421770
+chr22_mat_hsa21	25719657
+```
+
 To do this we will use our unfiltered concatenated file
 ```
 bcftools view -R specific_targets_filt.txt /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/concat_vcfs/autosomes_output_filt_AN2.vcf.gz > targets40_specific_filtered_AN2.vcf
