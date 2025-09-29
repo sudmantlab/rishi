@@ -258,3 +258,36 @@ These both contain the same information and info of all 40 target snps so we wil
 scp rdekayne@hpc.brc.berkeley.edu:/global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/targets40_specific_filtered_AN1.vcf .
 ```
 
+Losing a lot of reads from filtering so try new approach with raw data
+```
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test
+ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_vcfs/*.vcf.gz > raw_files_to_concat.txt
+```
+Now run `concat_raw_data.sh`
+```
+#!/bin/bash
+#SBATCH --job-name=concat
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio4_htc
+#SBATCH --qos=genomicdata_htc4_normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=50G
+#SBATCH --time=4:00:00
+#SBATCH --output=concat.%j.out
+#SBATCH --error=concat.%j.err
+
+mkdir -p /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge
+bcftools concat -Ou -f /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test/raw_files_to_concat.txt | bcftools sort -Oz --temp-dir /global/scratch/users/rdekayne/gorilla_census/genotype_concat_merge -o /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test/autosomes_output_filt_raw_data.vcf.gz
+
+touch concat_auto.done
+```
+Submit `sbatch concat_raw_data.sh`
+
+And filter file for target SNPs:
+```
+bcftools index /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test/autosomes_output_filt_raw_data.vcf.gz
+bcftools view -R ../specific_targets_filt.txt /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/raw_data_concat_test/autosomes_output_filt_raw_data.vcf.gz > targets40_raw.vcf
+bcftools view -H targets40_raw.vcf | wc -l
+```
