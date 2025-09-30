@@ -105,50 +105,50 @@ Then prepare input bed file for mosdepth `mosdepth_40_targets.bed`
 ```
 mkdir -p /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/depth_calc && cd /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/depth_calc
 cp /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/genotyping/specific_targets_filt.txt .
-awk -F'\t' -v OFS='\t' '{print $0, $2}' specific_targets_filt.txt > mosdepth_40_targets.bed
-
+wk -v OFS='\t' '{print $1, $2-1, $2}' specific_targets_filt.txt  > mosdepth_targets.bed
 ```
+`mosdepth_targets.bed`
 ```
-chr2_pat_hsa3	63820727	63820727
-chr4_pat_hsa17x5	139673146	139673146
-chr15_pat_hsa14	36212595	36212595
-chr1_pat_hsa1	10233235	10233235
-chr6_mat_hsa7	11390729	11390729
-chr7_pat_hsa8	5143130	5143130
-chr19_pat_hsa5x17	24137428	24137428
-chr1_pat_hsa1	51992760	51992760
-chr2_pat_hsa3	104430425	104430425
-chr3_pat_hsa4	121313448	121313448
-chr4_pat_hsa17x5	181243267	181243267
-chr5_mat_hsa6	61734828	61734828
-chr6_mat_hsa7	163795044	163795044
-chr7_pat_hsa8	39191000	39191000
-chr7_pat_hsa8	45067101	45067101
-chr7_pat_hsa8	63184015	63184015
-chr8_pat_hsa10	86733664	86733664
-chr8_pat_hsa10	145958666	145958666
-chr9_pat_hsa11	44720414	44720414
-chr9_pat_hsa11	70173757	70173757
-chr10_mat_hsa12	20613085	20613085
-chr13_pat_hsa9	35940167	35940167
-chr17_mat_hsa18	82026819	82026819
-chr18_pat_hsa16	103784314	103784314
-chr1_pat_hsa1	180923230	180923230
-chr4_pat_hsa17x5	169976139	169976139
-chr8_pat_hsa10	26547585	26547585
-chr9_pat_hsa11  134720610	134720610
-chr10_mat_hsa12	107788170	107788170
-chr18_pat_hsa16	74778095	74778095
-chr4_pat_hsa17x5	49217303	49217303
-chr5_mat_hsa6	93647643	93647643
-chr9_pat_hsa11	27699017	27699017
-chr10_mat_hsa12	64331685	64331685
-chr10_mat_hsa12	75066868	75066868
-chr16_pat_hsa15	55694687	55694687
-chr16_pat_hsa15	79107645	79107645
-chr18_pat_hsa16	111163844	111163844
-chr19_pat_hsa5x17	18421770	18421770
-chr22_mat_hsa21	25719657	25719657
+chr2_pat_hsa3	63820726	63820727
+chr4_pat_hsa17x5	139673145	139673146
+chr15_pat_hsa14	36212594	36212595
+chr1_pat_hsa1	10233234	10233235
+chr6_mat_hsa7	11390728	11390729
+chr7_pat_hsa8	5143129	5143130
+chr19_pat_hsa5x17	24137427	24137428
+chr1_pat_hsa1	51992759	51992760
+chr2_pat_hsa3	104430424	104430425
+chr3_pat_hsa4	121313447	121313448
+chr4_pat_hsa17x5	181243266	181243267
+chr5_mat_hsa6	61734827	61734828
+chr6_mat_hsa7	163795043	163795044
+chr7_pat_hsa8	39190999	39191000
+chr7_pat_hsa8	45067100	45067101
+chr7_pat_hsa8	63184014	63184015
+chr8_pat_hsa10	86733663	86733664
+chr8_pat_hsa10	145958665	145958666
+chr9_pat_hsa11	44720413	44720414
+chr9_pat_hsa11	70173756	70173757
+chr10_mat_hsa12	20613084	20613085
+chr13_pat_hsa9	35940166	35940167
+chr17_mat_hsa18	82026818	82026819
+chr18_pat_hsa16	103784313	103784314
+chr1_pat_hsa1	180923229	180923230
+chr4_pat_hsa17x5	169976138	169976139
+chr8_pat_hsa10	26547584	26547585
+chr9_pat_hsa11	134720609	134720610
+chr10_mat_hsa12	107788169	107788170
+chr18_pat_hsa16	74778094	74778095
+chr4_pat_hsa17x5	49217302	49217303
+chr5_mat_hsa6	93647642	93647643
+chr9_pat_hsa11	27699016	27699017
+chr10_mat_hsa12	64331684	64331685
+chr10_mat_hsa12	75066867	75066868
+chr16_pat_hsa15	55694686	55694687
+chr16_pat_hsa15	79107644	79107645
+chr18_pat_hsa16	111163843	111163844
+chr19_pat_hsa5x17	18421769	18421770
+chr22_mat_hsa21	25719656	25719657
 ```
 
 Now run `target_mosdepth_p1.sh`
@@ -169,6 +169,6 @@ cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
 ind=${SLURM_ARRAY_TASK_ID}
 indiv_name=$(cat /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/bam_96_list_simplified.txt | sed -n ${ind}p)
 
-mosdepth -n ${indiv_name} --by mosdepth_40_targets.bed /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/processed_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+mosdepth -n ${indiv_name} --by mosdepth_targets.bed /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/processed_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
 ```
 And submit `sbatch --array=1-96 target_mosdepth_p1.sh`
