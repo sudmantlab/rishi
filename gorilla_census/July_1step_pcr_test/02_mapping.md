@@ -92,3 +92,34 @@ And make sample list of bam files for calling genotypes
 ```
 ls /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/processed_bams/*.bam > bam_96_list.txt
 ```
+
+Check the depth of specific target loci using mosdepth
+```
+conda activate /global/scratch/users/rdekayne/envs/mapping
+```
+Then prepare input bed file for mosdepth `mosdepth_40_targets.bed`
+```
+```
+
+Now run `target_mosdepth_p1.sh`
+```
+#!/bin/bash
+#SBATCH --job-name=mos
+#SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
+#SBATCH --account=co_genomicdata
+#SBATCH --partition=savio3
+#SBATCH --output=mos.%j.out # output file
+#SBATCH --error=mos.%j.err # error file
+#SBATCH --ntasks=1 # Run 1 job
+#SBATCH --ntasks-per-node=1 # One task per computer
+#SBATCH --cpus-per-task=24 # 2 CPUs per job
+
+cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
+
+ind=${SLURM_ARRAY_TASK_ID}
+indiv_name=$(cat bam_96_list.txt | sed -n ${ind}p)
+
+mosdepth -n ${indiv_name} --by mosdepth_40_targets.bed /path/to/bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+```
+##run 
+sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
