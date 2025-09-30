@@ -97,6 +97,10 @@ Check the depth of specific target loci using mosdepth
 ```
 conda activate /global/scratch/users/rdekayne/envs/mapping
 ```
+Prepare bam list
+```
+sed 's/\/global\/scratch\/users\/rdekayne\/gorilla_census\/July_2025_library_test_UCB\/processed_bams\///g' bam_96_list.txt > bam_96_list_simplified.txt
+```
 Then prepare input bed file for mosdepth `mosdepth_40_targets.bed`
 ```
 ```
@@ -117,9 +121,9 @@ Now run `target_mosdepth_p1.sh`
 cd /global/scratch/users/rdekayne/gorilla_census/01_mapping/indiv_bams
 
 ind=${SLURM_ARRAY_TASK_ID}
-indiv_name=$(cat bam_96_list.txt | sed -n ${ind}p)
+indiv_name=$(cat /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/bam_96_list.txt | sed -n ${ind}p)
 
-mosdepth -n ${indiv_name} --by mosdepth_40_targets.bed /path/to/bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
+mosdepth -n ${indiv_name} --by mosdepth_40_targets.bed /global/scratch/users/rdekayne/gorilla_census/July_2025_library_test_UCB/processed_bams/${indiv_name} && touch ${indiv_name}.mosdepth.done 
 ```
 ##run 
 sbatch --array=1-16 01.6_mapping_mosdepth_p1.sh 
