@@ -292,3 +292,6 @@ axis(side=1, at = c(1:96), labels = c("1","1","1","1","1","1",
                                       "E_F12R1","E_F12R2","E_F12R3","E_F12R4","E_F12R5","E_F12R6","E_F12R7","E_F12R8"), las = 2, cex.axis = 0.5)
 
 ```
+
+Add some details:
+![heatmap_picture](GorillaGenotypeHeatmap.png "40 SNP July 1 Step PCR Test Genotypes")
