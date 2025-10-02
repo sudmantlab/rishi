@@ -10,6 +10,7 @@ This directory contains all the scripts for producing and testing a mountain gor
   - [06_snp_panel_popgen.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/06_snp_panel_popgen.md) plotting PCA from mpcrselect vcf output
   - [07_primer_set_selection.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/07_primer_set_selection.md) get #SNPs and plot PCAs for each ~120-150 snp set to select one and outlines selected set
   - *Summary: The result of this work was that we produced a VCF containing high diversity SNPs (across the set of gorilla data previously published) that were then used by the Petrov lab to produce a set of compatible 2 and then 1 step PCR primers.*
+  
 - Part 2: Initial 2-step PCR test - [Jan_2step_prc_test](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/Jan_2step_prc_test)
   - [01_fastp.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/01_fastp.md) includes QC of reads using fastp
   - [02_mapping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/02_mapping.md) outlines mapping commands
@@ -17,6 +18,7 @@ This directory contains all the scripts for producing and testing a mountain gor
   - [04_PCA.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/04_PCA.md) code to make pcas from test loci
   - [05_refine_loci.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/05_refine_loci.md) covers how to identify and export possible new high-pi target SNPs for a refined second test
   - *Summary: The result of this test sequencing of 156 SNPs was that we were able to amplify and genotype the target loci but there were some concerns about the potential for unbarcoded reads amplified from the first PCR step to contaminate the lab/other samples and so testing a 1-step PCR where amplicons are amplified with barcode attached was suggested.*
+
 - Part 3: Follow up 1-step PCR test - [July_1step_pcr_test](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/July_1step_pcr_test)
   - [01_QC_and_demultiplex.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/01_QC_and_demultiplex.md) contains code to QC and demultiplex the single fastq file for this test
   - [02_mapping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/02_mapping.md) code to map reads to gorilla genome
