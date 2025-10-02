@@ -10,4 +10,9 @@ This directory contains all the scripts for producing and testing a mountain gor
   - [06_snp_panel_popgen.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/06_snp_panel_popgen.md) plotting PCA from mpcrselect vcf output
   - [07_primer_set_selection.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/marker_design/07_primer_set_selection.md) get #SNPs and plot PCAs for each ~120-150 snp set to select one and outlines selected set
 - Part 2: Initial 2-step PCR test - [Jan_2step_prc_test](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/Jan_2step_prc_test)
+  - [01_fastp.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/01_fastp.md) includes QC of reads using fastp
+  - [02_mapping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/02_mapping.md) outlines mapping commands
+  - [03_genotyping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/03_genotyping.md) outlines genotyping of loci for test
+  - [04_PCA.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/04_PCA.md) code to make pcas from test loci
+  - [05_refine_loci.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/05_refine_loci.md) covers how to identify and export possible new high-pi target SNPs for a refined second test
 - Part 3: Follow up 1-step PCR test - [July_1step_pcr_test](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/July_1step_pcr_test)
