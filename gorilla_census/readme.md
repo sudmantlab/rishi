@@ -16,3 +16,7 @@ This directory contains all the scripts for producing and testing a mountain gor
   - [04_PCA.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/04_PCA.md) code to make pcas from test loci
   - [05_refine_loci.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/Jan_2step_prc_test/05_refine_loci.md) covers how to identify and export possible new high-pi target SNPs for a refined second test
 - Part 3: Follow up 1-step PCR test - [July_1step_pcr_test](https://github.com/sudmantlab/rishi/tree/main/gorilla_census/July_1step_pcr_test)
+  - [01_QC_and_demultiplex.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/01_QC_and_demultiplex.md) contains code to QC and demultiplex the single fastq file for this test
+  - [02_mapping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/02_mapping.md) code to map reads to gorilla genome
+  - [03_genotyping.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/03_genotyping.md) contains info on genotyping and filtering/processing of genotype information for all 40 target snps
+  - [04_plot_genotypes.md](https://github.com/sudmantlab/rishi/blob/main/gorilla_census/July_1step_pcr_test/04_plot_genotypes.md) code for plotting the genotypes in the test in a heatmap
