@@ -123,3 +123,4 @@ for(i in 1:nrow(vcf_df_geno2)){
 
 axis(side=2, at = c(1:32), labels = c(paste(vcf_df$X.CHROM, vcf_df$POS, sep = "_")), las = 2, cex.axis = 0.5)
 ```
+![heatmap_picture](32_loci_genotypes.png "32 SNPs Jan 2 Step PCR Test Genotypes")
