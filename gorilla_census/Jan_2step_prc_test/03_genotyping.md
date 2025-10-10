@@ -337,7 +337,7 @@ LRG_.lmiss
 
 SML_.lmiss
 
-
+![heatmap_picture](gorilla_markers_by_kit.png "")
 
 
 
