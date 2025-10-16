@@ -5,7 +5,7 @@ As a result we get .gff3 files for each of the 55 haplotypes
 Now we want to count the genes and look for overlaps of genes across the gene sets
 
 Prepare the env
-``
+```
 cd /global/scratch/users/rdekayne/rockfish55/assemblies
 wget -i https://public.gi.ucsc.edu/~pnhebbar/rockfish_annotations/
 
