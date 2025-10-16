@@ -499,4 +499,7 @@ ggplot(acadiancbp.plot,aes(x=x+1,y=y/1e4,color=species)) +
                            panel.grid = element_blank())
 ```
 
-![psmcplots](plots/psmc_plots.pdf "psmc plots")
+![psmcplot1](plots/G1PLOT.png "psmc plots")
+![psmcplot2](plots/G2PLOT.png "psmc plots")
+![psmcplot3](plots/G3PLOT.png "psmc plots")
+
