@@ -1,4 +1,9 @@
+Here we will look at genome-wide synteny across our taxa using ntsynt
 
+To do this we will just take the hap1 assemblies since we are looking at genome-scale rearrangements
+
+First prepare our environment
+```
 mkdir -p /global/scratch/users/rdekayne/rockfish55/07_NTSYNT && cd /global/scratch/users/rdekayne/rockfish55/07_NTSYNT
 conda create -p /global/scratch/users/rdekayne/envs/synt
 conda activate /global/scratch/users/rdekayne/envs/synt
@@ -8,10 +13,15 @@ conda install --yes -c conda-forge -c bioconda quicktree snakemake intervaltree 
 R -e 'install.packages(c("gggenomes"), repos = "https://cran.r-project.org")'
 tar xvzf ntSynt-viz-1.0.0.tar.gz
 export PATH=/global/scratch/users/rdekayne/rockfish55/07_NTSYNT/ntSynt-viz-1.0.0/bin/:$PATH
+```
 
+Now make a list of our focal assemblies (again just hap1s)
+```
 ls ../assemblies/*_1.fasta > hap1_fasta_list.txt
+```
 
-#run_ntsynt.sh
+And then run ntSynt using `run_ntsynt.sh`
+```
 #!/bin/bash
 #SBATCH --job-name=ntsynt
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
@@ -25,13 +35,16 @@ ls ../assemblies/*_1.fasta > hap1_fasta_list.txt
 #SBATCH --cpus-per-task=24 # 2 CPUs per job
 
 ntSynt --fastas_list hap1_fasta_list.txt -d 7 -b 100,000 -p ntsynt_output_b10k_d7 -t 24
+```
+and run `sbatch run_ntsynt.sh`
 
-##run
-sbatch run_ntsynt.sh
-
+Now list the .fai files
+```
 ls *.fai > fai_path_list.txt
+```
 
-#run_ntsynt_viz.sh
+And run the visualizing script `run_ntsynt_viz.sh`
+```
 #!/bin/bash
 #SBATCH --job-name=ntsynt
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
@@ -47,6 +60,5 @@ ls *.fai > fai_path_list.txt
 #ntsynt_viz.py --blocks ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --tree cactus_output_rooted_rearranged.nwk --target-genome SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
 
 ntsynt_viz.py --blocks ../ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --normalize --ribbon_adjust 0.7 --scale 1e9 --tree hap1_rockfish50_tree_rooted_rearranged.nwk --height 53 --width 60
-
-##run
-sbatch run_ntsynt_viz.sh
+```
+And run `sbatch run_ntsynt_viz.sh`
