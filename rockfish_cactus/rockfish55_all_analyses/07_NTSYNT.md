@@ -59,6 +59,8 @@ And run the visualizing script `run_ntsynt_viz.sh`
 
 #ntsynt_viz.py --blocks ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --tree cactus_output_rooted_rearranged.nwk --target-genome SebastesalascanusSEB-2_shortspinethornyhead.fa.masked.hap1
 
-ntsynt_viz.py --blocks ../ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --normalize --ribbon_adjust 0.7 --scale 1e9 --tree hap1_rockfish50_tree_rooted_rearranged.nwk --height 53 --width 60
+#ntsynt_viz.py --blocks ../ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --normalize --ribbon_adjust 0.7 --scale 1e9 --tree hap1_rockfish50_tree_rooted_rearranged.nwk --height 53 --width 60
+
+ntsynt_viz.py --blocks ntsynt_output_b10k_d7.synteny_blocks.tsv --fais fai_path_list.txt --target-genome honeycomb-vgp_1.fasta --normalize --no-arrow --ribbon_adjust 0.7 --height 50 --width 60 -f
 ```
 And run `sbatch run_ntsynt_viz.sh`
