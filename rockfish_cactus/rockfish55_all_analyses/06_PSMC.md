@@ -95,7 +95,7 @@ SebastesserranoidesSEB-259_olive_1.fasta
 widow-ccgp_1.fasta
 ```
 
-Now we will run all assemblies through psmc using the same paramters using `all_psmc.sh` - later we will use species-specific values
+Now we will run all assemblies through psmc using the same paramters using `all_psmc.sh` - later we will plot with species-specific values but will use the same .psmc output which are the key files
 ```
 #!/bin/bash
 #SBATCH --job-name=psmc
