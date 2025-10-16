@@ -366,3 +366,6 @@ Anc02, 2, 820284079, 2511, 21402919, 25701211
 SebastesalascanusSEB-2_shortspinethornyhead.1, 0, 905231230, 830, 26833648, 0
 SebastesalascanusSEB-2_shortspinethornyhead.2, 0, 898607308, 486, 26758051, 0
 ```
+
+![cactusplot1](plots/cactus_plot.png "cactus plots")
+
