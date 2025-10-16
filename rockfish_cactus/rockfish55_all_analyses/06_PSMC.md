@@ -498,3 +498,5 @@ ggplot(acadiancbp.plot,aes(x=x+1,y=y/1e4,color=species)) +
                            strip.text = element_text(face='italic'),
                            panel.grid = element_blank())
 ```
+
+![psmcplots](plots/psmc_plots.pdf "psmc plots")
