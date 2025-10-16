@@ -1,3 +1,11 @@
+Here we will analyse the output of CAT which effectively expands the annotation from one of the genomes in our whole genome alignment (in our case the honeycomb rockfish) to the other taxa
+
+As a result we get .gff3 files for each of the 55 haplotypes
+
+Now we want to count the genes and look for overlaps of genes across the gene sets
+
+Prepare the env
+``
 cd /global/scratch/users/rdekayne/rockfish55/assemblies
 wget -i https://public.gi.ucsc.edu/~pnhebbar/rockfish_annotations/
 
@@ -6,8 +14,10 @@ mkdir -p /global/scratch/users/rdekayne/rockfish55/08_ANNOTATIONS && cd /global/
 conda create -p /global/scratch/users/rdekayne/envs/gff
 conda activate /global/scratch/users/rdekayne/envs/gff
 conda install bioconda::gffutils
+```
 
-## analyse_gff3s.py
+Now run the following python script which will analyse these annotation files `analyse_gff3s.py`
+```
 import gffutils
 import glob
 import os
@@ -74,8 +84,10 @@ for gff_file in gff_files:
 print(f"\n✅ Processed {len(gff_files)} GFF3 files.")
 print(f"✅ Found {len(shared_genes)} shared gene IDs.")
 print("✅ Output written to 'shared_genes.txt' and 'gene_counts.txt'")
+```
 
-#run_analyse_gffs.sh
+Now we will run this from a shell script `run_analyse_gffs.sh`
+```
 #!/bin/bash
 #SBATCH --job-name=gff3
 #SBATCH --time=0-24:00:00 # Wall clock time limit in Days-Hours:min:seconds
@@ -90,6 +102,7 @@ print("✅ Output written to 'shared_genes.txt' and 'gene_counts.txt'")
 
 python analyse_gff3s.py
 touch FINISHED.txt
+```
 
 ##run
 sbatch run_analyse_gffs.sh
