@@ -81,9 +81,9 @@ print("\n📊 Gene counts per GFF3 file:")
 for gff_file in gff_files:
     print(f"{gff_file}: {gene_counts[gff_file]} genes")
 
-print(f"\n✅ Processed {len(gff_files)} GFF3 files.")
-print(f"✅ Found {len(shared_genes)} shared gene IDs.")
-print("✅ Output written to 'shared_genes.txt' and 'gene_counts.txt'")
+print(f"\nProcessed {len(gff_files)} GFF3 files.")
+print(f"Found {len(shared_genes)} shared gene IDs.")
+print("Output written to 'shared_genes.txt' and 'gene_counts.txt'")
 ```
 
 Now we will run this from a shell script `run_analyse_gffs.sh`
@@ -104,5 +104,7 @@ python analyse_gff3s.py
 touch FINISHED.txt
 ```
 
-##run
+And run
+```
 sbatch run_analyse_gffs.sh
+```
