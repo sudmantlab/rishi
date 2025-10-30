@@ -74,10 +74,10 @@ for db_path in temp_db_paths:
     try:
         os.remove(db_path)
     except OSError as e:
-        print(f"⚠️ Error deleting {db_path}: {e}")
+        print(f"Error deleting {db_path}: {e}")
 
 # Final summary
-print("\n📊 Gene counts per GFF3 file:")
+print("\nGene counts per GFF3 file:")
 for gff_file in gff_files:
     print(f"{gff_file}: {gene_counts[gff_file]} genes")
 
