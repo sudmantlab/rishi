@@ -7,3 +7,7 @@ The steps outlined are as follows:
 - [02_TREES.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/02_TREES.md)
 - [03_CACTUS.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/03_CACTUS.md)
 - [04_HAL_TO_TREES.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/04_HAL_TO_TREES.md)
+- [05_GENE_RER.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/05_GENE_RER.md)
+- [06_PSMC.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/06_PSMC.md)
+- [07_NTSYNT.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/07_NTSYNT.md)
+- [08_ANNOTATIONS.md](https://github.com/sudmantlab/rishi/blob/main/rockfish_cactus/rockfish55_all_analyses/08_ANNOTATIONS.md)
